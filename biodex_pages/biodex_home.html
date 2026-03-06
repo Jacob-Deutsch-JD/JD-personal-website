@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scrolling Banner</title>
+  <style>
+    /* Page styling (optional) */
+    body {
+      margin: 0;
+      background: url('../assets/cloudy_background.gif');
+      background-repeat: repeat;
+      background-attachment: scroll;
+      background-size: 20%;
+      color: black;
+    }
+
+    .ecoregiona {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Banner container */
+    .banner {
+      color: white;
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(40, 40, 40, 0.8);
+      padding: 12px 0;
+    }
+
+    /* Moving text */
+    .banner__track {
+      display: inline-block;
+      padding-left: 100%;          /* start off-screen to the right */
+      animation: scroll 10s linear infinite;
+      will-change: transform;
+    }
+
+    .banner__text {
+      display: inline-block;
+      padding: 0 16px;
+      font-size: 18px;
+      letter-spacing: 0.04em;
+      opacity: 0.95;
+    }
+
+    @keyframes scroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Respect reduced-motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      .banner__track { animation: none; padding-left: 0; }
+    }
+
+    /* Demo content */
+    main { padding: 24px; }
+  </style>
+</head>
+<body>
+  <div class="banner" aria-label="Scrolling banner">
+    <div class="banner__track">
+      <span class="banner__text">
+        Become a bug today! - Only $5.99$ - [BUY] Now! - (terms and conditions may apply)
+      </span>
+    </div>
+  </div>
+  <div class="banner" aria-label="Scrolling banner">
+    <div class="banner__track">
+      <span class="banner__text">
+        Bugs await! - bug - bug - bug - bug - bug - bug - bug - bug - bug - bug - bug - bug - bug - bug - bug - bug - bug - bug - bug - bug - bug - bug - bug - bug
+      </span>
+    </div>
+  </div>
+
+  <main>
+    <h1>Project Biodex</h1>
+    <h2>MARINE WEST COAST FOREST</h2>
+    <h3><a href="./html_pages_Puget_Lowland/Puget_LowlandWinterBugs.html" class=".ecoregiona">Puget Lowland</a></h3>
+    <h2>NORTHWESTERN FORESTED MOUNTAINS</h2>
+    <h3><a href="./html_pages_North_Cascades/North_CascadesWinterBugs.html" class=".ecoregiona">North Cascades</a></h3>
+    <h2>NORTH AMERICAN DESERTS</h2>
+    <h3><a href="./html_pages_Columbia_Plateau/Columbia_PlateauWinterBugs.html" class=".ecoregiona">Columbia Plateau</a></h3>
+    
+  </main>
+</body>
+</html>

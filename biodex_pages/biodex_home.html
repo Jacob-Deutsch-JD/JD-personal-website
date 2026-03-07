@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Scrolling Banner</title>
+  <title>Project Biodex</title>
   <style>
     /* Page styling (optional) */
     body {
@@ -47,6 +47,22 @@
       opacity: 0.95;
     }
 
+    .two-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .left-column {
+      text-align: left;
+    }
+
+    .right-column {
+      justify-self: end;
+      text-align: right;
+    }
+
     @keyframes scroll {
       0%   { transform: translateX(0); }
       100% { transform: translateX(-100%); }
@@ -79,19 +95,21 @@
 
   <main>
     <h1>Project Biodex</h1>
-    <div>
-      <h1>Ecoregion Pages</h1>
-      <h2>MARINE WEST COAST FOREST</h2>
-      <h3><a href="./html_pages_Puget_Lowland/Puget_LowlandWinterBugs.html" class=".ecoregiona">Puget Lowland</a></h3>
-      <h2>NORTHWESTERN FORESTED MOUNTAINS</h2>
-      <h3><a href="./html_pages_North_Cascades/North_CascadesWinterBugs.html" class=".ecoregiona">North Cascades</a></h3>
-      <h2>NORTH AMERICAN DESERTS</h2>
-      <h3><a href="./html_pages_Columbia_Plateau/Columbia_PlateauWinterBugs.html" class=".ecoregiona">Columbia Plateau</a></h3>
-    </div>
+    <div class="two-columns">
+      <div class="left-column">
+        <h1>Ecoregion Pages</h1>
+        <h2>MARINE WEST COAST FOREST</h2>
+        <h3><a href="./html_pages_Puget_Lowland/Puget_LowlandWinterBugs.html" class="ecoregiona">Puget Lowland</a></h3>
+        <h2>NORTHWESTERN FORESTED MOUNTAINS</h2>
+        <h3><a href="./html_pages_North_Cascades/North_CascadesWinterBugs.html" class="ecoregiona">North Cascades</a></h3>
+        <h2>NORTH AMERICAN DESERTS</h2>
+        <h3><a href="./html_pages_Columbia_Plateau/Columbia_PlateauWinterBugs.html" class="ecoregiona">Columbia Plateau</a></h3>
+      </div>
 
-    <div>
-      <h1>Extension</h1>
-        <h3><a href="./ext_privacy.html" class=".ecoregiona">Privacy Policy</a></h3>
+      <div class="right-column">
+        <h1>Extension</h1>
+          <h3><a href="./ext_privacy.html" class="ecoregiona">Privacy Policy</a></h3>
+      </div>
     </div>
   </main>
 </body>

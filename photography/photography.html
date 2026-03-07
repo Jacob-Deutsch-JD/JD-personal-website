@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photography Gallery</title>
+  <link rel="stylesheet" href="../nav_darkmode.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    #gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .thumb {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      display: block;
+      border-radius: 8px;
+      background: #222;
+      cursor: pointer;
+    }
+
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      box-sizing: border-box;
+      cursor: pointer;
+    }
+
+    #lightbox.open {
+      display: flex;
+    }
+
+    #lightbox img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      cursor: default;
+    }
+
+    #closeBtn {
+      position: fixed;
+      top: 16px;
+      right: 20px;
+      font-size: 36px;
+      line-height: 1;
+      color: white;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-banner">
+    <a href="../index.html">Home</a>
+    <a href="../photography/photography.html">Photography</a>
+    <a href="../research/research.html">Research</a>
+    <a href="../biodex_pages/biodex_home.html">Biodex</a>
+    <a href="../contact/contact.html">Contact</a>
+  </nav>
+
+  <h1>Photography</h1>
+
+  <div id="gallery"></div>
+
+  <div id="lightbox">
+    <button id="closeBtn" aria-label="Close popup">&times;</button>
+    <img id="lightboxImg" src="" alt="">
+  </div>
+
+  <script src="images.js"></script>
+  <script>
+    const gallery = document.getElementById("gallery");
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightboxImg");
+    const closeBtn = document.getElementById("closeBtn");
+
+    function openLightbox(src) {
+      lightboxImg.src = src;
+      lightbox.classList.add("open");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove("open");
+      lightboxImg.src = "";
+      document.body.style.overflow = "";
+    }
+
+    if (window.galleryImages && Array.isArray(window.galleryImages)) {
+      window.galleryImages.forEach(src => {
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = "";
+        img.loading = "lazy";
+        img.className = "thumb";
+        img.addEventListener("click", () => openLightbox(src));
+        gallery.appendChild(img);
+      });
+    } else {
+      gallery.innerHTML = "<p>Could not load gallery images.</p>";
+    }
+
+    closeBtn.addEventListener("click", closeLightbox);
+
+    lightbox.addEventListener("click", (event) => {
+      if (event.target === lightbox) {
+        closeLightbox();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeLightbox();
+      }
+    });
+  </script>
+</body>
+</html>

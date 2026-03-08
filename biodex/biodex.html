@@ -21,6 +21,16 @@
       text-decoration: none;
     }
 
+    .centered_p {
+      max-width: 900px;
+      margin: 30px auto;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      padding-left: 20px;
+      padding-right: 20px;
+      background-color: lightblue;
+    }
+
     .two-columns {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -63,24 +73,37 @@
 
   <main>
     <h1 style="text-align: center;">Project Biodex</h1>
+
+    <div class="centered_p">
+      <p>
+        G'day. This is a project I started to make it easier to find relevant plants and animals wherever I may be. I've always thought that the most interesting species are ones that are most unique to their given ecosystems. But more often than not those sorts of endemic species are obscure and are hard to learn about. I created these biodex pages to sort species based on an "endemicy score" which is a species’ observations within a given region out of the species' total observations. I generate these pages locally one region at a time, the list will keep on increasing as I (hopefully) visit new places. I was working on a version that allows the user to dynamically generate pages for themselves but that one might be lost to time at this point. From a iNat standpoint doing it that way would put more strain on the iNaturalist API so maybe it's best to keep it as it is for now. Project Biodex is currently comprised of the biodex pages and the save taxa extension. I made this extension to keep track of specific species that I want to find and photograph. iNaturalist has a "favorite taxa" section but it's basically useless. It's just a way to show others the lifeforms you're a fan of. I wanted a way to know when a species I want to find is near over space and time (because most insects are very seasonal). The extension is used on iNat taxon pages and saves taxon information to a ndjson file on your local. This database of sorts is then queried and used to display your saved species based on where you and when you are. This is all displayed on the extension options page. In the future, I’m hoping to work on a page that can cluster your ndjson data and figure out the most efficient way to look for your saved taxa.
+      </p>
+    </div>
+
     <div class="two-columns">
       <div class="left-column">
         <h1>Ecoregion Pages</h1>
         <h2>MARINE WEST COAST FOREST</h2>
         <h3><a href="./html_pages_Coast_Range/Coast_RangeWinterBugs.html" class="ecoregiona">>> Coast Range</a></h3>
-        <h3><a href="./html_pages_Santa_Cruz_Mountains/Santa_Cruz_MountainsWinterBugs.html" class="ecoregiona">>> Santa Cruz Mountains</a></h3>
         <h3><a href="./html_pages_Puget_Lowland/Puget_LowlandWinterBugs.html" class="ecoregiona">>> Puget Lowland</a></h3>
         <h2>NORTHWESTERN FORESTED MOUNTAINS</h2>
         <h3><a href="./html_pages_North_Cascades/North_CascadesWinterBugs.html" class="ecoregiona">>> North Cascades</a></h3>
         <h3><a href="./html_pages_Cascades/CascadesWinterBugs.html" class="ecoregiona">>> Cascades</a></h3>
         <h2>NORTH AMERICAN DESERTS</h2>
         <h3><a href="./html_pages_Columbia_Plateau/Columbia_PlateauWinterBugs.html" class="ecoregiona">>> Columbia Plateau</a></h3>
+        <br><br><br>
+        <h1>Other Pages</h1>
+        <h2>CALIFORNIA</h2>
+        <h3><a href="./html_pages_Greater_Santa_Cruz_Mountains/Greater_Santa_Cruz_MountainsWinterBugs.html" class="ecoregiona">>> Greater Santa Cruz Mountains</a></h3>
+        <h3><a href="./html_pages_San_Luis_Obispo_100rad/San_Luis_Obispo_100radWinterBugs.html" class="ecoregiona">>> San Luis Obispo (radius of 100km)</a></h3>
+        <h3><a href="./html_pages_Sacramento_30rad/Sacramento_30radWinterBugs.html" class="ecoregiona">>> Sacramento (radius of 30km)</a></h3>
       </div>
 
       <div class="right-column">
         <h1>Misc</h1>
-          <h3><a href="./epa_eco.html" class="ecoregiona">Ecological Maps <<</a></h3>
+          <h3><a href="https://media1.tenor.com/m/Y9mz9NHULYAAAAAd/cool-bug-facts-i-can-see-you.gif" target="_blank" class="ecoregiona">iNat Save Taxa Extension <<</a></h3>
           <h3><a href="./ext_privacy.html" class="ecoregiona">Extension Privacy Policy <<</a></h3>
+          <h3><a href="./epa_eco.html" class="ecoregiona">Ecological Maps <<</a></h3>
       </div>
     </div>
   </main>

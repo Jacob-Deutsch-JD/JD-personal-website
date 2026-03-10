@@ -1,0 +1,136 @@
+<!DOCTYPE html><html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html>
+				<head>
+				<meta charset="UTF-8">
+				<title>Biodex Australian_Alps_Montane_Grasslands Spring Other</title>
+				<style>
+		.dropbtn {
+			background-color: azure;
+			color: black;
+			padding: 14px;
+			font-size: 22px;
+			border: none;
+			cursor: pointer;
+		}
+		.dropdown {
+			position: relative;
+			display: inline-block;
+			text-align: center;
+		}
+		.dropdown-content {
+			font-size: 22px;
+			display: none;
+			position: absolute;
+			background-color: azure;
+			width: calc(160px * 8);
+			box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+			z-index: 1;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+		.dropdown-content a {
+			color: black;
+			padding: 8px;
+			text-decoration: none;
+			display: inline-block;
+			width: 160px;
+			box-sizing: border-box;
+		}
+		.dropdown:hover .dropdown-content {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: start;
+		}
+		.dropdown:hover .dropbtn {
+			background-color: azure;
+		}
+
+
+		body {
+			background: url('../../assets/bug_rolling.gif');
+			background-repeat: repeat;
+			background-attachment: scroll;
+			background-size: 20%;
+			color: brown;
+		}
+
+		.day {
+			background: url('../../assets/cloudy_background.gif');
+			background-repeat: repeat;
+			background-attachment: scroll;
+			background-size: 20%;
+			color: black;
+		}
+
+		.night {
+			background: url('../../assets/night_background.gif');
+			background-repeat: repeat;
+			background-attachment: scroll;
+			background-size: 20%;
+			color: white;
+		}
+	</style>
+				<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+				<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2"></script>
+				</head>
+			<body><h1 style="text-align: center; margin-bottom: 0px;"><a href="../biodex.html" style="color: inherit; text-decoration: none;">Biodex </a></h1><h2 style="text-align: center; margin-bottom: 10px;"><a href="https://www.inaturalist.org/observations?place_id=203781&subview=map" target="_blank" style="color: inherit; text-decoration: none;">Australian_Alps_Montane_Grasslands Spring</a></h2><nav style="text-align: center; margin-bottom: 10px;"><div style="padding: 10px; display: inline-block"><a style="font-size: 20px; color: inherit; text-decoration: none;" href="Australian_Alps_Montane_GrasslandsWinterOther.html">Winter</a></div><div style="padding: 10px; display: inline-block"><a style="font-size: 20px; color: inherit; text-decoration: none;" href="Australian_Alps_Montane_GrasslandsSpringOther.html">Spring</a></div><div style="padding: 10px; display: inline-block"><a style="font-size: 20px; color: inherit; text-decoration: none;" href="Australian_Alps_Montane_GrasslandsSummerOther.html">Summer</a></div><div style="padding: 10px; display: inline-block"><a style="font-size: 20px; color: inherit; text-decoration: none;" href="Australian_Alps_Montane_GrasslandsFallOther.html">Fall</a></div></nav><nav style="text-align: center; margin-bottom: 25px;"><div class="dropdown"><button class="dropbtn">Other</button><div class="dropdown-content"><a href="Australian_Alps_Montane_GrasslandsSpringBugs.html">Bugs</a><a href="Australian_Alps_Montane_GrasslandsSpringPollin.html">Pollin</a><a href="Australian_Alps_Montane_GrasslandsSpringPlant_Para.html">Plant_Para</a><a href="Australian_Alps_Montane_GrasslandsSpringHerps.html">Herps</a><a href="Australian_Alps_Montane_GrasslandsSpringMammals.html">Mammals</a><a href="Australian_Alps_Montane_GrasslandsSpringBirds.html">Birds</a><a href="Australian_Alps_Montane_GrasslandsSpringLand_Slimes.html">Land_Slimes</a><a href="Australian_Alps_Montane_GrasslandsSpringFlowering.html">Flowering</a><a href="Australian_Alps_Montane_GrasslandsSpringOther_Plant.html">Other_Plant</a><a href="Australian_Alps_Montane_GrasslandsSpringDecay.html">Decay</a><a href="Australian_Alps_Montane_GrasslandsSpringShrimps.html">Shrimps</a><a href="Australian_Alps_Montane_GrasslandsSpringTidepools.html">Tidepools</a><a href="Australian_Alps_Montane_GrasslandsSpringCrabs.html">Crabs</a><a href="Australian_Alps_Montane_GrasslandsSpringFish.html">Fish</a><a href="Australian_Alps_Montane_GrasslandsSpringSeaweeds.html">Seaweeds</a><a href="Australian_Alps_Montane_GrasslandsSpringOther.html">Other</a></div></div></nav><div style="text-align: center;"><button onclick="selectSpringOtherMain()">Main</button><button onclick="selectSpringOtherCryptic()">Cryptic</button><button onclick="selectSpringOtherOther()">Other</button></div><div style="display: flex; flex-wrap: wrap;"><div id="SpringOtherMainSection" style="display: block; width: 100%;"></div><div id="SpringOtherCrypticSection" style="display: block; width: 100%;"></div><div id="SpringOtherOtherSection" style="display: block; width: 100%;"></div></div>
+				<script>
+				
+		var hour = new Date().getHours();
+		var backgroundClass = (hour >= 6 && hour < 18) ? 'day' : 'night';
+		var h1Class = (hour >= 6 && hour < 18) ? 'h1day' : 'h1night';
+		document.body.classList.add(backgroundClass);
+
+		document.querySelector('.dropbtn').addEventListener('click', function() {
+			document.querySelector('.dropdown-content').classList.toggle('show');
+		});
+
+		// Close the dropdown if the user clicks outside of it
+		window.onclick = function(event) {
+			if (!event.target.matches('.dropbtn')) {
+				var dropdowns = document.getElementsByClassName("dropdown-content");
+				for (var i = 0; i < dropdowns.length; i++) {
+					var openDropdown = dropdowns[i];
+					if (openDropdown.classList.contains('show')) {
+						openDropdown.classList.remove('show');
+					}
+				}
+			}
+		}
+	
+
+				function selectSpringOtherMain() {
+					document.getElementById('SpringOtherMainSection').style.display = 'block';
+					document.getElementById('SpringOtherCrypticSection').style.display = 'none';
+					document.getElementById('SpringOtherOtherSection').style.display = 'none';
+				}
+				function selectSpringOtherCryptic() {
+					document.getElementById('SpringOtherMainSection').style.display = 'none';
+					document.getElementById('SpringOtherCrypticSection').style.display = 'block';
+					document.getElementById('SpringOtherOtherSection').style.display = 'none';
+				}
+				function selectSpringOtherOther() {
+					document.getElementById('SpringOtherMainSection').style.display = 'none';
+					document.getElementById('SpringOtherCrypticSection').style.display = 'none';
+					document.getElementById('SpringOtherOtherSection').style.display = 'block';
+				}
+
+				function getWeather(lat, lon) {
+					var apiKey = '5a681d50320d318a92be7deca35dbc18';
+					var url = 'https://api.openweathermap.org/data/2.5/weather?lat='+lat+'&lon='+lon+'&appid='+apiKey;
+
+					fetch(url)
+						.then(response => response.json())
+						.then(data => {
+							console.log(data);
+
+						})
+						.catch(error => {
+							console.error('Error fetching weather data:', error);
+						});
+				}
+
+				window.onload = function() {
+					selectSpringOtherMain();
+				}
+				</script>
+			</body>

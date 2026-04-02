@@ -33,6 +33,7 @@
       border-radius: 8px;
       background: #222;
       cursor: pointer;
+      content-visibility: auto;
     }
 
     #lightbox {
@@ -113,15 +114,37 @@
       document.body.style.overflow = "";
     }
 
+    function loadImage(img) {
+      if (img.dataset.loaded === "true") return;
+      img.src = img.dataset.src;
+      img.dataset.loaded = "true";
+    }
+
+    const observer = new IntersectionObserver((entries, obs) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          loadImage(entry.target);
+          obs.unobserve(entry.target);
+        }
+      }
+    }, {
+      rootMargin: "300px 0px"
+    });
+
     if (window.galleryImages && Array.isArray(window.galleryImages)) {
-      window.galleryImages.forEach(src => {
+      window.galleryImages.forEach(item => {
         const img = document.createElement("img");
-        img.src = src;
+        img.dataset.src = item.thumb;
         img.alt = "";
-        img.loading = "lazy";
         img.className = "thumb";
-        img.addEventListener("click", () => openLightbox(src));
+        img.loading = "lazy";
+        img.decoding = "async";
+        img.fetchPriority = "low";
+
+        img.addEventListener("click", () => openLightbox(item.full));
+
         gallery.appendChild(img);
+        observer.observe(img);
       });
     } else {
       gallery.innerHTML = "<p>Could not load gallery images.</p>";

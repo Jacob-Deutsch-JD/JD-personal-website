@@ -1,0 +1,136 @@
+<!DOCTYPE html><html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html>
+				<head>
+				<meta charset="UTF-8">
+				<title>Biodex NZ_Other_Islands Spring Pollin</title>
+				<style>
+		.dropbtn {
+			background-color: azure;
+			color: black;
+			padding: 14px;
+			font-size: 22px;
+			border: none;
+			cursor: pointer;
+		}
+		.dropdown {
+			position: relative;
+			display: inline-block;
+			text-align: center;
+		}
+		.dropdown-content {
+			font-size: 22px;
+			display: none;
+			position: absolute;
+			background-color: azure;
+			width: calc(160px * 8);
+			box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+			z-index: 1;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+		.dropdown-content a {
+			color: black;
+			padding: 8px;
+			text-decoration: none;
+			display: inline-block;
+			width: 160px;
+			box-sizing: border-box;
+		}
+		.dropdown:hover .dropdown-content {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: start;
+		}
+		.dropdown:hover .dropbtn {
+			background-color: azure;
+		}
+
+
+		body {
+			background: url('../../assets/bug_rolling.gif');
+			background-repeat: repeat;
+			background-attachment: scroll;
+			background-size: 20%;
+			color: brown;
+		}
+
+		.day {
+			background: url('../../assets/cloudy_background.gif');
+			background-repeat: repeat;
+			background-attachment: scroll;
+			background-size: 20%;
+			color: black;
+		}
+
+		.night {
+			background: url('../../assets/night_background.gif');
+			background-repeat: repeat;
+			background-attachment: scroll;
+			background-size: 20%;
+			color: white;
+		}
+	</style>
+				<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+				<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2"></script>
+				</head>
+			<body><h1 style="text-align: center; margin-bottom: 0px;"><a href="../biodex.html" style="color: inherit; text-decoration: none;">Biodex </a></h1><h2 style="text-align: center; margin-bottom: 10px;"><a href="https://www.inaturalist.org/observations?place_id=40496,40468,40498,40506,101788,186633&subview=map" target="_blank" style="color: inherit; text-decoration: none;">NZ_Other_Islands Spring</a></h2><nav style="text-align: center; margin-bottom: 10px;"><div style="padding: 10px; display: inline-block"><a style="font-size: 20px; color: inherit; text-decoration: none;" href="NZ_Other_IslandsWinterPollin.html">Winter</a></div><div style="padding: 10px; display: inline-block"><a style="font-size: 20px; color: inherit; text-decoration: none;" href="NZ_Other_IslandsSpringPollin.html">Spring</a></div><div style="padding: 10px; display: inline-block"><a style="font-size: 20px; color: inherit; text-decoration: none;" href="NZ_Other_IslandsSummerPollin.html">Summer</a></div><div style="padding: 10px; display: inline-block"><a style="font-size: 20px; color: inherit; text-decoration: none;" href="NZ_Other_IslandsFallPollin.html">Fall</a></div></nav><nav style="text-align: center; margin-bottom: 25px;"><div class="dropdown"><button class="dropbtn">Pollin</button><div class="dropdown-content"><a href="NZ_Other_IslandsSpringBugs.html">Bugs</a><a href="NZ_Other_IslandsSpringPollin.html">Pollin</a><a href="NZ_Other_IslandsSpringPlant_Para.html">Plant_Para</a><a href="NZ_Other_IslandsSpringHerps.html">Herps</a><a href="NZ_Other_IslandsSpringMammals.html">Mammals</a><a href="NZ_Other_IslandsSpringBirds.html">Birds</a><a href="NZ_Other_IslandsSpringLand_Slimes.html">Land_Slimes</a><a href="NZ_Other_IslandsSpringFlowering.html">Flowering</a><a href="NZ_Other_IslandsSpringOther_Plant.html">Other_Plant</a><a href="NZ_Other_IslandsSpringDecay.html">Decay</a><a href="NZ_Other_IslandsSpringShrimps.html">Shrimps</a><a href="NZ_Other_IslandsSpringTidepools.html">Tidepools</a><a href="NZ_Other_IslandsSpringCrabs.html">Crabs</a><a href="NZ_Other_IslandsSpringFish.html">Fish</a><a href="NZ_Other_IslandsSpringSeaweeds.html">Seaweeds</a><a href="NZ_Other_IslandsSpringOther.html">Other</a></div></div></nav><div style="text-align: center;"><button onclick="selectSpringPollinMain()">Main</button><button onclick="selectSpringPollinCryptic()">Cryptic</button><button onclick="selectSpringPollinOther()">Other</button></div><div style="display: flex; flex-wrap: wrap;"><div id="SpringPollinMainSection" style="display: block; width: 100%;"></div><div id="SpringPollinCrypticSection" style="display: block; width: 100%;"></div><div id="SpringPollinOtherSection" style="display: block; width: 100%;"></div></div>
+				<script>
+				
+		var hour = new Date().getHours();
+		var backgroundClass = (hour >= 6 && hour < 18) ? 'day' : 'night';
+		var h1Class = (hour >= 6 && hour < 18) ? 'h1day' : 'h1night';
+		document.body.classList.add(backgroundClass);
+
+		document.querySelector('.dropbtn').addEventListener('click', function() {
+			document.querySelector('.dropdown-content').classList.toggle('show');
+		});
+
+		// Close the dropdown if the user clicks outside of it
+		window.onclick = function(event) {
+			if (!event.target.matches('.dropbtn')) {
+				var dropdowns = document.getElementsByClassName("dropdown-content");
+				for (var i = 0; i < dropdowns.length; i++) {
+					var openDropdown = dropdowns[i];
+					if (openDropdown.classList.contains('show')) {
+						openDropdown.classList.remove('show');
+					}
+				}
+			}
+		}
+	
+
+				function selectSpringPollinMain() {
+					document.getElementById('SpringPollinMainSection').style.display = 'block';
+					document.getElementById('SpringPollinCrypticSection').style.display = 'none';
+					document.getElementById('SpringPollinOtherSection').style.display = 'none';
+				}
+				function selectSpringPollinCryptic() {
+					document.getElementById('SpringPollinMainSection').style.display = 'none';
+					document.getElementById('SpringPollinCrypticSection').style.display = 'block';
+					document.getElementById('SpringPollinOtherSection').style.display = 'none';
+				}
+				function selectSpringPollinOther() {
+					document.getElementById('SpringPollinMainSection').style.display = 'none';
+					document.getElementById('SpringPollinCrypticSection').style.display = 'none';
+					document.getElementById('SpringPollinOtherSection').style.display = 'block';
+				}
+
+				function getWeather(lat, lon) {
+					var apiKey = '5a681d50320d318a92be7deca35dbc18';
+					var url = 'https://api.openweathermap.org/data/2.5/weather?lat='+lat+'&lon='+lon+'&appid='+apiKey;
+
+					fetch(url)
+						.then(response => response.json())
+						.then(data => {
+							console.log(data);
+
+						})
+						.catch(error => {
+							console.error('Error fetching weather data:', error);
+						});
+				}
+
+				window.onload = function() {
+					selectSpringPollinMain();
+				}
+				</script>
+			</body>

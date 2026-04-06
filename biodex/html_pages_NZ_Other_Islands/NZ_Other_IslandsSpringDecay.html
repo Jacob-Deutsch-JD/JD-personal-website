@@ -1,0 +1,1860 @@
+<!DOCTYPE html><html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html>
+				<head>
+				<meta charset="UTF-8">
+				<title>Biodex NZ_Other_Islands Spring Decay</title>
+				<style>
+		.dropbtn {
+			background-color: azure;
+			color: black;
+			padding: 14px;
+			font-size: 22px;
+			border: none;
+			cursor: pointer;
+		}
+		.dropdown {
+			position: relative;
+			display: inline-block;
+			text-align: center;
+		}
+		.dropdown-content {
+			font-size: 22px;
+			display: none;
+			position: absolute;
+			background-color: azure;
+			width: calc(160px * 8);
+			box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+			z-index: 1;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+		.dropdown-content a {
+			color: black;
+			padding: 8px;
+			text-decoration: none;
+			display: inline-block;
+			width: 160px;
+			box-sizing: border-box;
+		}
+		.dropdown:hover .dropdown-content {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: start;
+		}
+		.dropdown:hover .dropbtn {
+			background-color: azure;
+		}
+
+
+		body {
+			background: url('../../assets/bug_rolling.gif');
+			background-repeat: repeat;
+			background-attachment: scroll;
+			background-size: 20%;
+			color: brown;
+		}
+
+		.day {
+			background: url('../../assets/cloudy_background.gif');
+			background-repeat: repeat;
+			background-attachment: scroll;
+			background-size: 20%;
+			color: black;
+		}
+
+		.night {
+			background: url('../../assets/night_background.gif');
+			background-repeat: repeat;
+			background-attachment: scroll;
+			background-size: 20%;
+			color: white;
+		}
+	</style>
+				<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+				<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2"></script>
+				</head>
+			<body><h1 style="text-align: center; margin-bottom: 0px;"><a href="../biodex.html" style="color: inherit; text-decoration: none;">Biodex </a></h1><h2 style="text-align: center; margin-bottom: 10px;"><a href="https://www.inaturalist.org/observations?place_id=40496,40468,40498,40506,101788,186633&subview=map" target="_blank" style="color: inherit; text-decoration: none;">NZ_Other_Islands Spring</a></h2><nav style="text-align: center; margin-bottom: 10px;"><div style="padding: 10px; display: inline-block"><a style="font-size: 20px; color: inherit; text-decoration: none;" href="NZ_Other_IslandsWinterDecay.html">Winter</a></div><div style="padding: 10px; display: inline-block"><a style="font-size: 20px; color: inherit; text-decoration: none;" href="NZ_Other_IslandsSpringDecay.html">Spring</a></div><div style="padding: 10px; display: inline-block"><a style="font-size: 20px; color: inherit; text-decoration: none;" href="NZ_Other_IslandsSummerDecay.html">Summer</a></div><div style="padding: 10px; display: inline-block"><a style="font-size: 20px; color: inherit; text-decoration: none;" href="NZ_Other_IslandsFallDecay.html">Fall</a></div></nav><nav style="text-align: center; margin-bottom: 25px;"><div class="dropdown"><button class="dropbtn">Decay</button><div class="dropdown-content"><a href="NZ_Other_IslandsSpringBugs.html">Bugs</a><a href="NZ_Other_IslandsSpringPollin.html">Pollin</a><a href="NZ_Other_IslandsSpringPlant_Para.html">Plant_Para</a><a href="NZ_Other_IslandsSpringHerps.html">Herps</a><a href="NZ_Other_IslandsSpringMammals.html">Mammals</a><a href="NZ_Other_IslandsSpringBirds.html">Birds</a><a href="NZ_Other_IslandsSpringLand_Slimes.html">Land_Slimes</a><a href="NZ_Other_IslandsSpringFlowering.html">Flowering</a><a href="NZ_Other_IslandsSpringOther_Plant.html">Other_Plant</a><a href="NZ_Other_IslandsSpringDecay.html">Decay</a><a href="NZ_Other_IslandsSpringShrimps.html">Shrimps</a><a href="NZ_Other_IslandsSpringTidepools.html">Tidepools</a><a href="NZ_Other_IslandsSpringCrabs.html">Crabs</a><a href="NZ_Other_IslandsSpringFish.html">Fish</a><a href="NZ_Other_IslandsSpringSeaweeds.html">Seaweeds</a><a href="NZ_Other_IslandsSpringOther.html">Other</a></div></div></nav><div style="text-align: center;"><button onclick="selectSpringDecayMain()">Main</button><button onclick="selectSpringDecayCryptic()">Cryptic</button><button onclick="selectSpringDecayOther()">Other</button></div><div style="display: flex; flex-wrap: wrap;"><div id="SpringDecayMainSection" style="display: block; width: 100%;"></div><div id="SpringDecayCrypticSection" style="display: block; width: 100%;">
+						<div style="width: 20%; padding: 5px; box-sizing: border-box; float: left; color: black">
+							<div style="border: 5px solid darkgreen; padding: 5px; margin-bottom: 10px; background-color: #ddd;">
+					
+						<div style="text-align: center; margin-bottom: 5px; height: 50px;">
+							<h2 style="font-size: 22px; margin-top: 0; margin-bottom: 0;"><a href="https://www.inaturalist.org/taxa/1455567" target="_blank" style="color: inherit; text-decoration: none;">Clavulina zealandica</a></h2>
+						</div>
+					
+								<div style="text-align: center; width: 100%; display: flex; align-items: center; height: 125px;">
+									<div style="width: 48%; display: inline-block;">
+										<div style="width: 100%; padding-bottom: 100%; position: relative; display: inline-block;">
+											<a href="https://www.inaturalist.org/observations?taxon_id=1455567&subview=map" target="_blank" style="color: inherit; text-decoration: none;"><img src="https://inaturalist-open-data.s3.amazonaws.com/photos/1668535/medium.jpg" alt="Icon" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"></a>
+										</div>
+									</div>
+									<div style="width: 48%; font-size: 25px;">
+										%- 4 -%<br>
+										R- 1 -R<br>
+										G- 28 -G<br>
+										
+									</div>
+								</div>
+								<div style="text-align: center; width: 100%; display: flex; justify-content: space-between; height: 100px;">
+									<div style="width: 100%; display: inline-block; background-color: #ddd;">
+										<canvas id="chart1095207" style="display: inline-block; box-sizing: border-box; height: 100%; width: 100%; background-color: #ddd;"></canvas>
+									</div>
+									
+								</div>
+								<div style="text-align: center; margin-top: 5px;">
+									<h2 style="font-size: 25px; margin-top: 0; margin-bottom: 0;"><div style="text-align:center;font-size:20px;color:white;background-color:darkgrey;height:22px;line-height:22px;white-space:nowrap;">ᕕ(⌐■_■)ᕗ ♪♬</div></h2>
+								</div>
+							</div>
+							
+					<script>
+
+					const dataPoints1095207 = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0];
+
+					const data1095207 = {
+						labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+						datasets: [{
+							label: 'Observations',
+							data: dataPoints1095207,
+							fill: true,
+							borderColor: 'green',
+							backgroundColor: 'rgba(75, 192, 192, 0.2)',
+							pointBackgroundColor: 'green',
+							pointBorderColor: '#fff',
+							pointHoverBackgroundColor: '#fff',
+							pointHoverBorderColor: 'green'
+						}]
+					};
+
+					const config1095207 = {
+						type: 'line',
+						data: data1095207,
+						options: {
+							responsive: false,
+							maintainAspectRatio: false,
+							scales: {
+							x: {
+								ticks: {
+									display: false,
+									autoSkip: false,
+									font: {
+										size: 10
+									},
+									maxRotation: 90,
+									minRotation: 90
+								}
+							},
+								y: {
+									beginAtZero: true,
+									ticks: {
+										display: false,
+									}
+								}
+							},
+							plugins: {
+								legend: {
+									display: false
+								},
+								annotation: {
+									annotations: {
+										firstQuarter: {
+											type: 'box',
+											xMin: -0.5,
+											xMax: 2.5,
+											backgroundColor: 'rgba(0, 0, 255, 0.5)',
+											borderWidth: 0,
+										},
+										secondQuarter: {
+											type: 'box',
+											xMin: 2.5,
+											xMax: 5.5,
+											backgroundColor: 'rgba(0, 255, 170, 0.5)',
+											borderWidth: 0,
+										},
+										thirdQuarter: {
+											type: 'box',
+											xMin: 5.5,
+											xMax: 8.5,
+											backgroundColor: 'rgba(255, 255, 0, 0.5)',
+											borderWidth: 0,
+										},
+										fourthQuarter: {
+											type: 'box',
+											xMin: 8.5,
+											xMax: 11.5,
+											backgroundColor: 'rgba(255, 85, 0, 0.5)',
+											borderWidth: 0,
+										}
+									}
+								}
+							}
+						}
+					};
+
+					const myChart1095207 = new Chart(
+						document.getElementById('chart1095207'),
+						config1095207
+					);
+					</script>
+					
+						</div>
+					
+						<div style="width: 20%; padding: 5px; box-sizing: border-box; float: left; color: black">
+							<div style="border: 5px solid darkgreen; padding: 5px; margin-bottom: 10px; background-color: #ddd;">
+					
+						<div style="text-align: center; margin-bottom: 5px; height: 50px;">
+							<h2 style="font-size: 22px; margin-top: 0; margin-bottom: 0;"><a href="https://www.inaturalist.org/taxa/179163" target="_blank" style="color: inherit; text-decoration: none;">Geastrum velutinum</a></h2>
+						</div>
+					
+								<div style="text-align: center; width: 100%; display: flex; align-items: center; height: 125px;">
+									<div style="width: 48%; display: inline-block;">
+										<div style="width: 100%; padding-bottom: 100%; position: relative; display: inline-block;">
+											<a href="https://www.inaturalist.org/observations?taxon_id=179163&subview=map" target="_blank" style="color: inherit; text-decoration: none;"><img src="https://inaturalist-open-data.s3.amazonaws.com/photos/2450906/medium.jpg" alt="Icon" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"></a>
+										</div>
+									</div>
+									<div style="width: 48%; font-size: 25px;">
+										%- 5 -%<br>
+										R- 1 -R<br>
+										G- 19 -G<br>
+										
+									</div>
+								</div>
+								<div style="text-align: center; width: 100%; display: flex; justify-content: space-between; height: 100px;">
+									<div style="width: 100%; display: inline-block; background-color: #ddd;">
+										<canvas id="chart1109636" style="display: inline-block; box-sizing: border-box; height: 100%; width: 100%; background-color: #ddd;"></canvas>
+									</div>
+									
+								</div>
+								<div style="text-align: center; margin-top: 5px;">
+									<h2 style="font-size: 25px; margin-top: 0; margin-bottom: 0;"><div style="text-align:center;font-size:20px;color:white;background-color:darkgrey;height:22px;line-height:22px;white-space:nowrap;">ᕕ(⌐■_■)ᕗ ♪♬</div></h2>
+								</div>
+							</div>
+							
+					<script>
+
+					const dataPoints1109636 = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0];
+
+					const data1109636 = {
+						labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+						datasets: [{
+							label: 'Observations',
+							data: dataPoints1109636,
+							fill: true,
+							borderColor: 'green',
+							backgroundColor: 'rgba(75, 192, 192, 0.2)',
+							pointBackgroundColor: 'green',
+							pointBorderColor: '#fff',
+							pointHoverBackgroundColor: '#fff',
+							pointHoverBorderColor: 'green'
+						}]
+					};
+
+					const config1109636 = {
+						type: 'line',
+						data: data1109636,
+						options: {
+							responsive: false,
+							maintainAspectRatio: false,
+							scales: {
+							x: {
+								ticks: {
+									display: false,
+									autoSkip: false,
+									font: {
+										size: 10
+									},
+									maxRotation: 90,
+									minRotation: 90
+								}
+							},
+								y: {
+									beginAtZero: true,
+									ticks: {
+										display: false,
+									}
+								}
+							},
+							plugins: {
+								legend: {
+									display: false
+								},
+								annotation: {
+									annotations: {
+										firstQuarter: {
+											type: 'box',
+											xMin: -0.5,
+											xMax: 2.5,
+											backgroundColor: 'rgba(0, 0, 255, 0.5)',
+											borderWidth: 0,
+										},
+										secondQuarter: {
+											type: 'box',
+											xMin: 2.5,
+											xMax: 5.5,
+											backgroundColor: 'rgba(0, 255, 170, 0.5)',
+											borderWidth: 0,
+										},
+										thirdQuarter: {
+											type: 'box',
+											xMin: 5.5,
+											xMax: 8.5,
+											backgroundColor: 'rgba(255, 255, 0, 0.5)',
+											borderWidth: 0,
+										},
+										fourthQuarter: {
+											type: 'box',
+											xMin: 8.5,
+											xMax: 11.5,
+											backgroundColor: 'rgba(255, 85, 0, 0.5)',
+											borderWidth: 0,
+										}
+									}
+								}
+							}
+						}
+					};
+
+					const myChart1109636 = new Chart(
+						document.getElementById('chart1109636'),
+						config1109636
+					);
+					</script>
+					
+						</div>
+					
+						<div style="width: 20%; padding: 5px; box-sizing: border-box; float: left; color: black">
+							<div style="border: 5px solid darkgreen; padding: 5px; margin-bottom: 10px; background-color: #ddd;">
+					
+						<div style="text-align: center; margin-bottom: 5px; height: 50px;">
+							<h2 style="font-size: 22px; margin-top: 0; margin-bottom: 0;"><a href="https://www.inaturalist.org/taxa/353180" target="_blank" style="color: inherit; text-decoration: none;">Dictyochaeta</a></h2>
+						</div>
+					
+								<div style="text-align: center; width: 100%; display: flex; align-items: center; height: 125px;">
+									<div style="width: 48%; display: inline-block;">
+										<div style="width: 100%; padding-bottom: 100%; position: relative; display: inline-block;">
+											<a href="https://www.inaturalist.org/observations?taxon_id=353180&subview=map" target="_blank" style="color: inherit; text-decoration: none;"><img src="https://inaturalist-open-data.s3.amazonaws.com/photos/1760303/medium.jpg" alt="Icon" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"></a>
+										</div>
+									</div>
+									<div style="width: 48%; font-size: 25px;">
+										%- 8 -%<br>
+										R- 1 -R<br>
+										G- 13 -G<br>
+										
+									</div>
+								</div>
+								<div style="text-align: center; width: 100%; display: flex; justify-content: space-between; height: 100px;">
+									<div style="width: 100%; display: inline-block; background-color: #ddd;">
+										<canvas id="chart1118547" style="display: inline-block; box-sizing: border-box; height: 100%; width: 100%; background-color: #ddd;"></canvas>
+									</div>
+									
+								</div>
+								<div style="text-align: center; margin-top: 5px;">
+									<h2 style="font-size: 25px; margin-top: 0; margin-bottom: 0;"><div style="text-align:center;font-size:20px;color:white;background-color:darkgrey;height:22px;line-height:22px;white-space:nowrap;">ᕕ(⌐■_■)ᕗ ♪♬</div></h2>
+								</div>
+							</div>
+							
+					<script>
+
+					const dataPoints1118547 = [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+
+					const data1118547 = {
+						labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+						datasets: [{
+							label: 'Observations',
+							data: dataPoints1118547,
+							fill: true,
+							borderColor: 'green',
+							backgroundColor: 'rgba(75, 192, 192, 0.2)',
+							pointBackgroundColor: 'green',
+							pointBorderColor: '#fff',
+							pointHoverBackgroundColor: '#fff',
+							pointHoverBorderColor: 'green'
+						}]
+					};
+
+					const config1118547 = {
+						type: 'line',
+						data: data1118547,
+						options: {
+							responsive: false,
+							maintainAspectRatio: false,
+							scales: {
+							x: {
+								ticks: {
+									display: false,
+									autoSkip: false,
+									font: {
+										size: 10
+									},
+									maxRotation: 90,
+									minRotation: 90
+								}
+							},
+								y: {
+									beginAtZero: true,
+									ticks: {
+										display: false,
+									}
+								}
+							},
+							plugins: {
+								legend: {
+									display: false
+								},
+								annotation: {
+									annotations: {
+										firstQuarter: {
+											type: 'box',
+											xMin: -0.5,
+											xMax: 2.5,
+											backgroundColor: 'rgba(0, 0, 255, 0.5)',
+											borderWidth: 0,
+										},
+										secondQuarter: {
+											type: 'box',
+											xMin: 2.5,
+											xMax: 5.5,
+											backgroundColor: 'rgba(0, 255, 170, 0.5)',
+											borderWidth: 0,
+										},
+										thirdQuarter: {
+											type: 'box',
+											xMin: 5.5,
+											xMax: 8.5,
+											backgroundColor: 'rgba(255, 255, 0, 0.5)',
+											borderWidth: 0,
+										},
+										fourthQuarter: {
+											type: 'box',
+											xMin: 8.5,
+											xMax: 11.5,
+											backgroundColor: 'rgba(255, 85, 0, 0.5)',
+											borderWidth: 0,
+										}
+									}
+								}
+							}
+						}
+					};
+
+					const myChart1118547 = new Chart(
+						document.getElementById('chart1118547'),
+						config1118547
+					);
+					</script>
+					
+						</div>
+					
+						<div style="width: 20%; padding: 5px; box-sizing: border-box; float: left; color: black">
+							<div style="border: 5px solid darkgreen; padding: 5px; margin-bottom: 10px; background-color: #ddd;">
+					
+						<div style="text-align: center; margin-bottom: 5px; height: 50px;">
+							<h2 style="font-size: 22px; margin-top: 0; margin-bottom: 0;"><a href="https://www.inaturalist.org/taxa/506114" target="_blank" style="color: inherit; text-decoration: none;">Radiate Pebble Lich...</a></h2>
+							<h2 style="font-size: 20px; margin-top: 0; margin-bottom: 10px;"><a href="https://www.inaturalist.org/taxa/506114" target="_blank" style="color: inherit; text-decoration: none;">(Trapelia glebulosa)</a></h2>
+						</div>
+					
+								<div style="text-align: center; width: 100%; display: flex; align-items: center; height: 125px;">
+									<div style="width: 48%; display: inline-block;">
+										<div style="width: 100%; padding-bottom: 100%; position: relative; display: inline-block;">
+											<a href="https://www.inaturalist.org/observations?taxon_id=506114&subview=map" target="_blank" style="color: inherit; text-decoration: none;"><img src="https://inaturalist-open-data.s3.amazonaws.com/photos/58070924/medium.jpeg" alt="Icon" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"></a>
+										</div>
+									</div>
+									<div style="width: 48%; font-size: 25px;">
+										%- 2 -%<br>
+										R- 1 -R<br>
+										G- 62 -G<br>
+										
+									</div>
+								</div>
+								<div style="text-align: center; width: 100%; display: flex; justify-content: space-between; height: 100px;">
+									<div style="width: 100%; display: inline-block; background-color: #ddd;">
+										<canvas id="chart1131296" style="display: inline-block; box-sizing: border-box; height: 100%; width: 100%; background-color: #ddd;"></canvas>
+									</div>
+									
+								</div>
+								<div style="text-align: center; margin-top: 5px;">
+									<h2 style="font-size: 25px; margin-top: 0; margin-bottom: 0;"><div style="text-align:center;font-size:20px;color:white;background-color:darkgrey;height:22px;line-height:22px;white-space:nowrap;">ᕕ(⌐■_■)ᕗ ♪♬</div></h2>
+								</div>
+							</div>
+							
+					<script>
+
+					const dataPoints1131296 = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0];
+
+					const data1131296 = {
+						labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+						datasets: [{
+							label: 'Observations',
+							data: dataPoints1131296,
+							fill: true,
+							borderColor: 'green',
+							backgroundColor: 'rgba(75, 192, 192, 0.2)',
+							pointBackgroundColor: 'green',
+							pointBorderColor: '#fff',
+							pointHoverBackgroundColor: '#fff',
+							pointHoverBorderColor: 'green'
+						}]
+					};
+
+					const config1131296 = {
+						type: 'line',
+						data: data1131296,
+						options: {
+							responsive: false,
+							maintainAspectRatio: false,
+							scales: {
+							x: {
+								ticks: {
+									display: false,
+									autoSkip: false,
+									font: {
+										size: 10
+									},
+									maxRotation: 90,
+									minRotation: 90
+								}
+							},
+								y: {
+									beginAtZero: true,
+									ticks: {
+										display: false,
+									}
+								}
+							},
+							plugins: {
+								legend: {
+									display: false
+								},
+								annotation: {
+									annotations: {
+										firstQuarter: {
+											type: 'box',
+											xMin: -0.5,
+											xMax: 2.5,
+											backgroundColor: 'rgba(0, 0, 255, 0.5)',
+											borderWidth: 0,
+										},
+										secondQuarter: {
+											type: 'box',
+											xMin: 2.5,
+											xMax: 5.5,
+											backgroundColor: 'rgba(0, 255, 170, 0.5)',
+											borderWidth: 0,
+										},
+										thirdQuarter: {
+											type: 'box',
+											xMin: 5.5,
+											xMax: 8.5,
+											backgroundColor: 'rgba(255, 255, 0, 0.5)',
+											borderWidth: 0,
+										},
+										fourthQuarter: {
+											type: 'box',
+											xMin: 8.5,
+											xMax: 11.5,
+											backgroundColor: 'rgba(255, 85, 0, 0.5)',
+											borderWidth: 0,
+										}
+									}
+								}
+							}
+						}
+					};
+
+					const myChart1131296 = new Chart(
+						document.getElementById('chart1131296'),
+						config1131296
+					);
+					</script>
+					
+						</div>
+					</div><div id="SpringDecayOtherSection" style="display: block; width: 100%;">
+						<div style="width: 20%; padding: 5px; box-sizing: border-box; float: left; color: black">
+							<div style="border: 5px solid darkgreen; padding: 5px; margin-bottom: 10px; background-color: #71f797;">
+					
+						<div style="text-align: center; margin-bottom: 5px; height: 50px;">
+							<h2 style="font-size: 22px; margin-top: 0; margin-bottom: 0;"><a href="https://www.inaturalist.org/taxa/526490" target="_blank" style="color: inherit; text-decoration: none;">Buellia insularicola</a></h2>
+						</div>
+					
+								<div style="text-align: center; width: 100%; display: flex; align-items: center; height: 125px;">
+									<div style="width: 48%; display: inline-block;">
+										<div style="width: 100%; padding-bottom: 100%; position: relative; display: inline-block;">
+											<a href="https://www.inaturalist.org/observations?taxon_id=526490&subview=map" target="_blank" style="color: inherit; text-decoration: none;"><img src="https://inaturalist-open-data.s3.amazonaws.com/photos/4774272/medium.jpg" alt="Icon" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"></a>
+										</div>
+									</div>
+									<div style="width: 48%; font-size: 25px;">
+										%- 100 -%<br>
+										R- 1 -R<br>
+										G- 1 -G<br>
+										
+									</div>
+								</div>
+								<div style="text-align: center; width: 100%; display: flex; justify-content: space-between; height: 100px;">
+									<div style="width: 100%; display: inline-block; background-color: #ddd;">
+										<canvas id="chart1133373" style="display: inline-block; box-sizing: border-box; height: 100%; width: 100%; background-color: #ddd;"></canvas>
+									</div>
+									
+								</div>
+								<div style="text-align: center; margin-top: 5px;">
+									<h2 style="font-size: 25px; margin-top: 0; margin-bottom: 0;"><div style="text-align:center;font-size:20px;color:white;background-color:darkgrey;height:22px;line-height:22px;white-space:nowrap;">ᕕ(⌐■_■)ᕗ ♪♬</div></h2>
+								</div>
+							</div>
+							
+					<script>
+
+					const dataPoints1133373 = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0];
+
+					const data1133373 = {
+						labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+						datasets: [{
+							label: 'Observations',
+							data: dataPoints1133373,
+							fill: true,
+							borderColor: 'green',
+							backgroundColor: 'rgba(75, 192, 192, 0.2)',
+							pointBackgroundColor: 'green',
+							pointBorderColor: '#fff',
+							pointHoverBackgroundColor: '#fff',
+							pointHoverBorderColor: 'green'
+						}]
+					};
+
+					const config1133373 = {
+						type: 'line',
+						data: data1133373,
+						options: {
+							responsive: false,
+							maintainAspectRatio: false,
+							scales: {
+							x: {
+								ticks: {
+									display: false,
+									autoSkip: false,
+									font: {
+										size: 10
+									},
+									maxRotation: 90,
+									minRotation: 90
+								}
+							},
+								y: {
+									beginAtZero: true,
+									ticks: {
+										display: false,
+									}
+								}
+							},
+							plugins: {
+								legend: {
+									display: false
+								},
+								annotation: {
+									annotations: {
+										firstQuarter: {
+											type: 'box',
+											xMin: -0.5,
+											xMax: 2.5,
+											backgroundColor: 'rgba(0, 0, 255, 0.5)',
+											borderWidth: 0,
+										},
+										secondQuarter: {
+											type: 'box',
+											xMin: 2.5,
+											xMax: 5.5,
+											backgroundColor: 'rgba(0, 255, 170, 0.5)',
+											borderWidth: 0,
+										},
+										thirdQuarter: {
+											type: 'box',
+											xMin: 5.5,
+											xMax: 8.5,
+											backgroundColor: 'rgba(255, 255, 0, 0.5)',
+											borderWidth: 0,
+										},
+										fourthQuarter: {
+											type: 'box',
+											xMin: 8.5,
+											xMax: 11.5,
+											backgroundColor: 'rgba(255, 85, 0, 0.5)',
+											borderWidth: 0,
+										}
+									}
+								}
+							}
+						}
+					};
+
+					const myChart1133373 = new Chart(
+						document.getElementById('chart1133373'),
+						config1133373
+					);
+					</script>
+					
+						</div>
+					
+						<div style="width: 20%; padding: 5px; box-sizing: border-box; float: left; color: black">
+							<div style="border: 5px solid darkgreen; padding: 5px; margin-bottom: 10px; background-color: #71f797;">
+					
+						<div style="text-align: center; margin-bottom: 5px; height: 50px;">
+							<h2 style="font-size: 22px; margin-top: 0; margin-bottom: 0;"><a href="https://www.inaturalist.org/taxa/467610" target="_blank" style="color: inherit; text-decoration: none;">Ramalina microspora</a></h2>
+						</div>
+					
+								<div style="text-align: center; width: 100%; display: flex; align-items: center; height: 125px;">
+									<div style="width: 48%; display: inline-block;">
+										<div style="width: 100%; padding-bottom: 100%; position: relative; display: inline-block;">
+											<a href="https://www.inaturalist.org/observations?taxon_id=467610&subview=map" target="_blank" style="color: inherit; text-decoration: none;"><img src="https://inaturalist-open-data.s3.amazonaws.com/photos/1819450/medium.jpg" alt="Icon" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"></a>
+										</div>
+									</div>
+									<div style="width: 48%; font-size: 25px;">
+										%- 100 -%<br>
+										R- 1 -R<br>
+										G- 1 -G<br>
+										
+									</div>
+								</div>
+								<div style="text-align: center; width: 100%; display: flex; justify-content: space-between; height: 100px;">
+									<div style="width: 100%; display: inline-block; background-color: #ddd;">
+										<canvas id="chart1138151" style="display: inline-block; box-sizing: border-box; height: 100%; width: 100%; background-color: #ddd;"></canvas>
+									</div>
+									
+								</div>
+								<div style="text-align: center; margin-top: 5px;">
+									<h2 style="font-size: 25px; margin-top: 0; margin-bottom: 0;"><div style="text-align:center;font-size:20px;color:white;background-color:darkgrey;height:22px;line-height:22px;white-space:nowrap;">ᕕ(⌐■_■)ᕗ ♪♬</div></h2>
+								</div>
+							</div>
+							
+					<script>
+
+					const dataPoints1138151 = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0];
+
+					const data1138151 = {
+						labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+						datasets: [{
+							label: 'Observations',
+							data: dataPoints1138151,
+							fill: true,
+							borderColor: 'green',
+							backgroundColor: 'rgba(75, 192, 192, 0.2)',
+							pointBackgroundColor: 'green',
+							pointBorderColor: '#fff',
+							pointHoverBackgroundColor: '#fff',
+							pointHoverBorderColor: 'green'
+						}]
+					};
+
+					const config1138151 = {
+						type: 'line',
+						data: data1138151,
+						options: {
+							responsive: false,
+							maintainAspectRatio: false,
+							scales: {
+							x: {
+								ticks: {
+									display: false,
+									autoSkip: false,
+									font: {
+										size: 10
+									},
+									maxRotation: 90,
+									minRotation: 90
+								}
+							},
+								y: {
+									beginAtZero: true,
+									ticks: {
+										display: false,
+									}
+								}
+							},
+							plugins: {
+								legend: {
+									display: false
+								},
+								annotation: {
+									annotations: {
+										firstQuarter: {
+											type: 'box',
+											xMin: -0.5,
+											xMax: 2.5,
+											backgroundColor: 'rgba(0, 0, 255, 0.5)',
+											borderWidth: 0,
+										},
+										secondQuarter: {
+											type: 'box',
+											xMin: 2.5,
+											xMax: 5.5,
+											backgroundColor: 'rgba(0, 255, 170, 0.5)',
+											borderWidth: 0,
+										},
+										thirdQuarter: {
+											type: 'box',
+											xMin: 5.5,
+											xMax: 8.5,
+											backgroundColor: 'rgba(255, 255, 0, 0.5)',
+											borderWidth: 0,
+										},
+										fourthQuarter: {
+											type: 'box',
+											xMin: 8.5,
+											xMax: 11.5,
+											backgroundColor: 'rgba(255, 85, 0, 0.5)',
+											borderWidth: 0,
+										}
+									}
+								}
+							}
+						}
+					};
+
+					const myChart1138151 = new Chart(
+						document.getElementById('chart1138151'),
+						config1138151
+					);
+					</script>
+					
+						</div>
+					
+						<div style="width: 20%; padding: 5px; box-sizing: border-box; float: left; color: black">
+							<div style="border: 5px solid darkgreen; padding: 5px; margin-bottom: 10px; background-color: #71f797;">
+					
+						<div style="text-align: center; margin-bottom: 5px; height: 50px;">
+							<h2 style="font-size: 22px; margin-top: 0; margin-bottom: 0;"><a href="https://www.inaturalist.org/taxa/451211" target="_blank" style="color: inherit; text-decoration: none;">Pseudocyphellaria semilanata</a></h2>
+						</div>
+					
+								<div style="text-align: center; width: 100%; display: flex; align-items: center; height: 125px;">
+									<div style="width: 48%; display: inline-block;">
+										<div style="width: 100%; padding-bottom: 100%; position: relative; display: inline-block;">
+											<a href="https://www.inaturalist.org/observations?taxon_id=451211&subview=map" target="_blank" style="color: inherit; text-decoration: none;"><img src="https://inaturalist-open-data.s3.amazonaws.com/photos/1672399/medium.jpg" alt="Icon" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"></a>
+										</div>
+									</div>
+									<div style="width: 48%; font-size: 25px;">
+										%- 100 -%<br>
+										R- 1 -R<br>
+										G- 1 -G<br>
+										
+									</div>
+								</div>
+								<div style="text-align: center; width: 100%; display: flex; justify-content: space-between; height: 100px;">
+									<div style="width: 100%; display: inline-block; background-color: #ddd;">
+										<canvas id="chart1170385" style="display: inline-block; box-sizing: border-box; height: 100%; width: 100%; background-color: #ddd;"></canvas>
+									</div>
+									
+								</div>
+								<div style="text-align: center; margin-top: 5px;">
+									<h2 style="font-size: 25px; margin-top: 0; margin-bottom: 0;"><div style="text-align:center;font-size:20px;color:white;background-color:darkgrey;height:22px;line-height:22px;white-space:nowrap;">ᕕ(⌐■_■)ᕗ ♪♬</div></h2>
+								</div>
+							</div>
+							
+					<script>
+
+					const dataPoints1170385 = [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+
+					const data1170385 = {
+						labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+						datasets: [{
+							label: 'Observations',
+							data: dataPoints1170385,
+							fill: true,
+							borderColor: 'green',
+							backgroundColor: 'rgba(75, 192, 192, 0.2)',
+							pointBackgroundColor: 'green',
+							pointBorderColor: '#fff',
+							pointHoverBackgroundColor: '#fff',
+							pointHoverBorderColor: 'green'
+						}]
+					};
+
+					const config1170385 = {
+						type: 'line',
+						data: data1170385,
+						options: {
+							responsive: false,
+							maintainAspectRatio: false,
+							scales: {
+							x: {
+								ticks: {
+									display: false,
+									autoSkip: false,
+									font: {
+										size: 10
+									},
+									maxRotation: 90,
+									minRotation: 90
+								}
+							},
+								y: {
+									beginAtZero: true,
+									ticks: {
+										display: false,
+									}
+								}
+							},
+							plugins: {
+								legend: {
+									display: false
+								},
+								annotation: {
+									annotations: {
+										firstQuarter: {
+											type: 'box',
+											xMin: -0.5,
+											xMax: 2.5,
+											backgroundColor: 'rgba(0, 0, 255, 0.5)',
+											borderWidth: 0,
+										},
+										secondQuarter: {
+											type: 'box',
+											xMin: 2.5,
+											xMax: 5.5,
+											backgroundColor: 'rgba(0, 255, 170, 0.5)',
+											borderWidth: 0,
+										},
+										thirdQuarter: {
+											type: 'box',
+											xMin: 5.5,
+											xMax: 8.5,
+											backgroundColor: 'rgba(255, 255, 0, 0.5)',
+											borderWidth: 0,
+										},
+										fourthQuarter: {
+											type: 'box',
+											xMin: 8.5,
+											xMax: 11.5,
+											backgroundColor: 'rgba(255, 85, 0, 0.5)',
+											borderWidth: 0,
+										}
+									}
+								}
+							}
+						}
+					};
+
+					const myChart1170385 = new Chart(
+						document.getElementById('chart1170385'),
+						config1170385
+					);
+					</script>
+					
+						</div>
+					
+						<div style="width: 20%; padding: 5px; box-sizing: border-box; float: left; color: black">
+							<div style="border: 5px solid darkgreen; padding: 5px; margin-bottom: 10px; background-color: #71f797;">
+					
+						<div style="text-align: center; margin-bottom: 5px; height: 50px;">
+							<h2 style="font-size: 22px; margin-top: 0; margin-bottom: 0;"><a href="https://www.inaturalist.org/taxa/383345" target="_blank" style="color: inherit; text-decoration: none;">Ochroconis constricta</a></h2>
+						</div>
+					
+								<div style="text-align: center; width: 100%; display: flex; align-items: center; height: 125px;">
+									<div style="width: 48%; display: inline-block;">
+										<div style="width: 100%; padding-bottom: 100%; position: relative; display: inline-block;">
+											<a href="https://www.inaturalist.org/observations?taxon_id=383345&subview=map" target="_blank" style="color: inherit; text-decoration: none;"><img src="https://inaturalist-open-data.s3.amazonaws.com/photos/1676045/medium.jpg" alt="Icon" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"></a>
+										</div>
+									</div>
+									<div style="width: 48%; font-size: 25px;">
+										%- 100 -%<br>
+										R- 1 -R<br>
+										G- 1 -G<br>
+										
+									</div>
+								</div>
+								<div style="text-align: center; width: 100%; display: flex; justify-content: space-between; height: 100px;">
+									<div style="width: 100%; display: inline-block; background-color: #ddd;">
+										<canvas id="chart1182252" style="display: inline-block; box-sizing: border-box; height: 100%; width: 100%; background-color: #ddd;"></canvas>
+									</div>
+									
+								</div>
+								<div style="text-align: center; margin-top: 5px;">
+									<h2 style="font-size: 25px; margin-top: 0; margin-bottom: 0;"><div style="text-align:center;font-size:20px;color:white;background-color:darkgrey;height:22px;line-height:22px;white-space:nowrap;">ᕕ(⌐■_■)ᕗ ♪♬</div></h2>
+								</div>
+							</div>
+							
+					<script>
+
+					const dataPoints1182252 = [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+
+					const data1182252 = {
+						labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+						datasets: [{
+							label: 'Observations',
+							data: dataPoints1182252,
+							fill: true,
+							borderColor: 'green',
+							backgroundColor: 'rgba(75, 192, 192, 0.2)',
+							pointBackgroundColor: 'green',
+							pointBorderColor: '#fff',
+							pointHoverBackgroundColor: '#fff',
+							pointHoverBorderColor: 'green'
+						}]
+					};
+
+					const config1182252 = {
+						type: 'line',
+						data: data1182252,
+						options: {
+							responsive: false,
+							maintainAspectRatio: false,
+							scales: {
+							x: {
+								ticks: {
+									display: false,
+									autoSkip: false,
+									font: {
+										size: 10
+									},
+									maxRotation: 90,
+									minRotation: 90
+								}
+							},
+								y: {
+									beginAtZero: true,
+									ticks: {
+										display: false,
+									}
+								}
+							},
+							plugins: {
+								legend: {
+									display: false
+								},
+								annotation: {
+									annotations: {
+										firstQuarter: {
+											type: 'box',
+											xMin: -0.5,
+											xMax: 2.5,
+											backgroundColor: 'rgba(0, 0, 255, 0.5)',
+											borderWidth: 0,
+										},
+										secondQuarter: {
+											type: 'box',
+											xMin: 2.5,
+											xMax: 5.5,
+											backgroundColor: 'rgba(0, 255, 170, 0.5)',
+											borderWidth: 0,
+										},
+										thirdQuarter: {
+											type: 'box',
+											xMin: 5.5,
+											xMax: 8.5,
+											backgroundColor: 'rgba(255, 255, 0, 0.5)',
+											borderWidth: 0,
+										},
+										fourthQuarter: {
+											type: 'box',
+											xMin: 8.5,
+											xMax: 11.5,
+											backgroundColor: 'rgba(255, 85, 0, 0.5)',
+											borderWidth: 0,
+										}
+									}
+								}
+							}
+						}
+					};
+
+					const myChart1182252 = new Chart(
+						document.getElementById('chart1182252'),
+						config1182252
+					);
+					</script>
+					
+						</div>
+					
+						<div style="width: 20%; padding: 5px; box-sizing: border-box; float: left; color: black">
+							<div style="border: 5px solid darkgreen; padding: 5px; margin-bottom: 10px; background-color: #bbf0a5;">
+					
+						<div style="text-align: center; margin-bottom: 5px; height: 50px;">
+							<h2 style="font-size: 22px; margin-top: 0; margin-bottom: 0;"><a href="https://www.inaturalist.org/taxa/492365" target="_blank" style="color: inherit; text-decoration: none;">Sticta brevipes</a></h2>
+						</div>
+					
+								<div style="text-align: center; width: 100%; display: flex; align-items: center; height: 125px;">
+									<div style="width: 48%; display: inline-block;">
+										<div style="width: 100%; padding-bottom: 100%; position: relative; display: inline-block;">
+											<a href="https://www.inaturalist.org/observations?taxon_id=492365&subview=map" target="_blank" style="color: inherit; text-decoration: none;"><img src="https://inaturalist-open-data.s3.amazonaws.com/photos/1654456/medium.jpg" alt="Icon" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"></a>
+										</div>
+									</div>
+									<div style="width: 48%; font-size: 25px;">
+										%- 50 -%<br>
+										R- 1 -R<br>
+										G- 2 -G<br>
+										
+									</div>
+								</div>
+								<div style="text-align: center; width: 100%; display: flex; justify-content: space-between; height: 100px;">
+									<div style="width: 100%; display: inline-block; background-color: #ddd;">
+										<canvas id="chart1156969" style="display: inline-block; box-sizing: border-box; height: 100%; width: 100%; background-color: #ddd;"></canvas>
+									</div>
+									
+								</div>
+								<div style="text-align: center; margin-top: 5px;">
+									<h2 style="font-size: 25px; margin-top: 0; margin-bottom: 0;"><div style="text-align:center;font-size:20px;color:white;background-color:darkgrey;height:22px;line-height:22px;white-space:nowrap;">ᕕ(⌐■_■)ᕗ ♪♬</div></h2>
+								</div>
+							</div>
+							
+					<script>
+
+					const dataPoints1156969 = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0];
+
+					const data1156969 = {
+						labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+						datasets: [{
+							label: 'Observations',
+							data: dataPoints1156969,
+							fill: true,
+							borderColor: 'green',
+							backgroundColor: 'rgba(75, 192, 192, 0.2)',
+							pointBackgroundColor: 'green',
+							pointBorderColor: '#fff',
+							pointHoverBackgroundColor: '#fff',
+							pointHoverBorderColor: 'green'
+						}]
+					};
+
+					const config1156969 = {
+						type: 'line',
+						data: data1156969,
+						options: {
+							responsive: false,
+							maintainAspectRatio: false,
+							scales: {
+							x: {
+								ticks: {
+									display: false,
+									autoSkip: false,
+									font: {
+										size: 10
+									},
+									maxRotation: 90,
+									minRotation: 90
+								}
+							},
+								y: {
+									beginAtZero: true,
+									ticks: {
+										display: false,
+									}
+								}
+							},
+							plugins: {
+								legend: {
+									display: false
+								},
+								annotation: {
+									annotations: {
+										firstQuarter: {
+											type: 'box',
+											xMin: -0.5,
+											xMax: 2.5,
+											backgroundColor: 'rgba(0, 0, 255, 0.5)',
+											borderWidth: 0,
+										},
+										secondQuarter: {
+											type: 'box',
+											xMin: 2.5,
+											xMax: 5.5,
+											backgroundColor: 'rgba(0, 255, 170, 0.5)',
+											borderWidth: 0,
+										},
+										thirdQuarter: {
+											type: 'box',
+											xMin: 5.5,
+											xMax: 8.5,
+											backgroundColor: 'rgba(255, 255, 0, 0.5)',
+											borderWidth: 0,
+										},
+										fourthQuarter: {
+											type: 'box',
+											xMin: 8.5,
+											xMax: 11.5,
+											backgroundColor: 'rgba(255, 85, 0, 0.5)',
+											borderWidth: 0,
+										}
+									}
+								}
+							}
+						}
+					};
+
+					const myChart1156969 = new Chart(
+						document.getElementById('chart1156969'),
+						config1156969
+					);
+					</script>
+					
+						</div>
+					
+						<div style="width: 20%; padding: 5px; box-sizing: border-box; float: left; color: black">
+							<div style="border: 5px solid darkgreen; padding: 5px; margin-bottom: 10px; background-color: #a6e2d3;">
+					
+						<div style="text-align: center; margin-bottom: 5px; height: 50px;">
+							<h2 style="font-size: 22px; margin-top: 0; margin-bottom: 0;"><a href="https://www.inaturalist.org/taxa/380948" target="_blank" style="color: inherit; text-decoration: none;">Podostictina nermula</a></h2>
+						</div>
+					
+								<div style="text-align: center; width: 100%; display: flex; align-items: center; height: 125px;">
+									<div style="width: 48%; display: inline-block;">
+										<div style="width: 100%; padding-bottom: 100%; position: relative; display: inline-block;">
+											<a href="https://www.inaturalist.org/observations?taxon_id=380948&subview=map" target="_blank" style="color: inherit; text-decoration: none;"><img src="https://inaturalist-open-data.s3.amazonaws.com/photos/5091365/medium.jpg" alt="Icon" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"></a>
+										</div>
+									</div>
+									<div style="width: 48%; font-size: 25px;">
+										%- 33 -%<br>
+										R- 1 -R<br>
+										G- 3 -G<br>
+										
+									</div>
+								</div>
+								<div style="text-align: center; width: 100%; display: flex; justify-content: space-between; height: 100px;">
+									<div style="width: 100%; display: inline-block; background-color: #ddd;">
+										<canvas id="chart1161158" style="display: inline-block; box-sizing: border-box; height: 100%; width: 100%; background-color: #ddd;"></canvas>
+									</div>
+									
+								</div>
+								<div style="text-align: center; margin-top: 5px;">
+									<h2 style="font-size: 25px; margin-top: 0; margin-bottom: 0;"><div style="text-align:center;font-size:20px;color:white;background-color:darkgrey;height:22px;line-height:22px;white-space:nowrap;">ᕕ(⌐■_■)ᕗ ♪♬</div></h2>
+								</div>
+							</div>
+							
+					<script>
+
+					const dataPoints1161158 = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0];
+
+					const data1161158 = {
+						labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+						datasets: [{
+							label: 'Observations',
+							data: dataPoints1161158,
+							fill: true,
+							borderColor: 'green',
+							backgroundColor: 'rgba(75, 192, 192, 0.2)',
+							pointBackgroundColor: 'green',
+							pointBorderColor: '#fff',
+							pointHoverBackgroundColor: '#fff',
+							pointHoverBorderColor: 'green'
+						}]
+					};
+
+					const config1161158 = {
+						type: 'line',
+						data: data1161158,
+						options: {
+							responsive: false,
+							maintainAspectRatio: false,
+							scales: {
+							x: {
+								ticks: {
+									display: false,
+									autoSkip: false,
+									font: {
+										size: 10
+									},
+									maxRotation: 90,
+									minRotation: 90
+								}
+							},
+								y: {
+									beginAtZero: true,
+									ticks: {
+										display: false,
+									}
+								}
+							},
+							plugins: {
+								legend: {
+									display: false
+								},
+								annotation: {
+									annotations: {
+										firstQuarter: {
+											type: 'box',
+											xMin: -0.5,
+											xMax: 2.5,
+											backgroundColor: 'rgba(0, 0, 255, 0.5)',
+											borderWidth: 0,
+										},
+										secondQuarter: {
+											type: 'box',
+											xMin: 2.5,
+											xMax: 5.5,
+											backgroundColor: 'rgba(0, 255, 170, 0.5)',
+											borderWidth: 0,
+										},
+										thirdQuarter: {
+											type: 'box',
+											xMin: 5.5,
+											xMax: 8.5,
+											backgroundColor: 'rgba(255, 255, 0, 0.5)',
+											borderWidth: 0,
+										},
+										fourthQuarter: {
+											type: 'box',
+											xMin: 8.5,
+											xMax: 11.5,
+											backgroundColor: 'rgba(255, 85, 0, 0.5)',
+											borderWidth: 0,
+										}
+									}
+								}
+							}
+						}
+					};
+
+					const myChart1161158 = new Chart(
+						document.getElementById('chart1161158'),
+						config1161158
+					);
+					</script>
+					
+						</div>
+					
+						<div style="width: 20%; padding: 5px; box-sizing: border-box; float: left; color: black">
+							<div style="border: 5px solid darkgreen; padding: 5px; margin-bottom: 10px; background-color: #a6e2d3;">
+					
+						<div style="text-align: center; margin-bottom: 5px; height: 50px;">
+							<h2 style="font-size: 22px; margin-top: 0; margin-bottom: 0;"><a href="https://www.inaturalist.org/taxa/354211" target="_blank" style="color: inherit; text-decoration: none;">Cordana</a></h2>
+						</div>
+					
+								<div style="text-align: center; width: 100%; display: flex; align-items: center; height: 125px;">
+									<div style="width: 48%; display: inline-block;">
+										<div style="width: 100%; padding-bottom: 100%; position: relative; display: inline-block;">
+											<a href="https://www.inaturalist.org/observations?taxon_id=354211&subview=map" target="_blank" style="color: inherit; text-decoration: none;"><img src="https://inaturalist-open-data.s3.amazonaws.com/photos/1746156/medium.jpg" alt="Icon" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"></a>
+										</div>
+									</div>
+									<div style="width: 48%; font-size: 25px;">
+										%- 17 -%<br>
+										R- 1 -R<br>
+										G- 6 -G<br>
+										
+									</div>
+								</div>
+								<div style="text-align: center; width: 100%; display: flex; justify-content: space-between; height: 100px;">
+									<div style="width: 100%; display: inline-block; background-color: #ddd;">
+										<canvas id="chart1119187" style="display: inline-block; box-sizing: border-box; height: 100%; width: 100%; background-color: #ddd;"></canvas>
+									</div>
+									
+								</div>
+								<div style="text-align: center; margin-top: 5px;">
+									<h2 style="font-size: 25px; margin-top: 0; margin-bottom: 0;"><div style="text-align:center;font-size:20px;color:white;background-color:darkgrey;height:22px;line-height:22px;white-space:nowrap;">ᕕ(⌐■_■)ᕗ ♪♬</div></h2>
+								</div>
+							</div>
+							
+					<script>
+
+					const dataPoints1119187 = [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+
+					const data1119187 = {
+						labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+						datasets: [{
+							label: 'Observations',
+							data: dataPoints1119187,
+							fill: true,
+							borderColor: 'green',
+							backgroundColor: 'rgba(75, 192, 192, 0.2)',
+							pointBackgroundColor: 'green',
+							pointBorderColor: '#fff',
+							pointHoverBackgroundColor: '#fff',
+							pointHoverBorderColor: 'green'
+						}]
+					};
+
+					const config1119187 = {
+						type: 'line',
+						data: data1119187,
+						options: {
+							responsive: false,
+							maintainAspectRatio: false,
+							scales: {
+							x: {
+								ticks: {
+									display: false,
+									autoSkip: false,
+									font: {
+										size: 10
+									},
+									maxRotation: 90,
+									minRotation: 90
+								}
+							},
+								y: {
+									beginAtZero: true,
+									ticks: {
+										display: false,
+									}
+								}
+							},
+							plugins: {
+								legend: {
+									display: false
+								},
+								annotation: {
+									annotations: {
+										firstQuarter: {
+											type: 'box',
+											xMin: -0.5,
+											xMax: 2.5,
+											backgroundColor: 'rgba(0, 0, 255, 0.5)',
+											borderWidth: 0,
+										},
+										secondQuarter: {
+											type: 'box',
+											xMin: 2.5,
+											xMax: 5.5,
+											backgroundColor: 'rgba(0, 255, 170, 0.5)',
+											borderWidth: 0,
+										},
+										thirdQuarter: {
+											type: 'box',
+											xMin: 5.5,
+											xMax: 8.5,
+											backgroundColor: 'rgba(255, 255, 0, 0.5)',
+											borderWidth: 0,
+										},
+										fourthQuarter: {
+											type: 'box',
+											xMin: 8.5,
+											xMax: 11.5,
+											backgroundColor: 'rgba(255, 85, 0, 0.5)',
+											borderWidth: 0,
+										}
+									}
+								}
+							}
+						}
+					};
+
+					const myChart1119187 = new Chart(
+						document.getElementById('chart1119187'),
+						config1119187
+					);
+					</script>
+					
+						</div>
+					
+						<div style="width: 20%; padding: 5px; box-sizing: border-box; float: left; color: black">
+							<div style="border: 5px solid darkgreen; padding: 5px; margin-bottom: 10px; background-color: #a6e2d3;">
+					
+						<div style="text-align: center; margin-bottom: 5px; height: 50px;">
+							<h2 style="font-size: 22px; margin-top: 0; margin-bottom: 0;"><a href="https://www.inaturalist.org/taxa/405264" target="_blank" style="color: inherit; text-decoration: none;">Pseudocyphellaria argyracea</a></h2>
+						</div>
+					
+								<div style="text-align: center; width: 100%; display: flex; align-items: center; height: 125px;">
+									<div style="width: 48%; display: inline-block;">
+										<div style="width: 100%; padding-bottom: 100%; position: relative; display: inline-block;">
+											<a href="https://www.inaturalist.org/observations?taxon_id=405264&subview=map" target="_blank" style="color: inherit; text-decoration: none;"><img src="https://inaturalist-open-data.s3.amazonaws.com/photos/2285672/medium.jpg" alt="Icon" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"></a>
+										</div>
+									</div>
+									<div style="width: 48%; font-size: 25px;">
+										%- 12 -%<br>
+										R- 1 -R<br>
+										G- 8 -G<br>
+										
+									</div>
+								</div>
+								<div style="text-align: center; width: 100%; display: flex; justify-content: space-between; height: 100px;">
+									<div style="width: 100%; display: inline-block; background-color: #ddd;">
+										<canvas id="chart1166798" style="display: inline-block; box-sizing: border-box; height: 100%; width: 100%; background-color: #ddd;"></canvas>
+									</div>
+									
+								</div>
+								<div style="text-align: center; margin-top: 5px;">
+									<h2 style="font-size: 25px; margin-top: 0; margin-bottom: 0;"><div style="text-align:center;font-size:20px;color:white;background-color:darkgrey;height:22px;line-height:22px;white-space:nowrap;">ᕕ(⌐■_■)ᕗ ♪♬</div></h2>
+								</div>
+							</div>
+							
+					<script>
+
+					const dataPoints1166798 = [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+
+					const data1166798 = {
+						labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+						datasets: [{
+							label: 'Observations',
+							data: dataPoints1166798,
+							fill: true,
+							borderColor: 'green',
+							backgroundColor: 'rgba(75, 192, 192, 0.2)',
+							pointBackgroundColor: 'green',
+							pointBorderColor: '#fff',
+							pointHoverBackgroundColor: '#fff',
+							pointHoverBorderColor: 'green'
+						}]
+					};
+
+					const config1166798 = {
+						type: 'line',
+						data: data1166798,
+						options: {
+							responsive: false,
+							maintainAspectRatio: false,
+							scales: {
+							x: {
+								ticks: {
+									display: false,
+									autoSkip: false,
+									font: {
+										size: 10
+									},
+									maxRotation: 90,
+									minRotation: 90
+								}
+							},
+								y: {
+									beginAtZero: true,
+									ticks: {
+										display: false,
+									}
+								}
+							},
+							plugins: {
+								legend: {
+									display: false
+								},
+								annotation: {
+									annotations: {
+										firstQuarter: {
+											type: 'box',
+											xMin: -0.5,
+											xMax: 2.5,
+											backgroundColor: 'rgba(0, 0, 255, 0.5)',
+											borderWidth: 0,
+										},
+										secondQuarter: {
+											type: 'box',
+											xMin: 2.5,
+											xMax: 5.5,
+											backgroundColor: 'rgba(0, 255, 170, 0.5)',
+											borderWidth: 0,
+										},
+										thirdQuarter: {
+											type: 'box',
+											xMin: 5.5,
+											xMax: 8.5,
+											backgroundColor: 'rgba(255, 255, 0, 0.5)',
+											borderWidth: 0,
+										},
+										fourthQuarter: {
+											type: 'box',
+											xMin: 8.5,
+											xMax: 11.5,
+											backgroundColor: 'rgba(255, 85, 0, 0.5)',
+											borderWidth: 0,
+										}
+									}
+								}
+							}
+						}
+					};
+
+					const myChart1166798 = new Chart(
+						document.getElementById('chart1166798'),
+						config1166798
+					);
+					</script>
+					
+						</div>
+					
+						<div style="width: 20%; padding: 5px; box-sizing: border-box; float: left; color: black">
+							<div style="border: 5px solid darkgreen; padding: 5px; margin-bottom: 10px; background-color: #a6e2d3;">
+					
+						<div style="text-align: center; margin-bottom: 5px; height: 50px;">
+							<h2 style="font-size: 22px; margin-top: 0; margin-bottom: 0;"><a href="https://www.inaturalist.org/taxa/451207" target="_blank" style="color: inherit; text-decoration: none;">Pseudocyphellaria insculpta</a></h2>
+						</div>
+					
+								<div style="text-align: center; width: 100%; display: flex; align-items: center; height: 125px;">
+									<div style="width: 48%; display: inline-block;">
+										<div style="width: 100%; padding-bottom: 100%; position: relative; display: inline-block;">
+											<a href="https://www.inaturalist.org/observations?taxon_id=451207&subview=map" target="_blank" style="color: inherit; text-decoration: none;"><img src="https://inaturalist-open-data.s3.amazonaws.com/photos/1672728/medium.jpg" alt="Icon" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"></a>
+										</div>
+									</div>
+									<div style="width: 48%; font-size: 25px;">
+										%- 14 -%<br>
+										R- 1 -R<br>
+										G- 7 -G<br>
+										
+									</div>
+								</div>
+								<div style="text-align: center; width: 100%; display: flex; justify-content: space-between; height: 100px;">
+									<div style="width: 100%; display: inline-block; background-color: #ddd;">
+										<canvas id="chart1169753" style="display: inline-block; box-sizing: border-box; height: 100%; width: 100%; background-color: #ddd;"></canvas>
+									</div>
+									
+								</div>
+								<div style="text-align: center; margin-top: 5px;">
+									<h2 style="font-size: 25px; margin-top: 0; margin-bottom: 0;"><div style="text-align:center;font-size:20px;color:white;background-color:darkgrey;height:22px;line-height:22px;white-space:nowrap;">ᕕ(⌐■_■)ᕗ ♪♬</div></h2>
+								</div>
+							</div>
+							
+					<script>
+
+					const dataPoints1169753 = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0];
+
+					const data1169753 = {
+						labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+						datasets: [{
+							label: 'Observations',
+							data: dataPoints1169753,
+							fill: true,
+							borderColor: 'green',
+							backgroundColor: 'rgba(75, 192, 192, 0.2)',
+							pointBackgroundColor: 'green',
+							pointBorderColor: '#fff',
+							pointHoverBackgroundColor: '#fff',
+							pointHoverBorderColor: 'green'
+						}]
+					};
+
+					const config1169753 = {
+						type: 'line',
+						data: data1169753,
+						options: {
+							responsive: false,
+							maintainAspectRatio: false,
+							scales: {
+							x: {
+								ticks: {
+									display: false,
+									autoSkip: false,
+									font: {
+										size: 10
+									},
+									maxRotation: 90,
+									minRotation: 90
+								}
+							},
+								y: {
+									beginAtZero: true,
+									ticks: {
+										display: false,
+									}
+								}
+							},
+							plugins: {
+								legend: {
+									display: false
+								},
+								annotation: {
+									annotations: {
+										firstQuarter: {
+											type: 'box',
+											xMin: -0.5,
+											xMax: 2.5,
+											backgroundColor: 'rgba(0, 0, 255, 0.5)',
+											borderWidth: 0,
+										},
+										secondQuarter: {
+											type: 'box',
+											xMin: 2.5,
+											xMax: 5.5,
+											backgroundColor: 'rgba(0, 255, 170, 0.5)',
+											borderWidth: 0,
+										},
+										thirdQuarter: {
+											type: 'box',
+											xMin: 5.5,
+											xMax: 8.5,
+											backgroundColor: 'rgba(255, 255, 0, 0.5)',
+											borderWidth: 0,
+										},
+										fourthQuarter: {
+											type: 'box',
+											xMin: 8.5,
+											xMax: 11.5,
+											backgroundColor: 'rgba(255, 85, 0, 0.5)',
+											borderWidth: 0,
+										}
+									}
+								}
+							}
+						}
+					};
+
+					const myChart1169753 = new Chart(
+						document.getElementById('chart1169753'),
+						config1169753
+					);
+					</script>
+					
+						</div>
+					
+						<div style="width: 20%; padding: 5px; box-sizing: border-box; float: left; color: black">
+							<div style="border: 5px solid darkgreen; padding: 5px; margin-bottom: 10px; background-color: #ddd;">
+					
+						<div style="text-align: center; margin-bottom: 5px; height: 50px;">
+							<h2 style="font-size: 22px; margin-top: 0; margin-bottom: 0;"><a href="https://www.inaturalist.org/taxa/56252" target="_blank" style="color: inherit; text-decoration: none;">Common Coral Slime</a></h2>
+							<h2 style="font-size: 20px; margin-top: 0; margin-bottom: 10px;"><a href="https://www.inaturalist.org/taxa/56252" target="_blank" style="color: inherit; text-decoration: none;">(Ceratiomyxa fruticulosa)</a></h2>
+						</div>
+					
+								<div style="text-align: center; width: 100%; display: flex; align-items: center; height: 125px;">
+									<div style="width: 48%; display: inline-block;">
+										<div style="width: 100%; padding-bottom: 100%; position: relative; display: inline-block;">
+											<a href="https://www.inaturalist.org/observations?taxon_id=56252&subview=map" target="_blank" style="color: inherit; text-decoration: none;"><img src="https://inaturalist-open-data.s3.amazonaws.com/photos/342355226/medium.jpg" alt="Icon" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;"></a>
+										</div>
+									</div>
+									<div style="width: 48%; font-size: 25px;">
+										%- 0 -%<br>
+										R- 4 -R<br>
+										G- 25580 -G<br>
+										
+									</div>
+								</div>
+								<div style="text-align: center; width: 100%; display: flex; justify-content: space-between; height: 100px;">
+									<div style="width: 100%; display: inline-block; background-color: #ddd;">
+										<canvas id="chart1189150" style="display: inline-block; box-sizing: border-box; height: 100%; width: 100%; background-color: #ddd;"></canvas>
+									</div>
+									
+								</div>
+								<div style="text-align: center; margin-top: 5px;">
+									<h2 style="font-size: 25px; margin-top: 0; margin-bottom: 0;"><div style="text-align:center;font-size:20px;color:white;background-color:darkgrey;height:22px;line-height:22px;white-space:nowrap;">ᕕ(⌐■_■)ᕗ ♪♬</div></h2>
+								</div>
+							</div>
+							
+					<script>
+
+					const dataPoints1189150 = [0, 1, 0, 2, 0, 0, 1, 0, 0, 0, 0, 0];
+
+					const data1189150 = {
+						labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+						datasets: [{
+							label: 'Observations',
+							data: dataPoints1189150,
+							fill: true,
+							borderColor: 'green',
+							backgroundColor: 'rgba(75, 192, 192, 0.2)',
+							pointBackgroundColor: 'green',
+							pointBorderColor: '#fff',
+							pointHoverBackgroundColor: '#fff',
+							pointHoverBorderColor: 'green'
+						}]
+					};
+
+					const config1189150 = {
+						type: 'line',
+						data: data1189150,
+						options: {
+							responsive: false,
+							maintainAspectRatio: false,
+							scales: {
+							x: {
+								ticks: {
+									display: false,
+									autoSkip: false,
+									font: {
+										size: 10
+									},
+									maxRotation: 90,
+									minRotation: 90
+								}
+							},
+								y: {
+									beginAtZero: true,
+									ticks: {
+										display: false,
+									}
+								}
+							},
+							plugins: {
+								legend: {
+									display: false
+								},
+								annotation: {
+									annotations: {
+										firstQuarter: {
+											type: 'box',
+											xMin: -0.5,
+											xMax: 2.5,
+											backgroundColor: 'rgba(0, 0, 255, 0.5)',
+											borderWidth: 0,
+										},
+										secondQuarter: {
+											type: 'box',
+											xMin: 2.5,
+											xMax: 5.5,
+											backgroundColor: 'rgba(0, 255, 170, 0.5)',
+											borderWidth: 0,
+										},
+										thirdQuarter: {
+											type: 'box',
+											xMin: 5.5,
+											xMax: 8.5,
+											backgroundColor: 'rgba(255, 255, 0, 0.5)',
+											borderWidth: 0,
+										},
+										fourthQuarter: {
+											type: 'box',
+											xMin: 8.5,
+											xMax: 11.5,
+											backgroundColor: 'rgba(255, 85, 0, 0.5)',
+											borderWidth: 0,
+										}
+									}
+								}
+							}
+						}
+					};
+
+					const myChart1189150 = new Chart(
+						document.getElementById('chart1189150'),
+						config1189150
+					);
+					</script>
+					
+						</div>
+					</div></div>
+				<script>
+				
+		var hour = new Date().getHours();
+		var backgroundClass = (hour >= 6 && hour < 18) ? 'day' : 'night';
+		var h1Class = (hour >= 6 && hour < 18) ? 'h1day' : 'h1night';
+		document.body.classList.add(backgroundClass);
+
+		document.querySelector('.dropbtn').addEventListener('click', function() {
+			document.querySelector('.dropdown-content').classList.toggle('show');
+		});
+
+		// Close the dropdown if the user clicks outside of it
+		window.onclick = function(event) {
+			if (!event.target.matches('.dropbtn')) {
+				var dropdowns = document.getElementsByClassName("dropdown-content");
+				for (var i = 0; i < dropdowns.length; i++) {
+					var openDropdown = dropdowns[i];
+					if (openDropdown.classList.contains('show')) {
+						openDropdown.classList.remove('show');
+					}
+				}
+			}
+		}
+	
+
+				function selectSpringDecayMain() {
+					document.getElementById('SpringDecayMainSection').style.display = 'block';
+					document.getElementById('SpringDecayCrypticSection').style.display = 'none';
+					document.getElementById('SpringDecayOtherSection').style.display = 'none';
+				}
+				function selectSpringDecayCryptic() {
+					document.getElementById('SpringDecayMainSection').style.display = 'none';
+					document.getElementById('SpringDecayCrypticSection').style.display = 'block';
+					document.getElementById('SpringDecayOtherSection').style.display = 'none';
+				}
+				function selectSpringDecayOther() {
+					document.getElementById('SpringDecayMainSection').style.display = 'none';
+					document.getElementById('SpringDecayCrypticSection').style.display = 'none';
+					document.getElementById('SpringDecayOtherSection').style.display = 'block';
+				}
+
+				function getWeather(lat, lon) {
+					var apiKey = '5a681d50320d318a92be7deca35dbc18';
+					var url = 'https://api.openweathermap.org/data/2.5/weather?lat='+lat+'&lon='+lon+'&appid='+apiKey;
+
+					fetch(url)
+						.then(response => response.json())
+						.then(data => {
+							console.log(data);
+
+						})
+						.catch(error => {
+							console.error('Error fetching weather data:', error);
+						});
+				}
+
+				window.onload = function() {
+					selectSpringDecayMain();
+				}
+				</script>
+			</body>

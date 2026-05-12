@@ -1,0 +1,136 @@
+<!DOCTYPE html><html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html></html>
+				<head>
+				<meta charset="UTF-8">
+				<title>Biodex Colorado_Rockies_Forests SepOctNov Tidepools</title>
+				<style>
+		.dropbtn {
+			background-color: azure;
+			color: black;
+			padding: 14px;
+			font-size: 22px;
+			border: none;
+			cursor: pointer;
+		}
+		.dropdown {
+			position: relative;
+			display: inline-block;
+			text-align: center;
+		}
+		.dropdown-content {
+			font-size: 22px;
+			display: none;
+			position: absolute;
+			background-color: azure;
+			width: calc(160px * 8);
+			box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+			z-index: 1;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+		.dropdown-content a {
+			color: black;
+			padding: 8px;
+			text-decoration: none;
+			display: inline-block;
+			width: 160px;
+			box-sizing: border-box;
+		}
+		.dropdown:hover .dropdown-content {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: start;
+		}
+		.dropdown:hover .dropbtn {
+			background-color: azure;
+		}
+
+
+		body {
+			background: url('../../assets/bug_rolling.gif');
+			background-repeat: repeat;
+			background-attachment: scroll;
+			background-size: 20%;
+			color: brown;
+		}
+
+		.day {
+			background: url('../../assets/cloudy_background.gif');
+			background-repeat: repeat;
+			background-attachment: scroll;
+			background-size: 20%;
+			color: black;
+		}
+
+		.night {
+			background: url('../../assets/night_background.gif');
+			background-repeat: repeat;
+			background-attachment: scroll;
+			background-size: 20%;
+			color: white;
+		}
+	</style>
+				<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+				<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2"></script>
+				</head>
+			<body><h1 style="text-align: center; margin-bottom: 0px;"><a href="../biodex.html" style="color: inherit; text-decoration: none;">Biodex </a></h1><h2 style="text-align: center; margin-bottom: 10px;"><a href="https://www.inaturalist.org/observations?place_id=128734&amp;subview=map" target="_blank" style="color: inherit; text-decoration: none;">Colorado_Rockies_Forests SepOctNov</a></h2><nav style="text-align: center; margin-bottom: 10px;"><div style="padding: 10px; display: inline-block"><a style="font-size: 20px; color: inherit; text-decoration: none;" href="Colorado_Rockies_ForestsJanDecFebTidepools.html">JanDecFeb</a></div><div style="padding: 10px; display: inline-block"><a style="font-size: 20px; color: inherit; text-decoration: none;" href="Colorado_Rockies_ForestsMarAprMayTidepools.html">MarAprMay</a></div><div style="padding: 10px; display: inline-block"><a style="font-size: 20px; color: inherit; text-decoration: none;" href="Colorado_Rockies_ForestsJunJulAugTidepools.html">JunJulAug</a></div><div style="padding: 10px; display: inline-block"><a style="font-size: 20px; color: inherit; text-decoration: none;" href="Colorado_Rockies_ForestsSepOctNovTidepools.html">SepOctNov</a></div></nav><nav style="text-align: center; margin-bottom: 25px;"><div class="dropdown"><button class="dropbtn">Tidepools</button><div class="dropdown-content"><a href="Colorado_Rockies_ForestsSepOctNovBugs.html">Bugs</a><a href="Colorado_Rockies_ForestsSepOctNovMoth.html">Moth</a><a href="Colorado_Rockies_ForestsSepOctNovPollin.html">Pollin</a><a href="Colorado_Rockies_ForestsSepOctNovPlant_Para.html">Plant_Para</a><a href="Colorado_Rockies_ForestsSepOctNovHerps.html">Herps</a><a href="Colorado_Rockies_ForestsSepOctNovMammals.html">Mammals</a><a href="Colorado_Rockies_ForestsSepOctNovBirds.html">Birds</a><a href="Colorado_Rockies_ForestsSepOctNovLand_Slimes.html">Land_Slimes</a><a href="Colorado_Rockies_ForestsSepOctNovFlowering.html">Flowering</a><a href="Colorado_Rockies_ForestsSepOctNovOther_Plant.html">Other_Plant</a><a href="Colorado_Rockies_ForestsSepOctNovDecay.html">Decay</a><a href="Colorado_Rockies_ForestsSepOctNovShrimps.html">Shrimps</a><a href="Colorado_Rockies_ForestsSepOctNovTidepools.html">Tidepools</a><a href="Colorado_Rockies_ForestsSepOctNovCrabs.html">Crabs</a><a href="Colorado_Rockies_ForestsSepOctNovFish.html">Fish</a><a href="Colorado_Rockies_ForestsSepOctNovSeaweeds.html">Seaweeds</a><a href="Colorado_Rockies_ForestsSepOctNovOther.html">Other</a></div></div></nav><div style="text-align: center;"><button onclick="selectSepOctNovTidepoolsMain()">Main</button><button onclick="selectSepOctNovTidepoolsCryptic()">Cryptic</button><button onclick="selectSepOctNovTidepoolsOther()">Other</button></div><div style="display: flex; flex-wrap: wrap;"><div id="SepOctNovTidepoolsMainSection" style="display: block; width: 100%;"></div><div id="SepOctNovTidepoolsCrypticSection" style="display: block; width: 100%;"></div><div id="SepOctNovTidepoolsOtherSection" style="display: block; width: 100%;"></div></div>
+				<script>
+				
+		var hour = new Date().getHours();
+		var backgroundClass = (hour >= 6 && hour < 18) ? 'day' : 'night';
+		var h1Class = (hour >= 6 && hour < 18) ? 'h1day' : 'h1night';
+		document.body.classList.add(backgroundClass);
+
+		document.querySelector('.dropbtn').addEventListener('click', function() {
+			document.querySelector('.dropdown-content').classList.toggle('show');
+		});
+
+		// Close the dropdown if the user clicks outside of it
+		window.onclick = function(event) {
+			if (!event.target.matches('.dropbtn')) {
+				var dropdowns = document.getElementsByClassName("dropdown-content");
+				for (var i = 0; i < dropdowns.length; i++) {
+					var openDropdown = dropdowns[i];
+					if (openDropdown.classList.contains('show')) {
+						openDropdown.classList.remove('show');
+					}
+				}
+			}
+		}
+	
+
+				function selectSepOctNovTidepoolsMain() {
+					document.getElementById('SepOctNovTidepoolsMainSection').style.display = 'block';
+					document.getElementById('SepOctNovTidepoolsCrypticSection').style.display = 'none';
+					document.getElementById('SepOctNovTidepoolsOtherSection').style.display = 'none';
+				}
+				function selectSepOctNovTidepoolsCryptic() {
+					document.getElementById('SepOctNovTidepoolsMainSection').style.display = 'none';
+					document.getElementById('SepOctNovTidepoolsCrypticSection').style.display = 'block';
+					document.getElementById('SepOctNovTidepoolsOtherSection').style.display = 'none';
+				}
+				function selectSepOctNovTidepoolsOther() {
+					document.getElementById('SepOctNovTidepoolsMainSection').style.display = 'none';
+					document.getElementById('SepOctNovTidepoolsCrypticSection').style.display = 'none';
+					document.getElementById('SepOctNovTidepoolsOtherSection').style.display = 'block';
+				}
+
+				function getWeather(lat, lon) {
+					var apiKey = '5a681d50320d318a92be7deca35dbc18';
+					var url = 'https://api.openweathermap.org/data/2.5/weather?lat='+lat+'&lon='+lon+'&appid='+apiKey;
+
+					fetch(url)
+						.then(response => response.json())
+						.then(data => {
+							console.log(data);
+
+						})
+						.catch(error => {
+							console.error('Error fetching weather data:', error);
+						});
+				}
+
+				window.onload = function() {
+					selectSepOctNovTidepoolsMain();
+				}
+				</script>
+			</body>

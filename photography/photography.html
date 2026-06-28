@@ -25,6 +25,17 @@
       gap: 16px;
     }
 
+    .post-card {
+      margin: 0;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .post-card:focus .thumb {
+      outline: 2px solid rgba(255, 255, 255, 0.7);
+      outline-offset: 3px;
+    }
+
     .thumb {
       width: 100%;
       aspect-ratio: 1 / 1;
@@ -40,8 +51,144 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.92);
+      background: #111;
       z-index: 9999;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 24px;
+      box-sizing: border-box;
+      cursor: pointer;
+      overflow-y: auto;
+    }
+
+    #lightbox.open {
+      display: flex;
+    }
+
+    #postPanel {
+      width: min(100%, 1200px);
+      margin: auto;
+      padding: 48px 0 32px;
+      box-sizing: border-box;
+      cursor: default;
+    }
+
+    #postImages {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 18px;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      scroll-padding: 24px;
+      padding: 0 2px 18px;
+    }
+
+    .photo-frame {
+      position: relative;
+      display: inline-block;
+      flex: 0 0 auto;
+      max-width: min(92vw, 1100px);
+      line-height: 0;
+      background: transparent;
+      scroll-snap-align: center;
+      cursor: zoom-in;
+    }
+
+    .photo-frame img {
+      display: block;
+      max-width: min(92vw, 1100px);
+      max-height: calc(100vh - 210px);
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      cursor: zoom-in;
+    }
+
+    #postInfo {
+      max-width: 780px;
+      margin: 10px auto 0;
+      color: var(--post-fg, white);
+      line-height: 1.5;
+    }
+
+    #postInfo:empty {
+      display: none;
+    }
+
+    #postInfo h1,
+    #postInfo h2,
+    #postInfo h3 {
+      margin: 0 0 8px;
+      text-align: left;
+      font-size: 1.25rem;
+    }
+
+    #postInfo p {
+      margin: 0 0 10px;
+    }
+
+    #postInfo ul,
+    #postInfo ol {
+      margin-top: 0;
+    }
+
+    #postInfo a {
+      color: var(--post-fg, white);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .photo-attribution {
+      position: absolute;
+      right: 0px;
+      bottom: 0px;
+      line-height: 1;
+      letter-spacing: 0.03em;
+
+      font-size: 5px;
+      opacity: 0.2;
+      color: rgba(255, 255, 255, 0.5);
+      background: rgba(0, 0, 0, 0.3);
+
+      mix-blend-mode: normal;
+      text-shadow: none;
+
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    #backBtn,
+    #fullscreenBackBtn {
+      position: fixed;
+      top: 14px;
+      left: 18px;
+      font-size: 34px;
+      line-height: 1;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 8px;
+      z-index: 10000;
+    }
+
+    #backBtn {
+      color: var(--post-fg, white);
+    }
+
+    #fullscreenBackBtn {
+      color: var(--post-fg, white);
+      z-index: 20001;
+    }
+
+    #imageOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--post-bg, #111111);
+      z-index: 20000;
       align-items: center;
       justify-content: center;
       padding: 24px;
@@ -49,30 +196,42 @@
       cursor: pointer;
     }
 
-    #lightbox.open {
+    #imageOverlay.open {
       display: flex;
     }
 
-    #lightbox img {
+    #fullscreenFrame {
+      position: relative;
       max-width: 100%;
       max-height: 100%;
+      margin: 0;
+      line-height: 0;
+      cursor: default;
+    }
+
+    #fullscreenImg {
+      display: block;
+      max-width: 100%;
+      max-height: calc(100vh - 48px);
       width: auto;
       height: auto;
       object-fit: contain;
       cursor: default;
     }
 
-    #closeBtn {
-      position: fixed;
-      top: 16px;
-      right: 20px;
-      font-size: 36px;
-      line-height: 1;
-      color: white;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0;
+    .empty-message {
+      text-align: center;
+      color: #ccc;
+    }
+
+    .license-notice {
+      max-width: 500px;
+      margin: 0 auto 24px;
+      padding: 0 16px;
+      color: #ccc;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      text-align: center;
     }
   </style>
 </head>
@@ -88,30 +247,102 @@
 
   <h1>Photography</h1>
 
+  <p class="license-notice">
+  © Jacob Deutsch. All rights reserved. Do not copy, reproduce, distribute, modify, or use these photographs without written permission.
+  </p>
+
   <div id="gallery"></div>
 
-  <div id="lightbox">
-    <button id="closeBtn" aria-label="Close popup">&times;</button>
-    <img id="lightboxImg" src="" alt="">
+  <div id="lightbox" aria-hidden="true">
+    <button id="backBtn" aria-label="Back to photography">&larr;</button>
+    <article id="postPanel" role="dialog" aria-modal="true">
+      <div id="postImages" aria-label="Photo carousel"></div>
+      <div id="postInfo"></div>
+    </article>
+  </div>
+
+  <div id="imageOverlay" aria-hidden="true">
+    <button id="fullscreenBackBtn" aria-label="Back to post">&larr;</button>
+    <figure id="fullscreenFrame">
+      <img id="fullscreenImg" src="" alt="">
+      <figcaption class="photo-attribution">© Jacob Deutsch</figcaption>
+    </figure>
   </div>
 
   <script src="images.js"></script>
   <script>
+    const ATTRIBUTION_TEXT = "© Jacob Deutsch";
+    const DEFAULT_BACKGROUND_COLOR = "#111111";
+
     const gallery = document.getElementById("gallery");
     const lightbox = document.getElementById("lightbox");
-    const lightboxImg = document.getElementById("lightboxImg");
-    const closeBtn = document.getElementById("closeBtn");
+    const backBtn = document.getElementById("backBtn");
+    const postPanel = document.getElementById("postPanel");
+    const postInfo = document.getElementById("postInfo");
+    const postImages = document.getElementById("postImages");
 
-    function openLightbox(src) {
-      lightboxImg.src = src;
-      lightbox.classList.add("open");
-      document.body.style.overflow = "hidden";
+    const imageOverlay = document.getElementById("imageOverlay");
+    const fullscreenBackBtn = document.getElementById("fullscreenBackBtn");
+    const fullscreenImg = document.getElementById("fullscreenImg");
+
+    function getPostLabel(post) {
+      return post.accessibilityLabel || post.title || "Photo post";
     }
 
-    function closeLightbox() {
-      lightbox.classList.remove("open");
-      lightboxImg.src = "";
-      document.body.style.overflow = "";
+    function getGalleryPosts() {
+      if (window.galleryPosts && Array.isArray(window.galleryPosts)) {
+        return window.galleryPosts;
+      }
+
+      // Backward-compatible fallback for the older flat images.js format.
+      if (window.galleryImages && Array.isArray(window.galleryImages)) {
+        return window.galleryImages.map((item, index) => ({
+          slug: `legacy-${index + 1}`,
+          accessibilityLabel: item.accessibilityLabel || item.title || `Photo ${index + 1}`,
+          postHtml: "",
+          backgroundColor: DEFAULT_BACKGROUND_COLOR,
+          cover: item,
+          images: [item]
+        }));
+      }
+
+      return [];
+    }
+
+    function expandHexColor(hexColor) {
+      const value = String(hexColor || DEFAULT_BACKGROUND_COLOR).trim();
+
+      const shortMatch = value.match(/^#([0-9a-fA-F]{3})$/);
+      if (shortMatch) {
+        return "#" + shortMatch[1].split("").map(char => char + char).join("");
+      }
+
+      if (/^#[0-9a-fA-F]{6}$/.test(value)) {
+        return value;
+      }
+
+      return DEFAULT_BACKGROUND_COLOR;
+    }
+
+    function readableColorForBackground(hexColor) {
+      const expanded = expandHexColor(hexColor);
+      const r = parseInt(expanded.slice(1, 3), 16);
+      const g = parseInt(expanded.slice(3, 5), 16);
+      const b = parseInt(expanded.slice(5, 7), 16);
+
+      // Relative luminance approximation. Light backgrounds get dark text/arrow.
+      const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+      return brightness > 145 ? "#111111" : "#ffffff";
+    }
+
+    function applyPostColors(backgroundColor) {
+      const bg = expandHexColor(backgroundColor);
+      const fg = readableColorForBackground(bg);
+
+      lightbox.style.backgroundColor = bg;
+      imageOverlay.style.backgroundColor = bg;
+      document.documentElement.style.setProperty("--post-bg", bg);
+      document.documentElement.style.setProperty("--post-fg", fg);
     }
 
     function loadImage(img) {
@@ -131,26 +362,137 @@
       rootMargin: "300px 0px"
     });
 
-    if (window.galleryImages && Array.isArray(window.galleryImages)) {
-      window.galleryImages.forEach(item => {
-        const img = document.createElement("img");
-        img.dataset.src = item.thumb;
-        img.alt = "";
-        img.className = "thumb";
-        img.loading = "lazy";
-        img.decoding = "async";
-        img.fetchPriority = "low";
+    const posts = getGalleryPosts();
 
-        img.addEventListener("click", () => openLightbox(item.full));
-
-        gallery.appendChild(img);
-        observer.observe(img);
-      });
-    } else {
-      gallery.innerHTML = "<p>Could not load gallery images.</p>";
+    function openFullscreen(src, altText) {
+      fullscreenImg.src = src;
+      fullscreenImg.alt = altText || "";
+      imageOverlay.classList.add("open");
+      imageOverlay.setAttribute("aria-hidden", "false");
     }
 
-    closeBtn.addEventListener("click", closeLightbox);
+    function closeFullscreen() {
+      imageOverlay.classList.remove("open");
+      imageOverlay.setAttribute("aria-hidden", "true");
+      fullscreenImg.src = "";
+      fullscreenImg.alt = "";
+    }
+
+    function createFullImage(item, post, imageIndex) {
+      const label = getPostLabel(post);
+      const altText = label ? `${label}, photo ${imageIndex + 1}` : "";
+
+      const frame = document.createElement("figure");
+      frame.className = "photo-frame";
+      frame.setAttribute("role", "button");
+      frame.setAttribute("aria-label", altText ? `View larger: ${altText}` : "View larger photo");
+      frame.tabIndex = 0;
+
+      const img = document.createElement("img");
+      img.src = item.full;
+      img.alt = altText;
+      img.loading = imageIndex === 0 ? "eager" : "lazy";
+      img.decoding = "async";
+
+      const attribution = document.createElement("figcaption");
+      attribution.className = "photo-attribution";
+      attribution.textContent = ATTRIBUTION_TEXT;
+
+      frame.appendChild(img);
+      frame.appendChild(attribution);
+
+      frame.addEventListener("click", () => openFullscreen(item.full, altText));
+      frame.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openFullscreen(item.full, altText);
+        }
+      });
+
+      return frame;
+    }
+
+    function openPost(postIndex) {
+      const post = posts[postIndex];
+      if (!post || !post.images || !post.images.length) return;
+
+      const label = getPostLabel(post);
+
+      applyPostColors(post.backgroundColor || DEFAULT_BACKGROUND_COLOR);
+
+      postPanel.setAttribute("aria-label", label);
+      postImages.replaceChildren();
+      postInfo.innerHTML = post.postHtml || "";
+
+      post.images.forEach((item, imageIndex) => {
+        postImages.appendChild(createFullImage(item, post, imageIndex));
+      });
+
+      lightbox.classList.add("open");
+      lightbox.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+      postImages.scrollLeft = 0;
+      lightbox.scrollTop = 0;
+    }
+
+    function closeLightbox() {
+      closeFullscreen();
+      lightbox.classList.remove("open");
+      lightbox.setAttribute("aria-hidden", "true");
+      postImages.replaceChildren();
+      postInfo.innerHTML = "";
+      lightbox.style.backgroundColor = DEFAULT_BACKGROUND_COLOR;
+      imageOverlay.style.backgroundColor = DEFAULT_BACKGROUND_COLOR;
+      document.documentElement.style.setProperty("--post-bg", DEFAULT_BACKGROUND_COLOR);
+      document.documentElement.style.setProperty("--post-fg", "#ffffff");
+      document.body.style.overflow = "";
+    }
+
+    function addPostToGallery(post, postIndex) {
+      const label = getPostLabel(post);
+
+      const card = document.createElement("figure");
+      card.className = "post-card";
+      card.tabIndex = 0;
+      card.setAttribute("role", "button");
+      card.setAttribute("aria-label", label ? `Open ${label}` : "Open photo post");
+
+      const img = document.createElement("img");
+      img.dataset.src = post.cover.thumb;
+      img.alt = label || "";
+      img.className = "thumb";
+      img.loading = "lazy";
+      img.decoding = "async";
+      img.fetchPriority = "low";
+
+      card.appendChild(img);
+
+      card.addEventListener("click", () => openPost(postIndex));
+      card.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openPost(postIndex);
+        }
+      });
+
+      gallery.appendChild(card);
+      observer.observe(img);
+    }
+
+    if (posts.length) {
+      posts.forEach(addPostToGallery);
+    } else {
+      gallery.innerHTML = '<p class="empty-message">Could not load gallery posts.</p>';
+    }
+
+    backBtn.addEventListener("click", closeLightbox);
+    fullscreenBackBtn.addEventListener("click", closeFullscreen);
+
+    imageOverlay.addEventListener("click", (event) => {
+      if (event.target === imageOverlay) {
+        closeFullscreen();
+      }
+    });
 
     lightbox.addEventListener("click", (event) => {
       if (event.target === lightbox) {
@@ -159,7 +501,11 @@
     });
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
+      if (event.key !== "Escape") return;
+
+      if (imageOverlay.classList.contains("open")) {
+        closeFullscreen();
+      } else if (lightbox.classList.contains("open")) {
         closeLightbox();
       }
     });

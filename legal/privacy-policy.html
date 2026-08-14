@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rovewild — Privacy Policy</title>
+    <meta name="description" content="Privacy policy for the Rovewild outdoor mapping app." />
+    <style>
+      :root {
+        --bg: #0f1b12;
+        --card: #14251a;
+        --text: #e8efe8;
+        --muted: #9fb0a3;
+        --accent: #3dd68c;
+        --border: rgba(255, 255, 255, 0.08);
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        padding: 2.5rem 1.25rem 4rem;
+      }
+      main {
+        max-width: 46rem;
+        margin: 0 auto;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 2.25rem clamp(1.25rem, 4vw, 2.75rem);
+      }
+      h1 { font-size: 1.9rem; margin: 0 0 0.25rem; line-height: 1.2; }
+      h2 {
+        font-size: 1.2rem;
+        margin: 2rem 0 0.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--border);
+      }
+      h2:first-of-type { border-top: none; padding-top: 0; }
+      .updated { color: var(--muted); font-size: 0.9rem; margin: 0 0 1.5rem; }
+      p, li { color: var(--text); }
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      strong { color: #fff; }
+      ul { padding-left: 1.25rem; }
+      li { margin: 0.4rem 0; }
+      .lede { color: var(--muted); }
+      code {
+        background: rgba(255, 255, 255, 0.06);
+        padding: 0.1em 0.4em;
+        border-radius: 6px;
+        font-size: 0.9em;
+      }
+      footer {
+        max-width: 46rem;
+        margin: 1.25rem auto 0;
+        color: var(--muted);
+        font-size: 0.85rem;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Rovewild — Privacy Policy</h1>
+      <p class="updated">Last updated: August 14, 2026</p>
+
+      <p class="lede">
+        Rovewild (&ldquo;we&rdquo;, &ldquo;us&rdquo;) is an outdoor mapping app.
+        This policy explains what we collect, why, and your choices. It applies
+        to the Rovewild web app and the Rovewild Android and iOS apps.
+      </p>
+
+      <h2>What we collect</h2>
+      <ul>
+        <li>
+          <strong>Account information.</strong> When you create an account we
+          store your email address and an encrypted password (handled by our
+          authentication provider, Supabase). You may also set a display
+          username and an optional profile photo.
+        </li>
+        <li>
+          <strong>Your content.</strong> Map pins, drawn routes/paths, folders,
+          notes, and their styling that you create in the app. These are stored
+          so they sync across your devices when you are signed in.
+        </li>
+        <li>
+          <strong>App settings.</strong> Your preferences (units, language,
+          basemap, layer toggles, marker categories, etc.) so they can sync
+          across your devices when you enable settings sync.
+        </li>
+        <li>
+          <strong>Location.</strong> If you tap the &ldquo;locate me&rdquo;
+          control (or grant location permission), the app reads your device&rsquo;s
+          current location <strong>on the device</strong> to center the map. We
+          do <strong>not</strong> track your location in the background and we do
+          <strong>not</strong> store your location history on our servers.
+        </li>
+        <li>
+          <strong>Basic technical data.</strong> Standard request/diagnostic
+          information (e.g. app version, error logs) needed to operate and
+          troubleshoot the service.
+        </li>
+      </ul>
+
+      <h2>How we use it</h2>
+      <ul>
+        <li>
+          To provide the core features: showing the map, saving and syncing your
+          pins, routes, folders, notes, and settings, and signing you in.
+        </li>
+        <li>To keep the service secure and working (diagnostics, abuse prevention).</li>
+      </ul>
+      <p>
+        We do <strong>not</strong> sell your personal data, and we do
+        <strong>not</strong> use it for advertising or ad tracking.
+      </p>
+
+      <h2>How your data is stored and shared</h2>
+      <ul>
+        <li>
+          Your account and content are stored in our database (Supabase, which
+          hosts Postgres/Auth/Storage). Access is restricted so that a signed-in
+          user can only read and write <strong>their own</strong> data (enforced
+          by row-level security).
+        </li>
+        <li>
+          Map tiles and reference data (basemap, terrain, points of interest, and
+          optional overlays) are served as static files from our content delivery
+          network (Cloudflare / Supabase Storage).
+        </li>
+        <li>
+          Some optional map features fetch public, third-party data directly from
+          your device (for example Wikipedia and other public map data sources)
+          when you use them. Those requests are subject to those services&rsquo; own
+          privacy policies.
+        </li>
+        <li>Data is transmitted over encrypted connections (HTTPS).</li>
+      </ul>
+      <p>
+        We share personal data only with the service providers above that are
+        necessary to run the app, or where required by law.
+      </p>
+
+      <h2>Your choices and rights</h2>
+      <ul>
+        <li>
+          <strong>Access / export / deletion.</strong> You can request a copy or
+          deletion of your account and associated content by contacting us at
+          <a href="mailto:jacobadeutschwork@gmail.com">jacobadeutschwork@gmail.com</a>. Deleting your account
+          removes your pins, routes, folders, notes, and synced settings from our
+          servers.
+        </li>
+        <li>
+          <strong>Location permission.</strong> You can deny or revoke location
+          permission at any time in your device settings; the map still works, it
+          just won&rsquo;t center on you.
+        </li>
+        <li>
+          <strong>Local-only use.</strong> Content and settings you create while
+          signed out stay on your device and are not sent to our servers.
+        </li>
+      </ul>
+
+      <h2>Data retention</h2>
+      <p>
+        We keep your account and content until you delete them or ask us to.
+        Diagnostic logs are kept only as long as needed to operate the service.
+      </p>
+
+      <h2>Children</h2>
+      <p>
+        Rovewild is not directed to children under 13, and we do not knowingly
+        collect personal information from them.
+      </p>
+
+      <h2>Changes to this policy</h2>
+      <p>
+        We may update this policy; we&rsquo;ll change the &ldquo;Last updated&rdquo;
+        date above and, for material changes, provide notice in the app or by
+        email.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Questions or requests:
+        <a href="mailto:jacobadeutschwork@gmail.com">jacobadeutschwork@gmail.com</a>
+      </p>
+    </main>
+    <footer>&copy; 2026 Rovewild</footer>
+  </body>
+</html>

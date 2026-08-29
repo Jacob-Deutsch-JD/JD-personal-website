@@ -1,0 +1,2609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Annual Events Editor</title>
+<style>
+  html, body { margin:0; padding:0; background:#d9d9d9; color:#000; font-family:Arial,Helvetica,sans-serif; font-size:13px; }
+  body { padding:8px; }
+  #page { max-width:980px; margin:0 auto; background:#eee; border:1px solid #777; padding:8px; }
+  h1 { font-family:"Times New Roman",Times,serif; font-size:22px; margin:0 0 6px; }
+  .small { font-size:11px; color:#333; }
+  .bar { border:1px solid #777; background:#ccc; padding:4px; margin:6px 0; }
+  button,input,select,textarea { font:inherit; }
+  button { padding:1px 8px; margin-right:3px; border:1px solid #666; border-top-color:#fff; border-left-color:#fff; background:#ddd; color:#000; min-height:23px; }
+  button:active { border:1px solid #666; border-bottom-color:#fff; border-right-color:#fff; }
+  input,select,textarea { border:1px solid #777; background:#fff; color:#000; padding:2px 3px; }
+  fieldset { border:1px solid #777; padding:6px; margin:7px 0; }
+  legend { font-weight:bold; padding:0 3px; }
+  table.form { border-collapse:collapse; width:100%; }
+  table.form td { padding:2px 5px 2px 0; vertical-align:middle; white-space:nowrap; }
+  table.form td.value { width:100%; }
+  table.form input[type="text"] { width:100%; box-sizing:border-box; }
+  .hidden { display:none !important; }
+  #status { min-height:16px; padding-top:2px; }
+  #status.error { color:#900; font-weight:bold; }
+  #status.ok { color:#060; }
+  .calendar-controls { margin-bottom:5px; }
+  #calendar { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; }
+  .month { border:1px solid #777; background:#fff; }
+  .month-title { text-align:center; font-family:"Times New Roman",Times,serif; font-weight:bold; background:#ccc; border-bottom:1px solid #777; padding:2px; }
+  .month table { width:100%; border-collapse:collapse; table-layout:fixed; font-size:10px; }
+  .month th,.month td { border:1px solid #ccc; vertical-align:top; height:34px; padding:1px; overflow:hidden; }
+  .month th { height:auto; text-align:center; background:#eee; font-weight:normal; }
+  .day-number { font-weight:bold; font-size:9px; }
+  .event-tag { display:block; margin-top:1px; line-height:1.05; font-size:9px; word-break:break-word; }
+  .empty-day { background:#f1f1f1; }
+  #jsonPreview { width:100%; min-height:240px; box-sizing:border-box; font-family:"Courier New",Courier,monospace; font-size:11px; white-space:pre; }
+  .filename { font-family:"Courier New",Courier,monospace; font-weight:bold; }
+  .section-note { margin:3px 0 0; font-size:11px; color:#333; }
+  @media (max-width:760px) {
+    #calendar { grid-template-columns:1fr; }
+    table.form,table.form tbody,table.form tr,table.form td { display:block; width:100%; white-space:normal; }
+    table.form td { padding:2px 0; }
+  }
+
+  body.dark {
+    background:#111;
+    color:#ddd;
+  }
+
+  body.dark #page {
+    background:#1b1b1b;
+    border-color:#666;
+  }
+
+  body.dark .bar,
+  body.dark .month-title {
+    background:#2b2b2b;
+    border-color:#666;
+  }
+
+  body.dark fieldset,
+  body.dark .month {
+    border-color:#666;
+  }
+
+  body.dark .month {
+    background:#181818;
+  }
+
+  body.dark .month th {
+    background:#252525;
+  }
+
+  body.dark .month th,
+  body.dark .month td {
+    border-color:#444;
+  }
+
+  body.dark .empty-day {
+    background:#202020;
+  }
+
+  body.dark button {
+    background:#333;
+    color:#eee;
+    border-color:#777;
+    border-top-color:#aaa;
+    border-left-color:#aaa;
+  }
+
+  body.dark button:active {
+    border-color:#777;
+    border-bottom-color:#aaa;
+    border-right-color:#aaa;
+  }
+
+  body.dark input,
+  body.dark select,
+  body.dark textarea {
+    background:#111;
+    color:#eee;
+    border-color:#666;
+  }
+
+  body.dark .small,
+  body.dark .section-note {
+    color:#aaa;
+  }
+
+  body.dark #status.ok {
+    color:#8f8;
+  }
+
+  body.dark #status.error {
+    color:#f88;
+  }
+
+  .title-row {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin:0 0 6px;
+  }
+
+  .title-row h1 {
+    margin:0;
+  }
+
+  .mode-toggle {
+    margin:0;
+    white-space:nowrap;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:13px;
+    font-weight:normal;
+  }
+
+  .mode-toggle input {
+    vertical-align:middle;
+    margin:0 3px 0 0;
+    padding:0;
+  }
+
+
+  .calendar-controls {
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:4px 14px;
+    margin-bottom:4px;
+  }
+
+  .calendar-controls label {
+    white-space:nowrap;
+  }
+
+  #locationRegion {
+    max-width:310px;
+  }
+
+  .astro-options {
+    border:1px solid #888;
+    background:#ddd;
+    padding:2px 5px 4px;
+    margin:4px 0 5px;
+  }
+
+  .astro-options summary {
+    cursor:pointer;
+    font-weight:bold;
+    user-select:none;
+  }
+
+  .astro-options-grid {
+    display:grid;
+    grid-template-columns:repeat(3, max-content);
+    gap:3px 18px;
+    padding:5px 0 2px;
+  }
+
+  .astro-options-grid label {
+    white-space:nowrap;
+  }
+
+  .astro-status {
+    min-height:14px;
+    margin:2px 0 4px;
+    font-size:11px;
+    color:#555;
+  }
+
+  .astro-tag {
+    display:block;
+    margin-top:1px;
+    line-height:1.05;
+    font-size:9px;
+    word-break:break-word;
+    font-style:italic;
+    color:#333;
+  }
+
+  body.dark .astro-options {
+    background:#242424;
+    border-color:#666;
+  }
+
+  body.dark .astro-status,
+  body.dark .astro-tag {
+    color:#bbb;
+  }
+
+  @media (max-width:760px) {
+    .astro-options-grid {
+      grid-template-columns:1fr 1fr;
+    }
+  }
+
+  @media (max-width:430px) {
+    .astro-options-grid {
+      grid-template-columns:1fr;
+    }
+
+    #locationRegion {
+      max-width:220px;
+    }
+  }
+
+
+  #calendar.single-month { display:block; }
+  #calendar.single-month .month { width:100%; }
+  #calendar.single-month .month table { font-size:12px; }
+  #calendar.single-month .month th { font-size:12px; padding:3px 1px; }
+  #calendar.single-month .month td { height:82px; padding:3px; }
+  #calendar.single-month .day-number { font-size:11px; }
+  #calendar.single-month .event-tag,
+  #calendar.single-month .astro-tag {
+    font-size:11px;
+    line-height:1.15;
+    margin-top:3px;
+  }
+  @media (max-width:760px) {
+    #calendar.single-month .month td { height:68px; padding:2px; }
+    #calendar.single-month .event-tag,
+    #calendar.single-month .astro-tag { font-size:10px; }
+  }
+
+  .event-list-wrap {
+    border:1px solid #777;
+    background:#fff;
+    max-height:180px;
+    overflow-y:auto;
+  }
+
+  .event-list-table {
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+    font-size:13px;
+  }
+
+  .event-list-table th,
+  .event-list-table td {
+    border-bottom:1px solid #ccc;
+    padding:2px 5px;
+    text-align:left;
+  }
+
+  .event-list-table th {
+    background:#ddd;
+    position:sticky;
+    top:0;
+    z-index:1;
+  }
+
+  .event-list-table th:last-child,
+  .event-list-table td:last-child {
+    width:105px;
+  }
+
+  .event-list-table tbody tr {
+    cursor:pointer;
+  }
+
+  .event-list-table tbody tr:hover {
+    background:#eee;
+  }
+
+  .event-list-table tbody tr.selected {
+    background:#c8d8ee;
+  }
+
+  .event-list-table tbody tr:focus {
+    outline:1px dotted #000;
+    outline-offset:-2px;
+  }
+
+  body.dark .event-list-wrap {
+    background:#111;
+    border-color:#666;
+  }
+
+  body.dark .event-list-table th {
+    background:#2b2b2b;
+    border-color:#555;
+  }
+
+  body.dark .event-list-table td {
+    border-color:#444;
+  }
+
+  body.dark .event-list-table tbody tr:hover {
+    background:#242424;
+  }
+
+  body.dark .event-list-table tbody tr.selected {
+    background:#33445c;
+  }
+
+  body.dark .event-list-table tbody tr:focus {
+    outline-color:#ddd;
+  }
+
+
+  .event-list-table tbody {
+    height:auto !important;
+  }
+
+  .event-list-table tbody tr,
+  .event-list-table tbody td {
+    height:24px;
+  }
+
+  .event-list-table tbody td {
+    line-height:18px;
+    padding-top:2px;
+    padding-bottom:2px;
+  }
+
+
+  .holiday-options {
+    border:1px solid #888;
+    background:#ddd;
+    padding:2px 5px 4px;
+    margin:4px 0 5px;
+  }
+
+  .holiday-options summary {
+    cursor:pointer;
+    font-weight:bold;
+    user-select:none;
+  }
+
+  .holiday-controls {
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:4px;
+    padding:5px 0 3px;
+  }
+
+  .holiday-controls select {
+    min-width:220px;
+    max-width:330px;
+  }
+
+  .holiday-type-options {
+    display:flex;
+    flex-wrap:wrap;
+    gap:4px 18px;
+    padding:2px 0 4px;
+  }
+
+  .holiday-selected-heading {
+    font-weight:bold;
+    margin-top:2px;
+  }
+
+  .holiday-selected-countries {
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+    gap:2px 12px;
+    padding:3px 0 4px;
+  }
+
+  .holiday-selected-countries label {
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .holiday-tag {
+    display:block;
+    margin-top:3px;
+    line-height:1.15;
+    font-size:11px;
+    word-break:break-word;
+    font-weight:bold;
+  }
+
+  body.dark .holiday-options {
+    background:#242424;
+    border-color:#666;
+  }
+
+  body.dark .holiday-tag {
+    color:#ddd;
+  }
+
+  @media (max-width:760px) {
+    .holiday-selected-countries {
+      grid-template-columns:1fr 1fr;
+    }
+  }
+
+  @media (max-width:430px) {
+    .holiday-selected-countries {
+      grid-template-columns:1fr;
+    }
+
+    .holiday-controls select {
+      min-width:180px;
+      max-width:220px;
+    }
+  }
+
+
+  .astro-details-panel {
+    border:1px solid #888;
+    background:#eee;
+    margin-top:6px;
+  }
+
+  .astro-details-heading {
+    background:#ccc;
+    border-bottom:1px solid #888;
+    font-weight:bold;
+    padding:3px 5px;
+  }
+
+  .astro-details-list {
+    background:#fff;
+  }
+
+  .astro-detail-row {
+    display:grid;
+    grid-template-columns:72px minmax(150px, 1fr) minmax(220px, 2fr) 95px;
+    gap:6px;
+    align-items:start;
+    border-bottom:1px solid #ddd;
+    padding:4px 5px;
+  }
+
+  .astro-detail-row:last-child {
+    border-bottom:0;
+  }
+
+  .astro-detail-date {
+    white-space:nowrap;
+    font-weight:bold;
+  }
+
+  .astro-detail-name {
+    font-weight:bold;
+  }
+
+  .astro-detail-description {
+    color:#333;
+  }
+
+  .astro-detail-source {
+    text-align:right;
+    white-space:nowrap;
+  }
+
+  .astro-detail-source a {
+    color:#00e;
+    text-decoration:underline;
+  }
+
+  .astro-details-empty {
+    padding:5px;
+    color:#555;
+  }
+
+  body.dark .astro-details-panel {
+    background:#222;
+    border-color:#666;
+  }
+
+  body.dark .astro-details-heading {
+    background:#2b2b2b;
+    border-color:#666;
+  }
+
+  body.dark .astro-details-list {
+    background:#111;
+  }
+
+  body.dark .astro-detail-row {
+    border-color:#444;
+  }
+
+  body.dark .astro-detail-description,
+  body.dark .astro-details-empty {
+    color:#bbb;
+  }
+
+  body.dark .astro-detail-source a {
+    color:#8ab4ff;
+  }
+
+  @media (max-width:760px) {
+    .astro-detail-row {
+      grid-template-columns:60px 1fr;
+      gap:2px 6px;
+    }
+
+    .astro-detail-description,
+    .astro-detail-source {
+      grid-column:2;
+      text-align:left;
+    }
+  }
+
+
+  .event-description-field {
+    width:100%;
+    min-height:54px;
+    height:54px;
+    box-sizing:border-box;
+    resize:vertical;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:13px;
+  }
+
+  .holiday-detail-row,
+  .json-detail-row {
+    display:grid;
+    gap:6px;
+    align-items:start;
+    border-bottom:1px solid #ddd;
+    padding:4px 5px;
+  }
+
+  .holiday-detail-row {
+    grid-template-columns:72px minmax(150px,1fr) minmax(180px,1.5fr) 155px;
+  }
+
+  .json-detail-row {
+    grid-template-columns:72px minmax(150px,1fr) minmax(250px,2fr);
+  }
+
+  .holiday-detail-row:last-child,
+  .json-detail-row:last-child {
+    border-bottom:0;
+  }
+
+  .detail-date,
+  .detail-name {
+    font-weight:bold;
+  }
+
+  .detail-date {
+    white-space:nowrap;
+  }
+
+  .detail-meta,
+  .detail-description {
+    color:#333;
+  }
+
+  .holiday-detail-links {
+    text-align:right;
+    white-space:nowrap;
+  }
+
+  .holiday-detail-links a {
+    color:#00e;
+    text-decoration:underline;
+  }
+
+  body.dark .holiday-detail-row,
+  body.dark .json-detail-row {
+    border-color:#444;
+  }
+
+  body.dark .detail-meta,
+  body.dark .detail-description {
+    color:#bbb;
+  }
+
+  body.dark .holiday-detail-links a {
+    color:#8ab4ff;
+  }
+
+  @media (max-width:760px) {
+    .holiday-detail-row,
+    .json-detail-row {
+      grid-template-columns:60px 1fr;
+      gap:2px 6px;
+    }
+
+    .holiday-detail-row .detail-meta,
+    .holiday-detail-row .holiday-detail-links,
+    .json-detail-row .detail-description {
+      grid-column:2;
+      text-align:left;
+    }
+  }
+
+
+  .credits-footer {
+    margin-top:8px;
+    border-top:1px solid #777;
+    padding-top:5px;
+    font-size:11px;
+    color:#333;
+  }
+
+  .credits-footer summary {
+    cursor:pointer;
+    font-weight:bold;
+  }
+
+  .credits-body {
+    padding:3px 0 0 12px;
+    max-width:900px;
+  }
+
+  .credits-body p {
+    margin:3px 0;
+    color:inherit;
+  }
+
+  .credits-body a {
+    color:#00e;
+    text-decoration:underline;
+  }
+
+  .credits-body a:visited {
+    color:#551a8b;
+  }
+
+
+  body.dark .credits-body a {
+    color:#8ab4ff;
+  }
+
+  body.dark .credits-body a:visited {
+    color:#c7a7ff;
+  }
+
+  body.dark .credits-footer {
+    color:#aaa;
+    border-color:#666;
+  }
+
+
+
+  .toolbar-back {
+    display:inline-block;
+    padding:2px 8px;
+    margin-right:3px;
+    min-height:23px;
+    line-height:17px;
+    box-sizing:border-box;
+    border:1px solid #666;
+    border-top-color:#fff;
+    border-left-color:#fff;
+    background:#ddd;
+    color:#000;
+    text-decoration:none;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:13px;
+    vertical-align:top;
+  }
+
+  .toolbar-back:visited {
+    color:#000;
+  }
+
+  .toolbar-back:active {
+    border:1px solid #666;
+    border-bottom-color:#fff;
+    border-right-color:#fff;
+  }
+
+  body.dark .toolbar-back {
+    background:#333;
+    color:#eee;
+    border-color:#777;
+    border-top-color:#aaa;
+    border-left-color:#aaa;
+  }
+
+  body.dark .toolbar-back:visited {
+    color:#eee;
+  }
+
+  body.dark .toolbar-back:active {
+    border-color:#777;
+    border-bottom-color:#aaa;
+    border-right-color:#aaa;
+  }
+
+
+  .back-row {
+    margin:0 0 8px;
+    line-height:1;
+  }
+
+  .back-link-top {
+    color:#00e;
+    text-decoration:underline;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:12px;
+  }
+
+  .back-link-top:visited {
+    color:#551a8b;
+  }
+
+  body.dark .back-link-top {
+    color:#8ab4ff;
+  }
+
+  body.dark .back-link-top:visited {
+    color:#c7a7ff;
+  }
+
+</style>
+</head>
+<body>
+<div id="page">
+  <div class="back-row">
+  <a class="back-link-top" href="./misc.html">&larr; Back</a>
+</div>
+
+<div class="title-row">
+  <h1>Annual Events Editor</h1>
+  <label class="mode-toggle"><input id="darkModeToggle" type="checkbox"> Dark mode</label>
+</div>
+
+  <div class="bar">
+    <button id="openBtn" type="button">Open JSON File...</button>
+    <button id="saveBtn" type="button">Save</button>
+    <button id="saveAsBtn" type="button">Save As...</button>
+    <button id="addBtn" type="button">Add Event</button>
+    <span id="fileName" class="filename">No file open</span>
+    <div id="status"></div>
+  </div>
+
+  <fieldset>
+    <legend>Events</legend>
+    <div class="event-list-wrap">
+      <table class="event-list-table" id="eventTable">
+        <thead>
+          <tr><th>Event</th><th>Month</th></tr>
+        </thead>
+        <tbody id="eventList"></tbody>
+      </table>
+    </div>
+    <div class="section-note">Select an event to edit it below. Click the selected event again to deselect it. This editor does not provide a delete function.</div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Selected Event</legend>
+    <div id="noSelection">No event selected.</div>
+    <div id="editor" class="hidden">
+      <table class="form">
+        <tr><td><label for="nameField">Name:</label></td><td class="value"><input id="nameField" type="text"></td></tr>
+        <tr><td><label for="categoryField">Category:</label></td><td class="value"><input id="categoryField" type="text"></td></tr>
+        <tr>
+          <td><label for="descriptionField">Description:</label></td>
+          <td class="value"><textarea id="descriptionField" rows="3" class="event-description-field" placeholder="Optional"></textarea></td>
+        </tr>
+        <tr><td><label for="kindField">Date rule:</label></td><td class="value"><select id="kindField"><option value="fixed">Fixed date each year</option><option value="weekday">Nth weekday of month</option></select></td></tr>
+        <tr><td><label for="monthField">Month:</label></td><td class="value"><select id="monthField"></select></td></tr>
+        <tr id="fixedRow"><td><label for="dayField">Day:</label></td><td class="value"><input id="dayField" type="number" min="1" max="31" style="width:70px"></td></tr>
+        <tr id="occurrenceRow" class="hidden"><td><label for="occurrenceField">Occurrence:</label></td><td class="value"><select id="occurrenceField"><option value="1">First</option><option value="2">Second</option><option value="3">Third</option><option value="4">Fourth</option><option value="-1">Last</option></select></td></tr>
+        <tr id="weekdayRow" class="hidden"><td><label for="weekdayField">Weekday:</label></td><td class="value"><select id="weekdayField"><option value="MO">Monday</option><option value="TU">Tuesday</option><option value="WE">Wednesday</option><option value="TH">Thursday</option><option value="FR">Friday</option><option value="SA">Saturday</option><option value="SU">Sunday</option></select></td></tr>
+      </table>
+      <div class="section-note">Edits take effect immediately in the calendar and JSON preview. Use Save to write them back to the open file.</div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Calendar</legend>
+
+    <div class="calendar-controls">
+      <label for="calendarYear">Year:
+        <input id="calendarYear" type="number" min="1" max="9999" style="width:75px">
+      </label>
+
+      <label for="calendarMonth">Month:
+        <select id="calendarMonth"></select>
+      </label>
+
+      <label for="locationRegion">Location:
+        <select id="locationRegion"></select>
+      </label>
+    </div>
+
+    <details class="astro-options" id="astroOptions">
+      <summary>Astronomy display options</summary>
+      <div class="astro-options-grid">
+        <label><input id="astroMoon" type="checkbox" checked> Moon phases</label>
+        <label><input id="astroEclipses" type="checkbox" checked> Eclipses</label>
+        <label><input id="astroMeteors" type="checkbox" checked> Meteor showers</label>
+        <label><input id="astroSeasons" type="checkbox" checked> Seasons</label>
+        <label><input id="astroApsis" type="checkbox" checked> Lunar perigee/apogee</label>
+        <label><input id="astroOther" type="checkbox" checked> Other astronomy</label>
+      </div>
+      <div class="section-note">
+        Astronomy calculations use Astronomy Engine. Normal meteor-shower peaks use the IMO Working List
+        (June 2025) and are calculated for the selected year from each shower's J2000 solar longitude,
+        so they are not limited to 2026 or 2027. Year-specific predicted meteor outbursts are not included.
+        The location choices are broad regions represented by a central point, so local eclipse visibility
+        is approximate near the edge of an eclipse path.
+      </div>
+    </details>
+
+    <details class="holiday-options" id="holidayOptions">
+      <summary>Holiday display options</summary>
+
+      <div class="holiday-controls">
+        <label for="holidayCountryAdd">Add country:
+          <select id="holidayCountryAdd"></select>
+        </label>
+        <button id="holidayAddCountryBtn" type="button">Add</button>
+      </div>
+
+      <div class="holiday-type-options">
+        <label><input id="holidayPublic" type="checkbox" checked> Public holidays</label>
+        <label><input id="holidayObservance" type="checkbox" checked> Observances / cultural holidays</label>
+      </div>
+
+      <div class="holiday-selected-heading">Selected countries:</div>
+      <div id="holidaySelectedCountries" class="holiday-selected-countries"></div>
+
+      <div class="section-note">
+        Holiday data uses date-holidays 3.34.1. Names are requested in English.
+        If the same normalized holiday name occurs in several selected countries on the same date,
+        it is displayed once; the contributing countries are listed in the tooltip.
+        Holiday data: date-holidays (ISC; underlying holiday data CC BY-SA 3.0).
+      </div>
+    </details>
+
+    <div id="astroStatus" class="astro-status"></div>
+    <div id="holidayStatus" class="astro-status"></div>
+    <div id="calendar"></div>
+
+    <div class="astro-details-panel">
+      <div class="astro-details-heading">JSON events this month</div>
+      <div id="jsonEventDetailsList" class="astro-details-list"></div>
+    </div>
+
+    <div class="astro-details-panel">
+      <div class="astro-details-heading">Holidays this month</div>
+      <div id="holidayDetailsList" class="astro-details-list"></div>
+    </div>
+
+    <div class="astro-details-panel">
+      <div class="astro-details-heading">Astronomy events this month</div>
+      <div id="astroDetailsList" class="astro-details-list"></div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>JSON</legend>
+    <textarea id="jsonPreview" spellcheck="false"></textarea>
+    <div style="margin-top:4px"><button id="applyJsonBtn" type="button">Apply JSON Edits</button></div>
+    <div class="section-note">Raw JSON may be edited directly. Applying JSON that contains fewer events than the current file is blocked.</div>
+  </fieldset>
+
+  <div class="small">Direct file opening/saving uses the browser File System Access API. If the browser does not support it, the page will report that rather than downloading replacement copies.</div>
+  <div class="credits-footer">
+    <details>
+      <summary>Credits / licenses</summary>
+      <div class="credits-body">
+        <p>
+          Astronomy calculations use
+          <a href="https://github.com/cosinekitty/astronomy" target="_blank" rel="noopener noreferrer">Astronomy Engine</a>,
+          Copyright &copy; Don Cross, distributed under the MIT License.
+        </p>
+        <p>
+          Holiday calculations use
+          <a href="https://github.com/commenthol/date-holidays" target="_blank" rel="noopener noreferrer">date-holidays</a>,
+          distributed under the ISC License. Its holiday data is provided under CC BY-SA 3.0; country-specific
+          attribution is maintained by the date-holidays project.
+        </p>
+        <p>
+          Meteor-shower parameters are derived from the
+          <a href="https://www.imo.net/resources/calendar/" target="_blank" rel="noopener noreferrer">International Meteor Organization</a>
+          Working List of Visual Meteor Showers (data current June 2025). Peak dates are calculated independently
+          for the selected year using Astronomy Engine.
+        </p>
+      </div>
+    </details>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+<script src="https://unpkg.com/date-holidays@3.34.1/dist/umd.min.js" charset="UTF-8"></script>
+<script>
+(function () {
+  "use strict";
+  const months=["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const weekdayNames={MO:"Monday",TU:"Tuesday",WE:"Wednesday",TH:"Thursday",FR:"Friday",SA:"Saturday",SU:"Sunday"};
+  const weekdayNumbers={SU:0,MO:1,TU:2,WE:3,TH:4,FR:5,SA:6};
+
+  const astronomyRegions = [
+    {group:"North America", id:"alaska", name:"Alaska", lat:64, lon:-150, tz:"America/Anchorage"},
+    {group:"North America", id:"pacific_nw", name:"Pacific Northwest", lat:47.5, lon:-122.5, tz:"America/Los_Angeles"},
+    {group:"North America", id:"california_baja", name:"California / Baja", lat:35, lon:-119, tz:"America/Los_Angeles"},
+    {group:"North America", id:"mountain_west", name:"Mountain West", lat:40, lon:-110, tz:"America/Denver"},
+    {group:"North America", id:"central_na", name:"Central North America", lat:40, lon:-97, tz:"America/Chicago"},
+    {group:"North America", id:"eastern_na", name:"Eastern North America", lat:40, lon:-75, tz:"America/New_York"},
+    {group:"North America", id:"northern_canada", name:"Northern Canada", lat:60, lon:-105, tz:"America/Edmonton"},
+    {group:"North America", id:"mexico_central", name:"Mexico / Central America", lat:18, lon:-96, tz:"America/Mexico_City"},
+    {group:"North America", id:"caribbean", name:"Caribbean", lat:18, lon:-66, tz:"America/Puerto_Rico"},
+
+    {group:"South America", id:"northern_sa", name:"Northern South America", lat:5, lon:-74, tz:"America/Bogota"},
+    {group:"South America", id:"western_andes", name:"Western Andes", lat:-15, lon:-72, tz:"America/Lima"},
+    {group:"South America", id:"eastern_brazil", name:"Eastern Brazil", lat:-15, lon:-47, tz:"America/Sao_Paulo"},
+    {group:"South America", id:"southern_cone", name:"Southern Cone", lat:-40, lon:-65, tz:"America/Argentina/Buenos_Aires"},
+
+    {group:"Europe", id:"iceland", name:"Iceland / North Atlantic", lat:64.5, lon:-19, tz:"Atlantic/Reykjavik"},
+    {group:"Europe", id:"western_europe", name:"Western Europe", lat:50, lon:2, tz:"Europe/Paris"},
+    {group:"Europe", id:"northern_europe", name:"Northern Europe", lat:60, lon:15, tz:"Europe/Stockholm"},
+    {group:"Europe", id:"central_eastern_europe", name:"Central / Eastern Europe", lat:50, lon:20, tz:"Europe/Warsaw"},
+    {group:"Europe", id:"mediterranean", name:"Mediterranean Europe", lat:40, lon:15, tz:"Europe/Rome"},
+    {group:"Europe", id:"european_arctic", name:"European Arctic", lat:69, lon:20, tz:"Europe/Oslo"},
+
+    {group:"Africa", id:"north_africa", name:"North Africa", lat:30, lon:10, tz:"Africa/Algiers"},
+    {group:"Africa", id:"west_africa", name:"West Africa", lat:10, lon:-5, tz:"Africa/Abidjan"},
+    {group:"Africa", id:"central_africa", name:"Central Africa", lat:0, lon:20, tz:"Africa/Kinshasa"},
+    {group:"Africa", id:"east_africa", name:"East Africa", lat:0, lon:37, tz:"Africa/Nairobi"},
+    {group:"Africa", id:"southern_africa", name:"Southern Africa", lat:-30, lon:25, tz:"Africa/Johannesburg"},
+
+    {group:"Asia", id:"middle_east", name:"Middle East", lat:30, lon:45, tz:"Asia/Baghdad"},
+    {group:"Asia", id:"central_asia", name:"Central Asia", lat:42, lon:70, tz:"Asia/Almaty"},
+    {group:"Asia", id:"south_asia", name:"South Asia", lat:23, lon:78, tz:"Asia/Kolkata"},
+    {group:"Asia", id:"southeast_asia", name:"Southeast Asia", lat:10, lon:105, tz:"Asia/Bangkok"},
+    {group:"Asia", id:"east_asia", name:"East Asia", lat:35, lon:120, tz:"Asia/Shanghai"},
+    {group:"Asia", id:"japan_korea", name:"Japan / Korea", lat:36, lon:135, tz:"Asia/Tokyo"},
+    {group:"Asia", id:"siberia", name:"Siberia", lat:60, lon:100, tz:"Asia/Krasnoyarsk"},
+
+    {group:"Oceania / Pacific", id:"maritime_se_asia", name:"Maritime Southeast Asia", lat:-3, lon:115, tz:"Asia/Jakarta"},
+    {group:"Oceania / Pacific", id:"western_australia", name:"Western Australia", lat:-30, lon:120, tz:"Australia/Perth"},
+    {group:"Oceania / Pacific", id:"northern_australia", name:"Northern Australia", lat:-20, lon:135, tz:"Australia/Darwin"},
+    {group:"Oceania / Pacific", id:"eastern_australia", name:"Eastern Australia", lat:-30, lon:150, tz:"Australia/Sydney"},
+    {group:"Oceania / Pacific", id:"new_zealand", name:"New Zealand", lat:-41, lon:174, tz:"Pacific/Auckland"},
+    {group:"Oceania / Pacific", id:"hawaii", name:"Hawaii", lat:21, lon:-157, tz:"Pacific/Honolulu"},
+    {group:"Oceania / Pacific", id:"central_pacific", name:"Central Pacific", lat:-10, lon:-150, tz:"Pacific/Tahiti"},
+    {group:"Oceania / Pacific", id:"southwest_pacific", name:"Southwest Pacific", lat:-18, lon:178, tz:"Pacific/Fiji"},
+
+    {group:"Polar", id:"high_arctic", name:"High Arctic", lat:78, lon:15, tz:"Europe/Oslo"},
+    {group:"Polar", id:"antarctic", name:"Antarctic interior", lat:-75, lon:0, tz:"UTC"}
+  ];
+
+  /*
+    International Meteor Organization (IMO), Working List of Visual Meteor Showers.
+    Parameters below are from Table 5 of the 2026 Meteor Shower Calendar and were
+    current in June 2025. Unlike the Gregorian "maximum date", solar longitude
+    (lambdaSun) describes Earth's orbital position and can be solved for any year.
+
+    The calendar calculates each year's normal peak from the J2000 solar longitude.
+    This intentionally does not attempt to predict year-specific dust-trail outbursts
+    or special enhancements published in individual annual IMO calendars.
+  */
+  const imoMeteorShowers = [
+    {code:"QUA", name:"Quadrantids",              lambdaSun:283.15, approxMonth:1,  approxDay:3,  dec: 49, zhr:"80"},
+    {code:"GUM", name:"γ-Ursae Minorids",        lambdaSun:298.00, approxMonth:1,  approxDay:18, dec: 67, zhr:"3"},
+    {code:"ACE", name:"α-Centaurids",             lambdaSun:319.40, approxMonth:2,  approxDay:8,  dec:-58, zhr:"6"},
+    {code:"LYR", name:"April Lyrids",             lambdaSun: 32.32, approxMonth:4,  approxDay:22, dec: 34, zhr:"18"},
+    {code:"PPU", name:"π-Puppids",                lambdaSun: 33.50, approxMonth:4,  approxDay:24, dec:-45, zhr:"variable"},
+    {code:"ETA", name:"η-Aquariids",              lambdaSun: 45.50, approxMonth:5,  approxDay:6,  dec: -1, zhr:"50"},
+    {code:"ELY", name:"η-Lyrids",                 lambdaSun: 50.00, approxMonth:5,  approxDay:11, dec: 43, zhr:"3"},
+    {code:"JBO", name:"June Boötids",             lambdaSun: 90.30, approxMonth:6,  approxDay:22, dec: 48, zhr:"variable"},
+    {code:"JPE", name:"July Pegasids",            lambdaSun:108.00, approxMonth:7,  approxDay:10, dec: 11, zhr:"3"},
+    {code:"GDR", name:"July γ-Draconids",         lambdaSun:125.13, approxMonth:7,  approxDay:28, dec: 51, zhr:"5"},
+    {code:"SDA", name:"Southern δ-Aquariids",     lambdaSun:128.00, approxMonth:7,  approxDay:31, dec:-16, zhr:"25"},
+    {code:"CAP", name:"α-Capricornids",           lambdaSun:128.00, approxMonth:7,  approxDay:31, dec:-10, zhr:"5"},
+    {code:"ERI", name:"η-Eridanids",              lambdaSun:135.00, approxMonth:8,  approxDay:7,  dec:-11, zhr:"3"},
+    {code:"PER", name:"Perseids",                 lambdaSun:140.00, approxMonth:8,  approxDay:13, dec: 58, zhr:"100"},
+    {code:"KCG", name:"κ-Cygnids",                lambdaSun:144.00, approxMonth:8,  approxDay:17, dec: 59, zhr:"3"},
+    {code:"AUR", name:"Aurigids",                 lambdaSun:158.60, approxMonth:9,  approxDay:1,  dec: 39, zhr:"6"},
+    {code:"SPE", name:"September ε-Perseids",     lambdaSun:166.70, approxMonth:9,  approxDay:9,  dec: 40, zhr:"8"},
+    {code:"SLY", name:"September Lyncids",        lambdaSun:170.00, approxMonth:9,  approxDay:13, dec: 56, zhr:"3"},
+    {code:"OCT", name:"October Camelopardalids",  lambdaSun:192.58, approxMonth:10, approxDay:6,  dec: 79, zhr:"5"},
+    {code:"DRA", name:"Draconids",                lambdaSun:195.40, approxMonth:10, approxDay:9,  dec: 54, zhr:"5"},
+    {code:"EGE", name:"ε-Geminids",               lambdaSun:205.00, approxMonth:10, approxDay:18, dec: 27, zhr:"3"},
+    {code:"ORI", name:"Orionids",                 lambdaSun:208.00, approxMonth:10, approxDay:21, dec: 16, zhr:"20"},
+    {code:"LMI", name:"Leonis Minorids",          lambdaSun:211.00, approxMonth:10, approxDay:24, dec: 37, zhr:"2"},
+    {code:"STA", name:"Southern Taurids",         lambdaSun:223.00, approxMonth:11, approxDay:5,  dec: 15, zhr:"7"},
+    {code:"NTA", name:"Northern Taurids",         lambdaSun:230.00, approxMonth:11, approxDay:12, dec: 22, zhr:"5"},
+    {code:"LEO", name:"Leonids",                  lambdaSun:235.27, approxMonth:11, approxDay:17, dec: 22, zhr:"15"},
+    {code:"AMO", name:"α-Monocerotids",           lambdaSun:239.32, approxMonth:11, approxDay:22, dec:  1, zhr:"variable"},
+    {code:"NOO", name:"November Orionids",        lambdaSun:246.00, approxMonth:11, approxDay:28, dec: 16, zhr:"3"},
+    {code:"PHO", name:"Phoenicids",               lambdaSun:249.50, approxMonth:12, approxDay:2,  dec:-27, zhr:"variable"},
+    {code:"MON", name:"Monocerotids",             lambdaSun:257.00, approxMonth:12, approxDay:9,  dec:  8, zhr:"3"},
+    {code:"HYD", name:"σ-Hydrids",                lambdaSun:257.00, approxMonth:12, approxDay:9,  dec:  2, zhr:"7"},
+    {code:"GEM", name:"Geminids",                 lambdaSun:262.20, approxMonth:12, approxDay:14, dec: 33, zhr:"150"},
+    {code:"URS", name:"Ursids",                   lambdaSun:270.70, approxMonth:12, approxDay:22, dec: 76, zhr:"10"},
+    {code:"COM", name:"Comae Berenicids",         lambdaSun:271.00, approxMonth:12, approxDay:23, dec: 29, zhr:"3"}
+  ];
+  let events=[];
+  let selectedIndex=-1;
+  let fileHandle=null;
+  let currentFileName="";
+  let dirty=false;
+
+  const FILE_HANDLE_DB="annual-events-editor-db";
+  const FILE_HANDLE_STORE="handles";
+  const LAST_FILE_KEY="last-json-file";
+
+  function openHandleDatabase(){
+    return new Promise((resolve,reject)=>{
+      if(!("indexedDB" in window)){
+        reject(new Error("IndexedDB is unavailable."));
+        return;
+      }
+
+      const request=indexedDB.open(FILE_HANDLE_DB,1);
+
+      request.onupgradeneeded=()=>{
+        const db=request.result;
+        if(!db.objectStoreNames.contains(FILE_HANDLE_STORE)){
+          db.createObjectStore(FILE_HANDLE_STORE);
+        }
+      };
+
+      request.onsuccess=()=>resolve(request.result);
+      request.onerror=()=>reject(request.error || new Error("Could not open file-handle storage."));
+    });
+  }
+
+  async function rememberFileHandle(handle){
+    try{
+      const db=await openHandleDatabase();
+
+      await new Promise((resolve,reject)=>{
+        const tx=db.transaction(FILE_HANDLE_STORE,"readwrite");
+        tx.objectStore(FILE_HANDLE_STORE).put(handle,LAST_FILE_KEY);
+        tx.oncomplete=()=>resolve();
+        tx.onerror=()=>reject(tx.error || new Error("Could not remember file handle."));
+      });
+
+      db.close();
+    }catch(e){
+      /* This is only a convenience feature; file editing still works without it. */
+    }
+  }
+
+  async function loadRememberedFileHandle(){
+    try{
+      const db=await openHandleDatabase();
+
+      const handle=await new Promise((resolve,reject)=>{
+        const tx=db.transaction(FILE_HANDLE_STORE,"readonly");
+        const request=tx.objectStore(FILE_HANDLE_STORE).get(LAST_FILE_KEY);
+        request.onsuccess=()=>resolve(request.result || null);
+        request.onerror=()=>reject(request.error || new Error("Could not read remembered file handle."));
+      });
+
+      db.close();
+      return handle;
+    }catch(e){
+      return null;
+    }
+  }
+
+  const eventList=document.getElementById("eventList"), editor=document.getElementById("editor"), noSelection=document.getElementById("noSelection"), nameField=document.getElementById("nameField"), categoryField=document.getElementById("categoryField"), kindField=document.getElementById("kindField"), monthField=document.getElementById("monthField"), dayField=document.getElementById("dayField"), occurrenceField=document.getElementById("occurrenceField"), weekdayField=document.getElementById("weekdayField"), fixedRow=document.getElementById("fixedRow"), occurrenceRow=document.getElementById("occurrenceRow"), weekdayRow=document.getElementById("weekdayRow"), jsonPreview=document.getElementById("jsonPreview"), calendarYear=document.getElementById("calendarYear"), calendarMonth=document.getElementById("calendarMonth"), fileName=document.getElementById("fileName"), status=document.getElementById("status"), locationRegion=document.getElementById("locationRegion"), astroStatus=document.getElementById("astroStatus"),
+  holidayStatus=document.getElementById("holidayStatus"),
+  holidayCountryAdd=document.getElementById("holidayCountryAdd"),
+  holidaySelectedCountries=document.getElementById("holidaySelectedCountries"),
+  holidayPublic=document.getElementById("holidayPublic"),
+  holidayObservance=document.getElementById("holidayObservance"),
+  astroDetailsList=document.getElementById("astroDetailsList"),
+  holidayDetailsList=document.getElementById("holidayDetailsList"),
+  jsonEventDetailsList=document.getElementById("jsonEventDetailsList"),
+  descriptionField=document.getElementById("descriptionField");
+
+  months.forEach((m,i)=>{
+    const editorOption=document.createElement("option");
+    editorOption.value=i+1;
+    editorOption.textContent=m;
+    monthField.appendChild(editorOption);
+
+    const calendarOption=document.createElement("option");
+    calendarOption.value=i;
+    calendarOption.textContent=m;
+    calendarMonth.appendChild(calendarOption);
+  });
+
+  calendarYear.value=new Date().getFullYear();
+
+  try{
+    const savedMonth=localStorage.getItem("annual-events-calendar-month");
+    calendarMonth.value=(savedMonth!==null && Number(savedMonth)>=0 && Number(savedMonth)<=11)
+      ? savedMonth
+      : String(new Date().getMonth());
+  }catch(e){
+    calendarMonth.value=String(new Date().getMonth());
+  }
+
+  const astroCheckboxes = [
+    document.getElementById("astroMoon"),
+    document.getElementById("astroEclipses"),
+    document.getElementById("astroMeteors"),
+    document.getElementById("astroSeasons"),
+    document.getElementById("astroApsis"),
+    document.getElementById("astroOther")
+  ];
+
+  let currentGroup="";
+  let groupElement=null;
+  astronomyRegions.forEach(region=>{
+    if(region.group!==currentGroup){
+      currentGroup=region.group;
+      groupElement=document.createElement("optgroup");
+      groupElement.label=currentGroup;
+      locationRegion.appendChild(groupElement);
+    }
+    const option=document.createElement("option");
+    option.value=region.id;
+    option.textContent=region.name;
+    groupElement.appendChild(option);
+  });
+
+  function loadAstroDisplaySettings(){
+    try{
+      const savedRegion=localStorage.getItem("annual-events-astro-region");
+      if(savedRegion && astronomyRegions.some(r=>r.id===savedRegion)) locationRegion.value=savedRegion;
+      else locationRegion.value="pacific_nw";
+
+      astroCheckboxes.forEach(box=>{
+        const stored=localStorage.getItem("annual-events-"+box.id);
+        if(stored!==null) box.checked=(stored==="true");
+      });
+    }catch(e){
+      locationRegion.value="pacific_nw";
+    }
+  }
+
+  function saveAstroDisplaySettings(){
+    try{
+      localStorage.setItem("annual-events-astro-region",locationRegion.value);
+      astroCheckboxes.forEach(box=>localStorage.setItem("annual-events-"+box.id,String(box.checked)));
+    }catch(e){}
+  }
+
+  loadAstroDisplaySettings();
+
+  let selectedHolidayCountries=["US"];
+  let holidayCountryNames={};
+  let holidayCacheKey="";
+  let holidayCache={};
+
+
+  function getHolidayConstructor(){
+    if(typeof window.Holidays==="function") return window.Holidays;
+
+    if(window.Holidays && typeof window.Holidays.default==="function"){
+      return window.Holidays.default;
+    }
+
+    if(window.Holidays && typeof window.Holidays.Holidays==="function"){
+      return window.Holidays.Holidays;
+    }
+
+    return null;
+  }
+
+  function holidayCountryDisplayName(code,fallback){
+    try{
+      if(typeof Intl!=="undefined" && Intl.DisplayNames){
+        const display=new Intl.DisplayNames(["en"],{type:"region"});
+        return display.of(code) || fallback || code;
+      }
+    }catch(e){}
+    return fallback || code;
+  }
+
+  function initializeHolidayCountries(){
+    const HolidayConstructor=getHolidayConstructor();
+
+    if(!HolidayConstructor){
+      holidayStatus.textContent="Holiday library could not be loaded; holiday overlays are unavailable.";
+      holidayCountryAdd.disabled=true;
+      document.getElementById("holidayAddCountryBtn").disabled=true;
+      return;
+    }
+
+    try{
+      const catalog=new HolidayConstructor();
+      const countries=catalog.getCountries() || {};
+
+      holidayCountryNames={};
+      Object.keys(countries).forEach(code=>{
+        holidayCountryNames[code]=holidayCountryDisplayName(code,countries[code]);
+      });
+
+      try{
+        const saved=JSON.parse(localStorage.getItem("annual-events-holiday-countries") || "null");
+        if(Array.isArray(saved)){
+          const valid=saved.filter(code=>holidayCountryNames[code]);
+          if(valid.length || saved.length===0) selectedHolidayCountries=valid;
+        }
+
+        const savedPublic=localStorage.getItem("annual-events-holiday-public");
+        const savedObservance=localStorage.getItem("annual-events-holiday-observance");
+        if(savedPublic!==null) holidayPublic.checked=(savedPublic==="true");
+        if(savedObservance!==null) holidayObservance.checked=(savedObservance==="true");
+      }catch(e){}
+
+      renderHolidayCountryControls();
+    }catch(err){
+      holidayStatus.textContent="Could not initialize holiday countries: "+(err.message||String(err));
+    }
+  }
+
+  function saveHolidaySettings(){
+    try{
+      localStorage.setItem("annual-events-holiday-countries",JSON.stringify(selectedHolidayCountries));
+      localStorage.setItem("annual-events-holiday-public",String(holidayPublic.checked));
+      localStorage.setItem("annual-events-holiday-observance",String(holidayObservance.checked));
+    }catch(e){}
+  }
+
+  function renderHolidayCountryControls(){
+    holidayCountryAdd.innerHTML="";
+
+    const remaining=Object.keys(holidayCountryNames)
+      .filter(code=>!selectedHolidayCountries.includes(code))
+      .sort((a,b)=>holidayCountryNames[a].localeCompare(holidayCountryNames[b],undefined,{sensitivity:"base"}));
+
+    remaining.forEach(code=>{
+      const option=document.createElement("option");
+      option.value=code;
+      option.textContent=holidayCountryNames[code]+" ("+code+")";
+      holidayCountryAdd.appendChild(option);
+    });
+
+    holidayCountryAdd.disabled=!remaining.length;
+
+    holidaySelectedCountries.innerHTML="";
+
+    if(!selectedHolidayCountries.length){
+      const none=document.createElement("span");
+      none.className="section-note";
+      none.textContent="None";
+      holidaySelectedCountries.appendChild(none);
+      return;
+    }
+
+    selectedHolidayCountries
+      .slice()
+      .sort((a,b)=>holidayCountryNames[a].localeCompare(holidayCountryNames[b],undefined,{sensitivity:"base"}))
+      .forEach(code=>{
+        const label=document.createElement("label");
+        const checkbox=document.createElement("input");
+        checkbox.type="checkbox";
+        checkbox.checked=true;
+        checkbox.dataset.country=code;
+
+        checkbox.addEventListener("change",()=>{
+          if(!checkbox.checked){
+            selectedHolidayCountries=selectedHolidayCountries.filter(c=>c!==code);
+            saveHolidaySettings();
+            invalidateHolidayCache();
+            renderHolidayCountryControls();
+            renderCalendar();
+          }
+        });
+
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(" "+holidayCountryNames[code]));
+        holidaySelectedCountries.appendChild(label);
+      });
+  }
+
+  initializeHolidayCountries();
+
+  const darkModeToggle=document.getElementById("darkModeToggle");
+
+  function applyDarkMode(enabled){
+    document.body.classList.toggle("dark",enabled);
+    darkModeToggle.checked=enabled;
+    try{
+      localStorage.setItem("annual-events-dark-mode",enabled?"true":"false");
+    }catch(e){}
+  }
+
+  try{
+    applyDarkMode(localStorage.getItem("annual-events-dark-mode")==="true");
+  }catch(e){
+    applyDarkMode(false);
+  }
+
+  darkModeToggle.addEventListener("change",function(){
+    applyDarkMode(darkModeToggle.checked);
+  });
+
+  function updateFileLabel(){ fileName.textContent=(currentFileName||"No file open")+(dirty?" *":""); }
+  function markDirty(){ dirty=true; updateFileLabel(); }
+  function setStatus(text,type){ status.textContent=text||""; status.className=type||""; if(text){ clearTimeout(setStatus.timer); setStatus.timer=setTimeout(()=>{ if(status.textContent===text){status.textContent="";status.className="";} },4500); } }
+  function clampInt(value,min,max,fallback){ const n=parseInt(value,10); return Number.isFinite(n)?Math.max(min,Math.min(max,n)):fallback; }
+  function normalizeWeekday(value){ const s=String(value||"").trim().toUpperCase(); if(weekdayNames[s]) return s; const code=Object.keys(weekdayNames).find(c=>weekdayNames[c].toUpperCase()===s); return code||"MO"; }
+  function normalizeOccurrence(value){ const n=Number(value); return [1,2,3,4,-1].includes(n)?n:1; }
+  function makeDefaultEvent(){ return {name:"New Event",category:"personal",description:"",rule:{kind:"fixed",month:1,day:1}}; }
+
+  function normalizeEvent(raw){
+    if(!raw||typeof raw!=="object") return makeDefaultEvent();
+
+    const base={
+      name:String(raw.name||"Untitled Event"),
+      category:String(raw.category||"personal"),
+      description:String(raw.description||"")
+    };
+
+    if(raw.rule&&typeof raw.rule==="object"){
+      if(raw.rule.kind==="weekday"){
+        return {
+          ...base,
+          rule:{
+            kind:"weekday",
+            month:clampInt(raw.rule.month,1,12,1),
+            occurrence:normalizeOccurrence(raw.rule.occurrence),
+            weekday:normalizeWeekday(raw.rule.weekday)
+          }
+        };
+      }
+
+      return {
+        ...base,
+        rule:{
+          kind:"fixed",
+          month:clampInt(raw.rule.month,1,12,1),
+          day:clampInt(raw.rule.day,1,31,1)
+        }
+      };
+    }
+
+    if(raw.weekday){
+      return {
+        ...base,
+        rule:{
+          kind:"weekday",
+          month:clampInt(raw.month,1,12,1),
+          occurrence:normalizeOccurrence(raw.occurrence),
+          weekday:normalizeWeekday(raw.weekday)
+        }
+      };
+    }
+
+    return {
+      ...base,
+      rule:{
+        kind:"fixed",
+        month:clampInt(raw.month,1,12,1),
+        day:clampInt(raw.day,1,31,1)
+      }
+    };
+  }
+
+  function renderAll(){
+    sortEventsChronologically();
+    renderEventList();
+    renderEditor();
+    renderCalendar();
+    updateJsonPreview();
+  }
+
+  function renderEventList(){
+    eventList.innerHTML="";
+
+    if(selectedIndex>=events.length) selectedIndex=-1;
+
+    events.forEach((event,i)=>{
+      const row=document.createElement("tr");
+      row.dataset.index=String(i);
+      row.tabIndex=0;
+      row.setAttribute("role","button");
+      row.setAttribute("aria-pressed",i===selectedIndex ? "true" : "false");
+      if(i===selectedIndex) row.classList.add("selected");
+
+      const nameCell=document.createElement("td");
+      nameCell.textContent=event.name;
+
+      const monthCell=document.createElement("td");
+      monthCell.textContent=months[(event.rule?.month||1)-1] || "";
+
+      row.appendChild(nameCell);
+      row.appendChild(monthCell);
+      eventList.appendChild(row);
+    });
+
+    if(!events.length) selectedIndex=-1;
+  }
+
+  function renderEditor(){
+    if(selectedIndex<0||!events[selectedIndex]){ editor.classList.add("hidden"); noSelection.classList.remove("hidden"); return; }
+    editor.classList.remove("hidden"); noSelection.classList.add("hidden");
+    const event=events[selectedIndex];
+    nameField.value=event.name;
+    categoryField.value=event.category;
+    descriptionField.value=event.description||"";
+    kindField.value=event.rule.kind;
+    monthField.value=event.rule.month;
+    if(event.rule.kind==="fixed"){
+      dayField.value=event.rule.day; fixedRow.classList.remove("hidden"); occurrenceRow.classList.add("hidden"); weekdayRow.classList.add("hidden");
+    }else{
+      occurrenceField.value=event.rule.occurrence; weekdayField.value=event.rule.weekday; fixedRow.classList.add("hidden"); occurrenceRow.classList.remove("hidden"); weekdayRow.classList.remove("hidden");
+    }
+  }
+
+  function updateSelectedEvent(){
+    if(selectedIndex<0||!events[selectedIndex]) return;
+    const event=events[selectedIndex];
+    event.name=nameField.value;
+    event.category=categoryField.value;
+    event.description=descriptionField.value;
+
+    if(kindField.value==="fixed"){
+      event.rule={
+        kind:"fixed",
+        month:clampInt(monthField.value,1,12,1),
+        day:clampInt(dayField.value,1,31,1)
+      };
+    }else{
+      event.rule={
+        kind:"weekday",
+        month:clampInt(monthField.value,1,12,1),
+        occurrence:normalizeOccurrence(occurrenceField.value),
+        weekday:normalizeWeekday(weekdayField.value)
+      };
+    }
+
+    sortEventsChronologically(event);
+    renderEventList();
+    renderCalendar();
+    updateJsonPreview();
+    markDirty();
+
+    if(kindField.value==="fixed"){
+      fixedRow.classList.remove("hidden");
+      occurrenceRow.classList.add("hidden");
+      weekdayRow.classList.add("hidden");
+    }else{
+      fixedRow.classList.add("hidden");
+      occurrenceRow.classList.remove("hidden");
+      weekdayRow.classList.remove("hidden");
+    }
+  }
+
+  function updateJsonPreview(){ jsonPreview.value=JSON.stringify(events,null,2); }
+
+  function getEventDate(event,year){
+    const r=event.rule, monthIndex=r.month-1;
+    if(r.kind==="fixed"){
+      const d=new Date(year,monthIndex,r.day);
+      if(d.getFullYear()!==year||d.getMonth()!==monthIndex||d.getDate()!==r.day) return null;
+      return d;
+    }
+    const target=weekdayNumbers[r.weekday];
+    if(r.occurrence===-1){ const d=new Date(year,monthIndex+1,0); while(d.getDay()!==target)d.setDate(d.getDate()-1); return d; }
+    const d=new Date(year,monthIndex,1); while(d.getDay()!==target)d.setDate(d.getDate()+1); d.setDate(d.getDate()+(r.occurrence-1)*7); return d.getMonth()===monthIndex?d:null;
+  }
+
+  function sortEventsChronologically(preferredEvent){
+    const year=clampInt(calendarYear.value,1,9999,new Date().getFullYear());
+    const selectedEvent=preferredEvent || (selectedIndex>=0 ? events[selectedIndex] : null);
+    const before=events.slice();
+
+    events.sort((a,b)=>{
+      const da=getEventDate(a,year);
+      const db=getEventDate(b,year);
+
+      if(da && db){
+        const aKey=Date.UTC(year,da.getMonth(),da.getDate());
+        const bKey=Date.UTC(year,db.getMonth(),db.getDate());
+        if(aKey!==bKey) return aKey-bKey;
+      }else if(da){
+        return -1;
+      }else if(db){
+        return 1;
+      }
+
+      return String(a.name).localeCompare(String(b.name),undefined,{sensitivity:"base"});
+    });
+
+    if(selectedEvent){
+      selectedIndex=events.indexOf(selectedEvent);
+    }else if(!events.length || selectedIndex>=events.length){
+      selectedIndex=-1;
+    }
+
+    return before.some((event,i)=>event!==events[i]);
+  }
+
+  let astroCacheKey="";
+  let astroCache={};
+
+  function selectedAstroRegion(){
+    return astronomyRegions.find(r=>r.id===locationRegion.value) || astronomyRegions[1];
+  }
+
+  function astronomyOptionState(){
+    return {
+      moon:document.getElementById("astroMoon").checked,
+      eclipses:document.getElementById("astroEclipses").checked,
+      meteors:document.getElementById("astroMeteors").checked,
+      seasons:document.getElementById("astroSeasons").checked,
+      apsis:document.getElementById("astroApsis").checked,
+      other:document.getElementById("astroOther").checked
+    };
+  }
+
+  function localDateParts(date,region){
+    try{
+      const parts=new Intl.DateTimeFormat("en-US",{
+        timeZone:region.tz,
+        year:"numeric",
+        month:"2-digit",
+        day:"2-digit"
+      }).formatToParts(date);
+      const result={};
+      parts.forEach(p=>{ if(p.type==="year"||p.type==="month"||p.type==="day") result[p.type]=Number(p.value); });
+      return {year:result.year,month:result.month,day:result.day};
+    }catch(e){
+      return {year:date.getUTCFullYear(),month:date.getUTCMonth()+1,day:date.getUTCDate()};
+    }
+  }
+
+  function astroTimeParts(time,region){
+    return localDateParts(time.date,region);
+  }
+
+  function dateKey(year,month,day){
+    return [year,String(month).padStart(2,"0"),String(day).padStart(2,"0")].join("-");
+  }
+
+  function addAstroEvent(map,year,month,day,label,title,category){
+    const key=dateKey(year,month,day);
+    (map[key]||(map[key]=[])).push({label,title:title||label,category:category||"astronomy"});
+  }
+
+  function eclipseKindName(kind){
+    const s=String(kind||"").replace(/^.*\./,"");
+    return s ? s.charAt(0).toUpperCase()+s.slice(1).toLowerCase() : "Eclipse";
+  }
+
+  function moonAltitude(time,observer){
+    try{
+      const eq=Astronomy.Equator(Astronomy.Body.Moon,time,observer,true,true);
+      return Astronomy.Horizon(time,observer,eq.ra,eq.dec,"normal").altitude;
+    }catch(e){
+      return -90;
+    }
+  }
+
+  function lunarEclipseVisible(eclipse,observer){
+    const span=(eclipse.sd_penum||0)/1440;
+    const times=[eclipse.peak];
+    if(span>0){
+      times.push(eclipse.peak.AddDays(-span));
+      times.push(eclipse.peak.AddDays(span));
+    }
+    return times.some(t=>moonAltitude(t,observer)>0);
+  }
+
+  function localSolarEclipseVisible(eclipse){
+    const parts=[eclipse.partial_begin,eclipse.total_begin,eclipse.peak,eclipse.total_end,eclipse.partial_end].filter(Boolean);
+    return parts.some(p=>Number.isFinite(p.altitude)&&p.altitude>0);
+  }
+
+  function meteorVisibleFromLatitude(shower,latitude){
+    /* A radiant can rise somewhere during the day iff |latitude - declination| < 90°. */
+    return Math.abs(latitude-shower.dec)<90;
+  }
+
+
+  function normalizeDegrees(value){
+    value%=360;
+    return value<0 ? value+360 : value;
+  }
+
+  function signedAngleDifference(value,target){
+    return ((value-target+540)%360)-180;
+  }
+
+  function sunLongitudeJ2000(date){
+    /*
+      IMO meteor-shower solar longitudes are referenced to J2000.0.
+      GeoVector gives the apparent geocentric Sun vector in EQJ (J2000 equator);
+      Rotation_EQJ_ECL converts it to the J2000 mean ecliptic.
+    */
+    const eqj=Astronomy.GeoVector(Astronomy.Body.Sun,date,true);
+    const ecl=Astronomy.RotateVector(Astronomy.Rotation_EQJ_ECL(),eqj);
+    return normalizeDegrees(Math.atan2(ecl.y,ecl.x)*180/Math.PI);
+  }
+
+  function searchMeteorPeakDate(shower,year){
+    /*
+      Start near the shower's familiar Gregorian date, then scan a broad window.
+      The ±40-day window makes this remain useful even for dates centuries away
+      from the source table, where precession slowly moves a fixed J2000 orbital
+      longitude relative to the Gregorian calendar.
+    */
+    const DAY=86400000;
+    const center=Date.UTC(year,shower.approxMonth-1,shower.approxDay,12,0,0);
+    const start=center-40*DAY;
+    const end=center+40*DAY;
+    const step=12*60*60*1000;
+
+    let leftTime=start;
+    let leftDiff=signedAngleDifference(sunLongitudeJ2000(new Date(leftTime)),shower.lambdaSun);
+
+    for(let rightTime=start+step; rightTime<=end; rightTime+=step){
+      const rightDiff=signedAngleDifference(sunLongitudeJ2000(new Date(rightTime)),shower.lambdaSun);
+
+      if(leftDiff<=0 && rightDiff>=0 && (rightDiff-leftDiff)<20){
+        let lo=leftTime;
+        let hi=rightTime;
+
+        for(let i=0;i<42;i++){
+          const mid=(lo+hi)/2;
+          const diff=signedAngleDifference(sunLongitudeJ2000(new Date(mid)),shower.lambdaSun);
+          if(diff<0) lo=mid;
+          else hi=mid;
+        }
+
+        return new Date((lo+hi)/2);
+      }
+
+      leftTime=rightTime;
+      leftDiff=rightDiff;
+    }
+
+    return null;
+  }
+
+  function buildAstronomyEvents(year){
+    const region=selectedAstroRegion();
+    const options=astronomyOptionState();
+    const key=JSON.stringify([year,region.id,options]);
+    if(key===astroCacheKey) return astroCache;
+
+    const map={};
+    const notices=[];
+
+    if(typeof Astronomy==="undefined"){
+      if(options.moon||options.eclipses||options.meteors||options.seasons||options.apsis||options.other){
+        notices.push("Astronomy Engine could not be loaded; calculated astronomy overlays are unavailable.");
+      }
+      astroStatus.textContent=notices.join(" ");
+      astroCacheKey=key;
+      astroCache=map;
+      return map;
+    }
+
+    const observer=new Astronomy.Observer(region.lat,region.lon,0);
+    const start=new Date(Date.UTC(year,0,1,0,0,0));
+    const afterYear=new Date(Date.UTC(year+1,0,2,0,0,0));
+
+    try{
+      if(options.meteors){
+        imoMeteorShowers.forEach(shower=>{
+          if(!meteorVisibleFromLatitude(shower,region.lat)) return;
+
+          const peak=searchMeteorPeakDate(shower,year);
+          if(!peak) return;
+
+          const p=localDateParts(peak,region);
+          if(p.year!==year) return;
+
+          addAstroEvent(
+            map,p.year,p.month,p.day,
+            "★ "+shower.name+" peak",
+            shower.name+" normal meteor-shower maximum — IMO Working List (June 2025), λ☉="+
+              shower.lambdaSun.toFixed(2)+"° J2000, listed ZHR "+shower.zhr+
+              "; peak date calculated for "+year+" using Astronomy Engine",
+            "meteor"
+          );
+        });
+      }
+
+      if(options.moon){
+        let mq=Astronomy.SearchMoonQuarter(new Date(Date.UTC(year-1,11,30)));
+        let guard=0;
+        while(mq && guard++<60){
+          const p=astroTimeParts(mq.time,region);
+          if(p.year>year) break;
+          if(p.year===year){
+            const names=["New Moon","First Quarter Moon","Full Moon","Third Quarter Moon"];
+            const symbols=["○","◐","●","◑"];
+            addAstroEvent(map,p.year,p.month,p.day,symbols[mq.quarter]+" "+names[mq.quarter],names[mq.quarter]+" — Astronomy Engine","moon");
+          }
+          mq=Astronomy.NextMoonQuarter(mq);
+        }
+      }
+
+      if(options.seasons){
+        const s=Astronomy.Seasons(year);
+        [
+          [s.mar_equinox,"March equinox"],
+          [s.jun_solstice,"June solstice"],
+          [s.sep_equinox,"September equinox"],
+          [s.dec_solstice,"December solstice"]
+        ].forEach(([time,label])=>{
+          const p=astroTimeParts(time,region);
+          addAstroEvent(map,p.year,p.month,p.day,label,label+" — Astronomy Engine","season");
+        });
+      }
+
+      if(options.apsis){
+        let a=Astronomy.SearchLunarApsis(new Date(Date.UTC(year-1,11,30)));
+        let guard=0;
+        while(a && guard++<40){
+          const p=astroTimeParts(a.time,region);
+          if(p.year>year) break;
+          if(p.year===year){
+            const isPerigee=a.kind===Astronomy.ApsisKind.Pericenter;
+            const label=isPerigee?"Moon perigee":"Moon apogee";
+            addAstroEvent(map,p.year,p.month,p.day,label,label+" — "+Math.round(a.dist_km).toLocaleString()+" km; Astronomy Engine","apsis");
+          }
+          a=Astronomy.NextLunarApsis(a);
+        }
+      }
+
+      if(options.eclipses){
+        let solar=Astronomy.SearchLocalSolarEclipse(new Date(Date.UTC(year-1,11,30)),observer);
+        let guard=0;
+        while(solar && guard++<5){
+          const p=astroTimeParts(solar.peak.time,region);
+          if(p.year>year) break;
+          if(p.year===year && localSolarEclipseVisible(solar)){
+            const pct=Math.round((solar.obscuration||0)*100);
+            const kind=eclipseKindName(solar.kind);
+            addAstroEvent(
+              map,p.year,p.month,p.day,
+              "☀ "+kind+" solar eclipse",
+              kind+" solar eclipse — approximately "+pct+"% obscuration at the representative point for "+region.name+"; Astronomy Engine",
+              "eclipse"
+            );
+          }
+          solar=Astronomy.NextLocalSolarEclipse(solar.peak.time,observer);
+        }
+
+        let lunar=Astronomy.SearchLunarEclipse(new Date(Date.UTC(year-1,11,30)));
+        guard=0;
+        while(lunar && guard++<6){
+          const p=astroTimeParts(lunar.peak,region);
+          if(p.year>year) break;
+          if(p.year===year && lunarEclipseVisible(lunar,observer)){
+            const kind=eclipseKindName(lunar.kind);
+            addAstroEvent(
+              map,p.year,p.month,p.day,
+              "☾ "+kind+" lunar eclipse",
+              kind+" lunar eclipse, visible for at least part of the event from the representative point for "+region.name+"; Astronomy Engine",
+              "eclipse"
+            );
+          }
+          lunar=Astronomy.NextLunarEclipse(lunar.peak);
+        }
+      }
+
+      if(options.other){
+        function addElongations(body,displayName){
+          let search=new Date(Date.UTC(year-1,11,30));
+          for(let i=0;i<8;i++){
+            const e=Astronomy.SearchMaxElongation(body,search);
+            if(!e) break;
+            const p=astroTimeParts(e.time,region);
+            if(p.year>year) break;
+            if(p.year===year){
+              const vis=e.visibility==="morning"?"morning":"evening";
+              addAstroEvent(
+                map,p.year,p.month,p.day,
+                displayName+" greatest elongation",
+                displayName+" greatest elongation — "+e.elongation.toFixed(1)+"°, "+vis+" sky; Astronomy Engine",
+                "planet"
+              );
+            }
+            search=e.time.AddDays(1);
+          }
+        }
+
+        addElongations(Astronomy.Body.Mercury,"Mercury");
+        addElongations(Astronomy.Body.Venus,"Venus");
+
+        [Astronomy.Body.Mars,Astronomy.Body.Jupiter,Astronomy.Body.Saturn].forEach(body=>{
+          let search=new Date(Date.UTC(year-1,11,30));
+          for(let i=0;i<3;i++){
+            const time=Astronomy.SearchRelativeLongitude(body,0,search);
+            const p=astroTimeParts(time,region);
+            if(p.year>year) break;
+            if(p.year===year){
+              addAstroEvent(map,p.year,p.month,p.day,body+" opposition",body+" opposition — Astronomy Engine","planet");
+            }
+            search=time.AddDays(1);
+          }
+        });
+
+        let venusSearch=new Date(Date.UTC(year-1,11,30));
+        for(let i=0;i<3;i++){
+          const v=Astronomy.SearchPeakMagnitude(Astronomy.Body.Venus,venusSearch);
+          if(!v) break;
+          const p=astroTimeParts(v.time,region);
+          if(p.year>year) break;
+          if(p.year===year){
+            addAstroEvent(map,p.year,p.month,p.day,"Venus brightest","Venus at peak brightness — Astronomy Engine","planet");
+          }
+          venusSearch=v.time.AddDays(1);
+        }
+
+        [Astronomy.Body.Mercury,Astronomy.Body.Venus].forEach(body=>{
+          try{
+            const tr=Astronomy.SearchTransit(body,new Date(Date.UTC(year,0,1)));
+            const p=astroTimeParts(tr.peak,region);
+            if(p.year===year){
+              addAstroEvent(map,p.year,p.month,p.day,body+" transit",body+" transit across the Sun — Astronomy Engine","planet");
+            }
+          }catch(e){}
+        });
+      }
+    }catch(err){
+      notices.push("Some astronomy calculations failed: "+(err.message||String(err)));
+    }
+
+    astroStatus.textContent=notices.join(" ");
+    astroCacheKey=key;
+    astroCache=map;
+    return map;
+  }
+
+  function invalidateAstronomyCache(){
+    astroCacheKey="";
+  }
+
+
+  function invalidateHolidayCache(){
+    holidayCacheKey="";
+  }
+
+  function normalizeHolidayName(name){
+    return String(name||"")
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g,"")
+      .toLowerCase()
+      .replace(/\s*\((?:substitute day|observed)\)\s*$/i,"")
+      .replace(/\s+(?:substitute day|observed)\s*$/i,"")
+      .replace(/&/g," and ")
+      .replace(/[’'`]/g,"")
+      .replace(/[^a-z0-9]+/g," ")
+      .trim();
+  }
+
+  function cleanHolidayDisplayName(name){
+    return String(name||"")
+      .replace(/\s*\((?:substitute day|observed)\)\s*$/i,"")
+      .replace(/\s+(?:substitute day|observed)\s*$/i,"")
+      .trim();
+  }
+
+  function buildHolidayEvents(year){
+    const key=JSON.stringify([
+      year,
+      selectedHolidayCountries.slice().sort(),
+      holidayPublic.checked,
+      holidayObservance.checked
+    ]);
+
+    if(key===holidayCacheKey) return holidayCache;
+
+    const map={};
+    const notices=[];
+
+    const HolidayConstructor=getHolidayConstructor();
+
+    if(!HolidayConstructor){
+      holidayStatus.textContent="Holiday library could not be loaded; holiday overlays are unavailable.";
+      holidayCacheKey=key;
+      holidayCache=map;
+      return map;
+    }
+
+    if(!holidayPublic.checked && !holidayObservance.checked){
+      holidayStatus.textContent="";
+      holidayCacheKey=key;
+      holidayCache=map;
+      return map;
+    }
+
+    /*
+      Intermediate structure:
+        by date -> normalized name -> one merged holiday.
+      This makes duplicate removal explicitly date-local: identical names on
+      different dates are never combined.
+    */
+    const mergedByDate={};
+
+    selectedHolidayCountries.forEach(code=>{
+      try{
+        const hd=new HolidayConstructor(code);
+        try{ hd.setLanguages("en"); }catch(e){}
+
+        const holidays=hd.getHolidays(year) || [];
+
+        holidays.forEach(holiday=>{
+          const type=String(holiday.type||"");
+
+          if(type==="public" && !holidayPublic.checked) return;
+          if(type==="observance" && !holidayObservance.checked) return;
+          if(type!=="public" && type!=="observance") return;
+
+          const rawDate=String(holiday.date||"").slice(0,10);
+          const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(rawDate);
+          if(!match) return;
+
+          const y=Number(match[1]), m=Number(match[2]), d=Number(match[3]);
+          if(y!==year) return;
+
+          const dayKey=dateKey(y,m,d);
+          const normalized=normalizeHolidayName(holiday.name);
+          if(!normalized) return;
+
+          if(!mergedByDate[dayKey]) mergedByDate[dayKey]={};
+
+          let item=mergedByDate[dayKey][normalized];
+
+          if(!item){
+            item=mergedByDate[dayKey][normalized]={
+              label:cleanHolidayDisplayName(holiday.name),
+              countries:new Set(),
+              types:new Set()
+            };
+          }
+
+          item.countries.add(code);
+          item.types.add(type);
+        });
+      }catch(err){
+        notices.push((holidayCountryNames[code]||code)+": "+(err.message||String(err)));
+      }
+    });
+
+    Object.keys(mergedByDate).forEach(dayKey=>{
+      map[dayKey]=Object.values(mergedByDate[dayKey])
+        .sort((a,b)=>a.label.localeCompare(b.label,undefined,{sensitivity:"base"}))
+        .map(item=>{
+          const codes=Array.from(item.countries).sort((a,b)=>
+            (holidayCountryNames[a]||a).localeCompare(holidayCountryNames[b]||b,undefined,{sensitivity:"base"})
+          );
+
+          const countryText=codes.map(code=>holidayCountryNames[code]||code).join(", ");
+          const typeText=Array.from(item.types).sort().join(", ");
+
+          return {
+            label:item.label,
+            title:item.label+" — "+countryText+(typeText ? " ["+typeText+"]" : ""),
+            countries:codes
+          };
+        });
+    });
+
+    holidayStatus.textContent=notices.length
+      ? "Some holiday calendars could not be calculated: "+notices.join(" | ")
+      : "";
+
+    holidayCacheKey=key;
+    holidayCache=map;
+    return map;
+  }
+
+  function astronomyInfoSource(item){
+    const label=String(item.label||"").toLowerCase();
+
+    if(item.category==="meteor"){
+      return {
+        name:"IMO",
+        url:"https://www.imo.net/resources/calendar/"
+      };
+    }
+
+    if(item.category==="moon"){
+      return {
+        name:"Timeanddate",
+        url:"https://www.timeanddate.com/astronomy/moon/phases.html"
+      };
+    }
+
+    if(item.category==="eclipse"){
+      return {
+        name:"Timeanddate",
+        url:"https://www.timeanddate.com/eclipse/"
+      };
+    }
+
+    if(item.category==="season"){
+      return {
+        name:"Timeanddate",
+        url:"https://www.timeanddate.com/astronomy/equinox-solstice.html"
+      };
+    }
+
+    if(item.category==="apsis"){
+      return {
+        name:"Timeanddate",
+        url:"https://www.timeanddate.com/astronomy/moon/lunar-perigee-apogee.html"
+      };
+    }
+
+    if(item.category==="planet"){
+      if(label.includes("greatest elongation")){
+        return {
+          name:"Timeanddate",
+          url:"https://www.timeanddate.com/astronomy/what-is-greatest-elongation.html"
+        };
+      }
+
+      if(label.includes("opposition")){
+        return {
+          name:"Timeanddate",
+          url:"https://www.timeanddate.com/astronomy/what-is-opposition.html"
+        };
+      }
+
+      if(label.includes("venus brightest")){
+        return {
+          name:"Timeanddate",
+          url:"https://www.timeanddate.com/astronomy/planets/venus/"
+        };
+      }
+
+      if(label.includes("transit")){
+        return {
+          name:"Timeanddate",
+          url:"https://www.timeanddate.com/astronomy/explanation-terms.html"
+        };
+      }
+    }
+
+    return {
+      name:"Timeanddate",
+      url:"https://www.timeanddate.com/astronomy/"
+    };
+  }
+
+  function cleanAstronomyLabel(label){
+    return String(label||"")
+      .replace(/^[★○◐●◑☀☾]\s*/,"")
+      .trim();
+  }
+
+  function cleanAstronomyDescription(item){
+    let description=String(item.title||item.label||"");
+
+    description=description
+      .replace(/\s*[—-]\s*Astronomy Engine\s*$/i,"")
+      .replace(/;\s*Astronomy Engine\s*$/i,"")
+      .trim();
+
+    return description;
+  }
+
+  function renderAstronomyDetails(year,month,astroByDate){
+    astroDetailsList.innerHTML="";
+
+    const items=[];
+
+    Object.keys(astroByDate).forEach(key=>{
+      const parts=key.split("-").map(Number);
+      if(parts[0]!==year || parts[1]!==month+1) return;
+
+      (astroByDate[key]||[]).forEach(item=>{
+        items.push({
+          day:parts[2],
+          item
+        });
+      });
+    });
+
+    items.sort((a,b)=>{
+      if(a.day!==b.day) return a.day-b.day;
+      return cleanAstronomyLabel(a.item.label)
+        .localeCompare(cleanAstronomyLabel(b.item.label),undefined,{sensitivity:"base"});
+    });
+
+    if(!items.length){
+      const empty=document.createElement("div");
+      empty.className="astro-details-empty";
+      empty.textContent="No enabled astronomy events in this month.";
+      astroDetailsList.appendChild(empty);
+      return;
+    }
+
+    items.forEach(entry=>{
+      const source=astronomyInfoSource(entry.item);
+
+      const row=document.createElement("div");
+      row.className="astro-detail-row";
+
+      const date=document.createElement("div");
+      date.className="astro-detail-date";
+      date.textContent=months[month].slice(0,3)+" "+entry.day;
+
+      const name=document.createElement("div");
+      name.className="astro-detail-name";
+      name.textContent=cleanAstronomyLabel(entry.item.label);
+
+      const description=document.createElement("div");
+      description.className="astro-detail-description";
+      description.textContent=cleanAstronomyDescription(entry.item);
+
+      const sourceCell=document.createElement("div");
+      sourceCell.className="astro-detail-source";
+
+      const link=document.createElement("a");
+      link.href=source.url;
+      link.target="_blank";
+      link.rel="noopener noreferrer";
+      link.textContent=source.name;
+      link.title="More information from "+source.name;
+
+      sourceCell.appendChild(link);
+
+      row.appendChild(date);
+      row.appendChild(name);
+      row.appendChild(description);
+      row.appendChild(sourceCell);
+
+      astroDetailsList.appendChild(row);
+    });
+  }
+
+  function slugifyInfoName(name){
+    return String(name||"")
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g,"")
+      .toLowerCase()
+      .replace(/[’'`]/g,"")
+      .replace(/&/g," and ")
+      .replace(/[^a-z0-9]+/g,"-")
+      .replace(/^-+|-+$/g,"");
+  }
+
+  function holidayInfoLinks(item){
+    const slug=slugifyInfoName(item.label);
+
+    return [
+      {
+        name:"Timeanddate",
+        url:"https://www.timeanddate.com/holidays/common/"+encodeURIComponent(slug)
+      },
+      {
+        name:"Wikipedia",
+        url:"https://en.wikipedia.org/wiki/Special:Search?search="+encodeURIComponent(item.label)
+      }
+    ];
+  }
+
+  function renderHolidayDetails(year,month,holidayByDate){
+    holidayDetailsList.innerHTML="";
+    const items=[];
+
+    Object.keys(holidayByDate).forEach(key=>{
+      const parts=key.split("-").map(Number);
+      if(parts[0]!==year || parts[1]!==month+1) return;
+
+      (holidayByDate[key]||[]).forEach(item=>{
+        items.push({day:parts[2],item});
+      });
+    });
+
+    items.sort((a,b)=>{
+      if(a.day!==b.day) return a.day-b.day;
+      return a.item.label.localeCompare(b.item.label,undefined,{sensitivity:"base"});
+    });
+
+    if(!items.length){
+      const empty=document.createElement("div");
+      empty.className="astro-details-empty";
+      empty.textContent="No enabled holidays in this month.";
+      holidayDetailsList.appendChild(empty);
+      return;
+    }
+
+    items.forEach(entry=>{
+      const row=document.createElement("div");
+      row.className="holiday-detail-row";
+
+      const date=document.createElement("div");
+      date.className="detail-date";
+      date.textContent=months[month].slice(0,3)+" "+entry.day;
+
+      const name=document.createElement("div");
+      name.className="detail-name";
+      name.textContent=entry.item.label;
+
+      const meta=document.createElement("div");
+      meta.className="detail-meta";
+      meta.textContent=(entry.item.countries||[])
+        .map(code=>holidayCountryNames[code]||code)
+        .join(", ");
+
+      const links=document.createElement("div");
+      links.className="holiday-detail-links";
+
+      holidayInfoLinks(entry.item).forEach((source,index)=>{
+        if(index) links.appendChild(document.createTextNode(" · "));
+
+        const a=document.createElement("a");
+        a.href=source.url;
+        a.target="_blank";
+        a.rel="noopener noreferrer";
+        a.textContent=source.name;
+        links.appendChild(a);
+      });
+
+      row.appendChild(date);
+      row.appendChild(name);
+      row.appendChild(meta);
+      row.appendChild(links);
+      holidayDetailsList.appendChild(row);
+    });
+  }
+
+  function renderJsonEventDetails(year,month){
+    jsonEventDetailsList.innerHTML="";
+    const items=[];
+
+    events.forEach((event,index)=>{
+      const d=getEventDate(event,year);
+      if(!d || d.getMonth()!==month) return;
+
+      items.push({
+        day:d.getDate(),
+        event,
+        index
+      });
+    });
+
+    items.sort((a,b)=>{
+      if(a.day!==b.day) return a.day-b.day;
+      return a.event.name.localeCompare(b.event.name,undefined,{sensitivity:"base"});
+    });
+
+    if(!items.length){
+      const empty=document.createElement("div");
+      empty.className="astro-details-empty";
+      empty.textContent="No JSON events in this month.";
+      jsonEventDetailsList.appendChild(empty);
+      return;
+    }
+
+    items.forEach(entry=>{
+      const row=document.createElement("div");
+      row.className="json-detail-row";
+      row.style.cursor="pointer";
+      row.tabIndex=0;
+      row.title="Select this JSON event";
+
+      const date=document.createElement("div");
+      date.className="detail-date";
+      date.textContent=months[month].slice(0,3)+" "+entry.day;
+
+      const name=document.createElement("div");
+      name.className="detail-name";
+      name.textContent=entry.event.name;
+
+      const description=document.createElement("div");
+      description.className="detail-description";
+      description.textContent=entry.event.description
+        ? entry.event.description
+        : "No description.";
+
+      const selectEvent=()=>{
+        selectedIndex=entry.index;
+        renderEventList();
+        renderEditor();
+        document.getElementById("editor").scrollIntoView({block:"center"});
+      };
+
+      row.addEventListener("click",selectEvent);
+      row.addEventListener("keydown",event=>{
+        if(event.key==="Enter"||event.key===" "){
+          event.preventDefault();
+          selectEvent();
+        }
+      });
+
+      row.appendChild(date);
+      row.appendChild(name);
+      row.appendChild(description);
+      jsonEventDetailsList.appendChild(row);
+    });
+  }
+
+  function renderCalendar(){
+    const year=clampInt(calendarYear.value,1,9999,new Date().getFullYear());
+    const month=clampInt(calendarMonth.value,0,11,new Date().getMonth());
+    const byDate={};
+
+    events.forEach((event,index)=>{
+      const d=getEventDate(event,year);
+      if(!d || d.getMonth()!==month) return;
+      const key=dateKey(d.getFullYear(),d.getMonth()+1,d.getDate());
+      (byDate[key]||(byDate[key]=[])).push({event,index});
+    });
+
+    const astroByDate=buildAstronomyEvents(year);
+    const holidayByDate=buildHolidayEvents(year);
+    const cal=document.getElementById("calendar");
+    cal.innerHTML="";
+    cal.classList.add("single-month");
+
+    const box=document.createElement("div");
+    box.className="month";
+
+    const title=document.createElement("div");
+    title.className="month-title";
+    title.textContent=months[month]+" "+year;
+    box.appendChild(title);
+
+    const table=document.createElement("table");
+    const thead=document.createElement("thead");
+    const hr=document.createElement("tr");
+
+    ["Su","Mo","Tu","We","Th","Fr","Sa"].forEach(label=>{
+      const th=document.createElement("th");
+      th.textContent=label;
+      hr.appendChild(th);
+    });
+
+    thead.appendChild(hr);
+    table.appendChild(thead);
+
+    const tbody=document.createElement("tbody");
+    const firstDay=new Date(year,month,1).getDay();
+    const daysInMonth=new Date(year,month+1,0).getDate();
+    let day=1;
+
+    for(let row=0;row<6;row++){
+      const tr=document.createElement("tr");
+
+      for(let col=0;col<7;col++){
+        const td=document.createElement("td");
+
+        if((row===0&&col<firstDay)||day>daysInMonth){
+          td.className="empty-day";
+        }else{
+          const num=document.createElement("span");
+          num.className="day-number";
+          num.textContent=day;
+          td.appendChild(num);
+
+          const key=dateKey(year,month+1,day);
+
+          (byDate[key]||[]).forEach(item=>{
+            const tag=document.createElement("span");
+            tag.className="event-tag";
+            tag.textContent=item.event.name;
+            tag.title=item.event.description ? item.event.name+" — "+item.event.description : item.event.name;
+            tag.style.cursor="pointer";
+            tag.addEventListener("click",()=>{
+              selectedIndex=item.index;
+              renderEventList();
+              renderEditor();
+              document.getElementById("editor").scrollIntoView({block:"center"});
+            });
+            td.appendChild(tag);
+          });
+
+          (astroByDate[key]||[]).forEach(item=>{
+            const tag=document.createElement("span");
+            tag.className="astro-tag astro-"+item.category;
+            tag.textContent=item.label;
+            tag.title=item.title;
+            td.appendChild(tag);
+          });
+
+          (holidayByDate[key]||[]).forEach(item=>{
+            const tag=document.createElement("span");
+            tag.className="holiday-tag";
+            tag.textContent=item.label;
+            tag.title=item.title;
+            td.appendChild(tag);
+          });
+
+          day++;
+        }
+
+        tr.appendChild(td);
+      }
+
+      tbody.appendChild(tr);
+      if(day>daysInMonth) break;
+    }
+
+    table.appendChild(tbody);
+    box.appendChild(table);
+    cal.appendChild(box);
+
+    renderAstronomyDetails(year,month,astroByDate);
+    renderHolidayDetails(year,month,holidayByDate);
+    renderJsonEventDetails(year,month);
+  }
+
+  function parseJsonText(text){ const parsed=JSON.parse(text); if(!Array.isArray(parsed))throw new Error("The top-level JSON value must be an array."); return parsed.map(normalizeEvent); }
+
+  async function openFile(){
+    if(!("showOpenFilePicker" in window)){
+      throw new Error("Direct file opening is not supported by this browser. Use a Chromium-based browser with the File System Access API.");
+    }
+
+    const rememberedHandle=await loadRememberedFileHandle();
+
+    const options={
+      id:"annual-events-json-file",
+      multiple:false,
+      types:[{
+        description:"JSON files",
+        accept:{"application/json":[".json"]}
+      }]
+    };
+
+    /*
+      The stable picker ID lets Chromium remember this picker's most recent
+      directory. The persisted file handle gives the picker a more specific
+      starting location after the page or browser has been reopened.
+    */
+    if(rememberedHandle){
+      options.startIn=rememberedHandle;
+    }else if(fileHandle){
+      options.startIn=fileHandle;
+    }
+
+    let handles;
+
+    try{
+      handles=await window.showOpenFilePicker(options);
+    }catch(err){
+      /*
+        A stale handle can occasionally stop being usable as startIn.
+        Retry without it while retaining the stable picker ID.
+      */
+      if(err && err.name!=="AbortError" && options.startIn){
+        delete options.startIn;
+        handles=await window.showOpenFilePicker(options);
+      }else{
+        throw err;
+      }
+    }
+
+    if(!handles||!handles[0]) return;
+
+    const h=handles[0];
+    const file=await h.getFile();
+    const loaded=parseJsonText(await file.text());
+
+    fileHandle=h;
+    currentFileName=file.name;
+    dirty=false;
+    events=loaded;
+    selectedIndex=events.length?0:-1;
+
+    await rememberFileHandle(h);
+
+    updateFileLabel();
+    renderAll();
+    setStatus("Opened "+currentFileName,"ok");
+  }
+
+  async function writeToHandle(handle){ const writable=await handle.createWritable(); await writable.write(JSON.stringify(events,null,2)+"\n"); await writable.close(); }
+  async function saveFile(){ if(!fileHandle)return saveFileAs(); await writeToHandle(fileHandle); dirty=false; updateFileLabel(); setStatus("Saved "+currentFileName,"ok"); }
+  async function saveFileAs(){
+    if(!("showSaveFilePicker" in window)){
+      throw new Error("Direct file saving is not supported by this browser. Use a Chromium-based browser with the File System Access API.");
+    }
+
+    const options={
+      id:"annual-events-json-save",
+      suggestedName:currentFileName||"annual-events.json",
+      types:[{
+        description:"JSON files",
+        accept:{"application/json":[".json"]}
+      }]
+    };
+
+    const rememberedHandle=await loadRememberedFileHandle();
+    if(rememberedHandle) options.startIn=rememberedHandle;
+
+    let h;
+
+    try{
+      h=await window.showSaveFilePicker(options);
+    }catch(err){
+      if(err && err.name!=="AbortError" && options.startIn){
+        delete options.startIn;
+        h=await window.showSaveFilePicker(options);
+      }else{
+        throw err;
+      }
+    }
+
+    if(!h) return;
+
+    await writeToHandle(h);
+    fileHandle=h;
+    currentFileName=h.name||"annual-events.json";
+    dirty=false;
+
+    await rememberFileHandle(h);
+
+    updateFileLabel();
+    setStatus("Saved "+currentFileName,"ok");
+  }
+
+  document.getElementById("openBtn").addEventListener("click",async()=>{ try{await openFile();}catch(err){if(err&&err.name==="AbortError")return;setStatus(err.message||String(err),"error");} });
+  document.getElementById("saveBtn").addEventListener("click",async()=>{ try{await saveFile();}catch(err){if(err&&err.name==="AbortError")return;setStatus(err.message||String(err),"error");} });
+  document.getElementById("saveAsBtn").addEventListener("click",async()=>{ try{await saveFileAs();}catch(err){if(err&&err.name==="AbortError")return;setStatus(err.message||String(err),"error");} });
+  document.getElementById("addBtn").addEventListener("click",()=>{ events.push(makeDefaultEvent()); selectedIndex=events.length-1; markDirty(); renderAll(); nameField.focus(); nameField.select(); });
+  function toggleEventSelection(index){
+    selectedIndex=(selectedIndex===index) ? -1 : index;
+    renderEventList();
+    renderEditor();
+  }
+
+  eventList.addEventListener("click",event=>{
+    const row=event.target.closest("tr[data-index]");
+    if(!row || !eventList.contains(row)) return;
+    toggleEventSelection(Number(row.dataset.index));
+  });
+
+  eventList.addEventListener("keydown",event=>{
+    if(event.key!=="Enter" && event.key!==" ") return;
+    const row=event.target.closest("tr[data-index]");
+    if(!row || !eventList.contains(row)) return;
+    event.preventDefault();
+    toggleEventSelection(Number(row.dataset.index));
+  });
+  [nameField,categoryField,descriptionField,dayField].forEach(el=>el.addEventListener("input",updateSelectedEvent));
+  [kindField,monthField,occurrenceField,weekdayField].forEach(el=>el.addEventListener("change",updateSelectedEvent));
+  calendarYear.addEventListener("input",()=>{
+    const changed=sortEventsChronologically();
+    if(changed) markDirty();
+    invalidateAstronomyCache();
+    invalidateHolidayCache();
+    renderEventList();
+    renderEditor();
+    renderCalendar();
+    updateJsonPreview();
+  });
+
+  calendarMonth.addEventListener("change",()=>{
+    try{
+      localStorage.setItem("annual-events-calendar-month",calendarMonth.value);
+    }catch(e){}
+    renderCalendar();
+  });
+
+  locationRegion.addEventListener("change",()=>{
+    saveAstroDisplaySettings();
+    invalidateAstronomyCache();
+    renderCalendar();
+  });
+
+  astroCheckboxes.forEach(box=>{
+    box.addEventListener("change",()=>{
+      saveAstroDisplaySettings();
+      invalidateAstronomyCache();
+      renderCalendar();
+    });
+  });
+
+  document.getElementById("holidayAddCountryBtn").addEventListener("click",()=>{
+    const code=holidayCountryAdd.value;
+    if(!code || selectedHolidayCountries.includes(code)) return;
+
+    selectedHolidayCountries.push(code);
+    saveHolidaySettings();
+    invalidateHolidayCache();
+    renderHolidayCountryControls();
+    renderCalendar();
+  });
+
+  [holidayPublic,holidayObservance].forEach(box=>{
+    box.addEventListener("change",()=>{
+      saveHolidaySettings();
+      invalidateHolidayCache();
+      renderCalendar();
+    });
+  });
+  document.getElementById("applyJsonBtn").addEventListener("click",()=>{ try{ const parsed=parseJsonText(jsonPreview.value); if(parsed.length<events.length)throw new Error("Deleting events is disabled. The JSON cannot contain fewer events than the current list."); events=parsed; markDirty(); if(!events.length||selectedIndex>=events.length)selectedIndex=-1; renderAll(); setStatus("JSON edits applied.","ok"); }catch(err){setStatus(err.message||String(err),"error");} });
+
+  window.addEventListener("keydown",async e=>{ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="s"){ e.preventDefault(); try{ await saveFile(); }catch(err){ if(err&&err.name!=="AbortError")setStatus(err.message||String(err),"error"); } } });
+  window.addEventListener("beforeunload",e=>{ if(!dirty)return; e.preventDefault(); e.returnValue=""; });
+  updateFileLabel();
+  renderAll();
+})();
+</script>
+</body>
+</html>

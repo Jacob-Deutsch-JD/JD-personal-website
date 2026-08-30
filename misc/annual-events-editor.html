@@ -191,6 +191,16 @@
     color:#555;
   }
 
+  .holiday-status-warning {
+    color:#7a4b00;
+    font-weight:bold;
+  }
+
+  .holiday-status-error {
+    color:#900;
+    font-weight:bold;
+  }
+
   .astro-tag {
     display:block;
     margin-top:1px;
@@ -209,6 +219,14 @@
   body.dark .astro-status,
   body.dark .astro-tag {
     color:#bbb;
+  }
+
+  body.dark .holiday-status-warning {
+    color:#f0c36a;
+  }
+
+  body.dark .holiday-status-error {
+    color:#ff8a8a;
   }
 
   @media (max-width:760px) {
@@ -730,6 +748,77 @@
     color:#c7a7ff;
   }
 
+
+  .holiday-search-block {
+    display:grid;
+    grid-template-columns:auto minmax(180px, 330px) auto;
+    gap:4px 6px;
+    align-items:start;
+    padding:5px 0 4px;
+  }
+
+  .holiday-search-block > label {
+    grid-column:1;
+    padding-top:3px;
+  }
+
+  #holidayCountrySearch {
+    grid-column:2;
+    width:100%;
+    box-sizing:border-box;
+  }
+
+  #holidayCountryAdd {
+    grid-column:2;
+    width:100%;
+    height:92px;
+    min-width:0;
+    max-width:none;
+    box-sizing:border-box;
+  }
+
+  #holidayAddCountryBtn {
+    grid-column:3;
+    grid-row:2 / span 2;
+  }
+
+  @media (max-width:620px) {
+    .holiday-search-block {
+      grid-template-columns:1fr;
+    }
+
+    .holiday-search-block > label,
+    #holidayCountrySearch,
+    #holidayCountryAdd,
+    #holidayAddCountryBtn {
+      grid-column:1;
+      grid-row:auto;
+    }
+
+    #holidayAddCountryBtn {
+      justify-self:start;
+    }
+  }
+
+
+  .holiday-status-row {
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:4px 7px;
+    min-height:18px;
+  }
+
+  .holiday-status-row .astro-status {
+    margin:0;
+  }
+
+  #selectHolidayJsonBtn {
+    min-height:20px;
+    padding:0 6px;
+    font-size:11px;
+  }
+
 </style>
 </head>
 <body>
@@ -825,31 +914,39 @@
     <details class="holiday-options" id="holidayOptions">
       <summary>Holiday display options</summary>
 
-      <div class="holiday-controls">
-        <label for="holidayCountryAdd">Add country:
-          <select id="holidayCountryAdd"></select>
-        </label>
-        <button id="holidayAddCountryBtn" type="button">Add</button>
+      <div class="holiday-search-block">
+        <label for="holidayCountrySearch">Add country:</label>
+        <input id="holidayCountrySearch" type="text" autocomplete="off"
+               placeholder="Type a country name, e.g. ind">
+        <select id="holidayCountryAdd" size="5" aria-label="Matching countries"></select>
+        <button id="holidayAddCountryBtn" type="button">Add selected country</button>
       </div>
 
       <div class="holiday-type-options">
         <label><input id="holidayPublic" type="checkbox" checked> Public holidays</label>
-        <label><input id="holidayObservance" type="checkbox" checked> Observances / cultural holidays</label>
+        <label><input id="holidayObservance" type="checkbox" checked> Cultural / optional holidays</label>
       </div>
 
       <div class="holiday-selected-heading">Selected countries:</div>
       <div id="holidaySelectedCountries" class="holiday-selected-countries"></div>
 
       <div class="section-note">
-        Holiday data uses date-holidays 3.34.1. Names are requested in English.
-        If the same normalized holiday name occurs in several selected countries on the same date,
-        it is displayed once; the contributing countries are listed in the tooltip.
-        Holiday data: date-holidays (ISC; underlying holiday data CC BY-SA 3.0).
+        Holiday data is loaded automatically from <code>holidays.json</code>, generated with the
+        Vacanza <code>holidays</code> Python library. The generator defaults to a rolling 10-year window
+        beginning with the year it is run; regenerate it periodically with an updated Vacanza release
+        to extend finite holiday tables such as Hindu holidays. Public holidays and cultural/optional
+        categories can be shown separately. If the same normalized holiday name occurs in several
+        selected countries on the same date, it is displayed once; duplicates are never merged across dates.
+      </div>
+
+      <div class="holiday-status-row">
+        <div id="holidayStatus" class="astro-status"></div>
+        <button id="selectHolidayJsonBtn" type="button" class="hidden">Select holidays.json...</button>
+        <input id="holidayJsonFileInput" type="file" accept=".json,application/json" class="hidden">
       </div>
     </details>
 
     <div id="astroStatus" class="astro-status"></div>
-    <div id="holidayStatus" class="astro-status"></div>
     <div id="calendar"></div>
 
     <div class="astro-details-panel">
@@ -886,10 +983,11 @@
           Copyright &copy; Don Cross, distributed under the MIT License.
         </p>
         <p>
-          Holiday calculations use
-          <a href="https://github.com/commenthol/date-holidays" target="_blank" rel="noopener noreferrer">date-holidays</a>,
-          distributed under the ISC License. Its holiday data is provided under CC BY-SA 3.0; country-specific
-          attribution is maintained by the date-holidays project.
+          Holiday data in <code>holidays.json</code> is generated with
+          <a href="https://github.com/vacanza/holidays" target="_blank" rel="noopener noreferrer">Vacanza holidays</a>
+          (Open World Holidays Framework), distributed under the MIT License. Future dates are calculations
+          according to the holiday rules/data available when <code>holidays.json</code> was generated and are
+          not guarantees of future government declarations.
         </p>
         <p>
           Meteor-shower parameters are derived from the
@@ -904,7 +1002,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
-<script src="https://unpkg.com/date-holidays@3.34.1/dist/umd.min.js" charset="UTF-8"></script>
 <script>
 (function () {
   "use strict";
@@ -1076,6 +1173,9 @@
 
   const eventList=document.getElementById("eventList"), editor=document.getElementById("editor"), noSelection=document.getElementById("noSelection"), nameField=document.getElementById("nameField"), categoryField=document.getElementById("categoryField"), kindField=document.getElementById("kindField"), monthField=document.getElementById("monthField"), dayField=document.getElementById("dayField"), occurrenceField=document.getElementById("occurrenceField"), weekdayField=document.getElementById("weekdayField"), fixedRow=document.getElementById("fixedRow"), occurrenceRow=document.getElementById("occurrenceRow"), weekdayRow=document.getElementById("weekdayRow"), jsonPreview=document.getElementById("jsonPreview"), calendarYear=document.getElementById("calendarYear"), calendarMonth=document.getElementById("calendarMonth"), fileName=document.getElementById("fileName"), status=document.getElementById("status"), locationRegion=document.getElementById("locationRegion"), astroStatus=document.getElementById("astroStatus"),
   holidayStatus=document.getElementById("holidayStatus"),
+  selectHolidayJsonBtn=document.getElementById("selectHolidayJsonBtn"),
+  holidayJsonFileInput=document.getElementById("holidayJsonFileInput"),
+  holidayCountrySearch=document.getElementById("holidayCountrySearch"),
   holidayCountryAdd=document.getElementById("holidayCountryAdd"),
   holidaySelectedCountries=document.getElementById("holidaySelectedCountries"),
   holidayPublic=document.getElementById("holidayPublic"),
@@ -1160,21 +1260,9 @@
   let holidayCountryNames={};
   let holidayCacheKey="";
   let holidayCache={};
-
-
-  function getHolidayConstructor(){
-    if(typeof window.Holidays==="function") return window.Holidays;
-
-    if(window.Holidays && typeof window.Holidays.default==="function"){
-      return window.Holidays.default;
-    }
-
-    if(window.Holidays && typeof window.Holidays.Holidays==="function"){
-      return window.Holidays.Holidays;
-    }
-
-    return null;
-  }
+  let holidayDataset=null;
+  let holidayDatasetError="";
+  let holidayDatasetLoading=true;
 
   function holidayCountryDisplayName(code,fallback){
     try{
@@ -1186,42 +1274,19 @@
     return fallback || code;
   }
 
-  function initializeHolidayCountries(){
-    const HolidayConstructor=getHolidayConstructor();
-
-    if(!HolidayConstructor){
-      holidayStatus.textContent="Holiday library could not be loaded; holiday overlays are unavailable.";
-      holidayCountryAdd.disabled=true;
-      document.getElementById("holidayAddCountryBtn").disabled=true;
-      return;
-    }
-
+  function restoreHolidaySettings(){
     try{
-      const catalog=new HolidayConstructor();
-      const countries=catalog.getCountries() || {};
+      const saved=JSON.parse(localStorage.getItem("annual-events-holiday-countries") || "null");
+      if(Array.isArray(saved)){
+        const valid=saved.filter(code=>holidayCountryNames[code]);
+        if(valid.length || saved.length===0) selectedHolidayCountries=valid;
+      }
 
-      holidayCountryNames={};
-      Object.keys(countries).forEach(code=>{
-        holidayCountryNames[code]=holidayCountryDisplayName(code,countries[code]);
-      });
-
-      try{
-        const saved=JSON.parse(localStorage.getItem("annual-events-holiday-countries") || "null");
-        if(Array.isArray(saved)){
-          const valid=saved.filter(code=>holidayCountryNames[code]);
-          if(valid.length || saved.length===0) selectedHolidayCountries=valid;
-        }
-
-        const savedPublic=localStorage.getItem("annual-events-holiday-public");
-        const savedObservance=localStorage.getItem("annual-events-holiday-observance");
-        if(savedPublic!==null) holidayPublic.checked=(savedPublic==="true");
-        if(savedObservance!==null) holidayObservance.checked=(savedObservance==="true");
-      }catch(e){}
-
-      renderHolidayCountryControls();
-    }catch(err){
-      holidayStatus.textContent="Could not initialize holiday countries: "+(err.message||String(err));
-    }
+      const savedPublic=localStorage.getItem("annual-events-holiday-public");
+      const savedObservance=localStorage.getItem("annual-events-holiday-observance");
+      if(savedPublic!==null) holidayPublic.checked=(savedPublic==="true");
+      if(savedObservance!==null) holidayObservance.checked=(savedObservance==="true");
+    }catch(e){}
   }
 
   function saveHolidaySettings(){
@@ -1232,12 +1297,35 @@
     }catch(e){}
   }
 
+  function filteredHolidayCountryCodes(){
+    const query=holidayCountrySearch.value.trim().toLowerCase();
+
+    return Object.keys(holidayCountryNames)
+      .filter(code=>!selectedHolidayCountries.includes(code))
+      .filter(code=>{
+        if(!query) return true;
+        const name=(holidayCountryNames[code]||"").toLowerCase();
+        return name.includes(query) || code.toLowerCase().includes(query);
+      })
+      .sort((a,b)=>{
+        const an=holidayCountryNames[a]||a;
+        const bn=holidayCountryNames[b]||b;
+
+        if(query){
+          const aStarts=an.toLowerCase().startsWith(query) ? 0 : 1;
+          const bStarts=bn.toLowerCase().startsWith(query) ? 0 : 1;
+          if(aStarts!==bStarts) return aStarts-bStarts;
+        }
+
+        return an.localeCompare(bn,undefined,{sensitivity:"base"});
+      });
+  }
+
   function renderHolidayCountryControls(){
+    const previous=holidayCountryAdd.value;
     holidayCountryAdd.innerHTML="";
 
-    const remaining=Object.keys(holidayCountryNames)
-      .filter(code=>!selectedHolidayCountries.includes(code))
-      .sort((a,b)=>holidayCountryNames[a].localeCompare(holidayCountryNames[b],undefined,{sensitivity:"base"}));
+    const remaining=filteredHolidayCountryCodes();
 
     remaining.forEach(code=>{
       const option=document.createElement("option");
@@ -1246,7 +1334,14 @@
       holidayCountryAdd.appendChild(option);
     });
 
+    if(previous && remaining.includes(previous)){
+      holidayCountryAdd.value=previous;
+    }else if(remaining.length){
+      holidayCountryAdd.selectedIndex=0;
+    }
+
     holidayCountryAdd.disabled=!remaining.length;
+    document.getElementById("holidayAddCountryBtn").disabled=!remaining.length;
 
     holidaySelectedCountries.innerHTML="";
 
@@ -1284,7 +1379,96 @@
       });
   }
 
-  initializeHolidayCountries();
+  function acceptHolidayDataset(data){
+    if(!data || data.schema!==1 || !data.countries || !data.meta){
+      throw new Error("holidays.json has an unsupported or invalid format.");
+    }
+
+    holidayDataset=data;
+    holidayDatasetError="";
+    holidayDatasetLoading=false;
+    holidayCountryNames={};
+
+    Object.keys(data.countries).forEach(code=>{
+      holidayCountryNames[code]=holidayCountryDisplayName(code,code);
+    });
+
+    restoreHolidaySettings();
+
+    if(!selectedHolidayCountries.length && holidayCountryNames.US){
+      selectedHolidayCountries=["US"];
+    }
+
+    holidayCountrySearch.disabled=false;
+    selectHolidayJsonBtn.classList.add("hidden");
+    renderHolidayCountryControls();
+    invalidateHolidayCache();
+    renderCalendar();
+  }
+
+  async function loadHolidayDataset(){
+    holidayDatasetLoading=true;
+    holidayDatasetError="";
+    setHolidayStatus("Loading holidays.json...");
+    selectHolidayJsonBtn.classList.add("hidden");
+    holidayCountrySearch.disabled=true;
+    holidayCountryAdd.disabled=true;
+    document.getElementById("holidayAddCountryBtn").disabled=true;
+
+    try{
+      const response=await fetch("./holidays.json",{cache:"no-cache"});
+      if(!response.ok){
+        throw new Error("HTTP "+response.status+" while loading holidays.json");
+      }
+
+      const data=await response.json();
+      acceptHolidayDataset(data);
+    }catch(err){
+      holidayDataset=null;
+      holidayDatasetLoading=false;
+      holidayDatasetError=err.message||String(err);
+      setHolidayStatus(
+        "Could not load holidays.json: "+holidayDatasetError+
+        ". Put holidays.json beside this HTML and serve the page over HTTP/HTTPS (GitHub Pages works).",
+        "error"
+      );
+      selectHolidayJsonBtn.classList.remove("hidden");
+      renderHolidayCountryControls();
+      renderCalendar();
+    }
+  }
+
+  selectHolidayJsonBtn.addEventListener("click",()=>{
+    holidayJsonFileInput.value="";
+    holidayJsonFileInput.click();
+  });
+
+  holidayJsonFileInput.addEventListener("change",async()=>{
+    const file=holidayJsonFileInput.files && holidayJsonFileInput.files[0];
+    if(!file) return;
+
+    setHolidayStatus("Loading selected holidays.json...");
+    selectHolidayJsonBtn.classList.add("hidden");
+
+    try{
+      const raw=await file.text();
+      const data=JSON.parse(raw);
+      acceptHolidayDataset(data);
+    }catch(err){
+      holidayDataset=null;
+      holidayDatasetLoading=false;
+      holidayDatasetError=err.message||String(err);
+      setHolidayStatus(
+        "Could not use selected holidays.json: "+holidayDatasetError,
+        "error"
+      );
+      selectHolidayJsonBtn.classList.remove("hidden");
+      renderHolidayCountryControls();
+      renderCalendar();
+    }
+  });
+
+  loadHolidayDataset();
 
   const darkModeToggle=document.getElementById("darkModeToggle");
 
@@ -1868,30 +2052,97 @@
       .trim();
   }
 
+  const HOLIDAY_INSTITUTIONAL_CATEGORIES=new Set([
+    "bank","school","government","half_day","workday"
+  ]);
+
+  function holidayEntryEnabled(categories){
+    const cats=Array.isArray(categories) ? categories.map(c=>String(c).toLowerCase()) : [];
+
+    if(holidayPublic.checked && cats.includes("public")) return true;
+
+    if(holidayObservance.checked){
+      if(cats.some(category=>
+        category!=="public" && !HOLIDAY_INSTITUTIONAL_CATEGORIES.has(category)
+      )){
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  function holidayGeneratedRange(){
+    if(!holidayDataset || !holidayDataset.meta) return null;
+
+    const minYear=Number(holidayDataset.meta.start_year);
+    const maxYear=Number(holidayDataset.meta.end_year);
+
+    if(!Number.isFinite(minYear) || !Number.isFinite(maxYear)) return null;
+    return {minYear,maxYear};
+  }
+
+  function holidayYearIsGenerated(year){
+    const range=holidayGeneratedRange();
+    return !!range && year>=range.minYear && year<=range.maxYear;
+  }
+
+  function setHolidayStatus(text,kind=""){
+    holidayStatus.textContent=text||"";
+    holidayStatus.className="astro-status";
+    if(kind==="warning") holidayStatus.classList.add("holiday-status-warning");
+    if(kind==="error") holidayStatus.classList.add("holiday-status-error");
+  }
+
   function buildHolidayEvents(year){
+    const datasetStamp=holidayDataset?.meta?.generated_at || "";
+
     const key=JSON.stringify([
       year,
       selectedHolidayCountries.slice().sort(),
       holidayPublic.checked,
-      holidayObservance.checked
+      holidayObservance.checked,
+      datasetStamp
     ]);
 
     if(key===holidayCacheKey) return holidayCache;
 
     const map={};
-    const notices=[];
 
-    const HolidayConstructor=getHolidayConstructor();
+    if(holidayDatasetLoading){
+      setHolidayStatus("Loading holidays.json...");
+      holidayCacheKey=key;
+      holidayCache=map;
+      return map;
+    }
 
-    if(!HolidayConstructor){
-      holidayStatus.textContent="Holiday library could not be loaded; holiday overlays are unavailable.";
+    if(!holidayDataset){
+      if(!holidayDatasetError){
+        setHolidayStatus("Holiday data is unavailable.","error");
+      }
       holidayCacheKey=key;
       holidayCache=map;
       return map;
     }
 
     if(!holidayPublic.checked && !holidayObservance.checked){
-      holidayStatus.textContent="";
+      setHolidayStatus("");
+      holidayCacheKey=key;
+      holidayCache=map;
+      return map;
+    }
+
+    const range=holidayGeneratedRange();
+    const minYear=range.minYear;
+    const maxYear=range.maxYear;
+
+    if(!holidayYearIsGenerated(year)){
+      setHolidayStatus(
+        "Holiday data has not been generated for "+year+
+        ". holidays.json currently covers "+minYear+"–"+maxYear+
+        ". Regenerate holidays.json with a current Vacanza release when you need later years.",
+        "warning"
+      );
       holidayCacheKey=key;
       holidayCache=map;
       return map;
@@ -1900,54 +2151,48 @@
     /*
       Intermediate structure:
         by date -> normalized name -> one merged holiday.
-      This makes duplicate removal explicitly date-local: identical names on
+      Duplicate removal is deliberately date-local: identical names on
       different dates are never combined.
     */
     const mergedByDate={};
 
     selectedHolidayCountries.forEach(code=>{
-      try{
-        const hd=new HolidayConstructor(code);
-        try{ hd.setLanguages("en"); }catch(e){}
+      const country=holidayDataset.countries[code];
+      if(!country) return;
 
-        const holidays=hd.getHolidays(year) || [];
+      const records=country.years?.[String(year)] || [];
 
-        holidays.forEach(holiday=>{
-          const type=String(holiday.type||"");
+      records.forEach(record=>{
+        const monthDay=String(record[0]||"");
+        const name=String(record[1]||"");
+        const categories=Array.isArray(record[2]) ? record[2] : [];
 
-          if(type==="public" && !holidayPublic.checked) return;
-          if(type==="observance" && !holidayObservance.checked) return;
-          if(type!=="public" && type!=="observance") return;
+        if(!holidayEntryEnabled(categories)) return;
 
-          const rawDate=String(holiday.date||"").slice(0,10);
-          const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(rawDate);
-          if(!match) return;
+        const match=/^(\d{2})-(\d{2})$/.exec(monthDay);
+        if(!match) return;
 
-          const y=Number(match[1]), m=Number(match[2]), d=Number(match[3]);
-          if(y!==year) return;
+        const month=Number(match[1]);
+        const day=Number(match[2]);
+        const dayKey=dateKey(year,month,day);
+        const normalized=normalizeHolidayName(name);
+        if(!normalized) return;
 
-          const dayKey=dateKey(y,m,d);
-          const normalized=normalizeHolidayName(holiday.name);
-          if(!normalized) return;
+        if(!mergedByDate[dayKey]) mergedByDate[dayKey]={};
 
-          if(!mergedByDate[dayKey]) mergedByDate[dayKey]={};
+        let item=mergedByDate[dayKey][normalized];
 
-          let item=mergedByDate[dayKey][normalized];
+        if(!item){
+          item=mergedByDate[dayKey][normalized]={
+            label:cleanHolidayDisplayName(name),
+            countries:new Set(),
+            types:new Set()
+          };
+        }
 
-          if(!item){
-            item=mergedByDate[dayKey][normalized]={
-              label:cleanHolidayDisplayName(holiday.name),
-              countries:new Set(),
-              types:new Set()
-            };
-          }
-
-          item.countries.add(code);
-          item.types.add(type);
-        });
-      }catch(err){
-        notices.push((holidayCountryNames[code]||code)+": "+(err.message||String(err)));
-      }
+        item.countries.add(code);
+        categories.forEach(category=>item.types.add(String(category)));
+      });
     });
 
     Object.keys(mergedByDate).forEach(dayKey=>{
@@ -1969,9 +2214,15 @@
         });
     });
 
-    holidayStatus.textContent=notices.length
-      ? "Some holiday calendars could not be calculated: "+notices.join(" | ")
-      : "";
+    const version=holidayDataset.meta.library_version
+      ? "Vacanza holidays "+holidayDataset.meta.library_version
+      : "Vacanza holidays";
+
+    setHolidayStatus(
+      "Holiday data: "+version+
+      ", generated "+String(holidayDataset.meta.generated_at||"").slice(0,10)+
+      " for "+minYear+"–"+maxYear+"."
+    );
 
     holidayCacheKey=key;
     holidayCache=map;
@@ -2167,6 +2418,26 @@
 
   function renderHolidayDetails(year,month,holidayByDate){
     holidayDetailsList.innerHTML="";
+
+    if(holidayDataset && !holidayYearIsGenerated(year)){
+      const range=holidayGeneratedRange();
+      const empty=document.createElement("div");
+      empty.className="astro-details-empty holiday-status-warning";
+      empty.textContent=
+        "Holiday data not generated for "+year+
+        ". Available range: "+range.minYear+"–"+range.maxYear+".";
+      holidayDetailsList.appendChild(empty);
+      return;
+    }
+
+    if(!holidayDataset && !holidayDatasetLoading){
+      const empty=document.createElement("div");
+      empty.className="astro-details-empty holiday-status-error";
+      empty.textContent="Holiday data unavailable because holidays.json could not be loaded.";
+      holidayDetailsList.appendChild(empty);
+      return;
+    }
+
     const items=[];
 
     Object.keys(holidayByDate).forEach(key=>{
@@ -2579,11 +2850,29 @@
     });
   });
 
+  holidayCountrySearch.addEventListener("input",()=>{
+    renderHolidayCountryControls();
+  });
+
+  holidayCountrySearch.addEventListener("keydown",event=>{
+    if(event.key==="Enter" && holidayCountryAdd.value){
+      event.preventDefault();
+      document.getElementById("holidayAddCountryBtn").click();
+    }
+  });
+
+  holidayCountryAdd.addEventListener("dblclick",()=>{
+    if(holidayCountryAdd.value){
+      document.getElementById("holidayAddCountryBtn").click();
+    }
+  });
+
   document.getElementById("holidayAddCountryBtn").addEventListener("click",()=>{
     const code=holidayCountryAdd.value;
     if(!code || selectedHolidayCountries.includes(code)) return;
 
     selectedHolidayCountries.push(code);
+    holidayCountrySearch.value="";
     saveHolidaySettings();
     invalidateHolidayCache();
     renderHolidayCountryControls();

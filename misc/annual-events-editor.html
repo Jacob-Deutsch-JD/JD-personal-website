@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Annual Events Editor</title>
+<link rel="icon" href="../assets/favicon.png">
 <style>
   html, body { margin:0; padding:0; background:#d9d9d9; color:#000; font-family:Arial,Helvetica,sans-serif; font-size:13px; }
   body { padding:8px; }
@@ -937,6 +938,8 @@
         to extend finite holiday tables such as Hindu holidays. Public holidays and cultural/optional
         categories can be shown separately. If the same normalized holiday name occurs in several
         selected countries on the same date, it is displayed once; duplicates are never merged across dates.
+        For years outside the generated Vacanza range, the page falls back to <code>date-holidays</code>;
+        that fallback is useful for many public holidays but has less complete cultural-holiday coverage.
       </div>
 
       <div class="holiday-status-row">
@@ -990,6 +993,12 @@
           not guarantees of future government declarations.
         </p>
         <p>
+          For years outside the generated Vacanza range, holiday calculations fall back to
+          <a href="https://github.com/commenthol/date-holidays" target="_blank" rel="noopener noreferrer">date-holidays</a>,
+          distributed under the ISC License. Its holiday data is provided under CC BY-SA 3.0; cultural-holiday
+          coverage can be less complete than the generated Vacanza data.
+        </p>
+        <p>
           Meteor-shower parameters are derived from the
           <a href="https://www.imo.net/resources/calendar/" target="_blank" rel="noopener noreferrer">International Meteor Organization</a>
           Working List of Visual Meteor Showers (data current June 2025). Peak dates are calculated independently
@@ -1002,6 +1011,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+<script src="https://unpkg.com/date-holidays@3.34.1/dist/umd.min.js" charset="UTF-8"></script>
 <script>
 (function () {
   "use strict";
@@ -2046,6 +2056,10 @@
   }
 
   function cleanHolidayDisplayName(name){
+    return String(name||"").trim();
+  }
+
+  function holidayBaseName(name){
     return String(name||"")
       .replace(/\s*\((?:substitute day|observed)\)\s*$/i,"")
       .replace(/\s+(?:substitute day|observed)\s*$/i,"")
@@ -2094,6 +2108,111 @@
     if(kind==="error") holidayStatus.classList.add("holiday-status-error");
   }
 
+  function getDateHolidaysConstructor(){
+    if(typeof window.Holidays==="function") return window.Holidays;
+
+    if(window.Holidays && typeof window.Holidays.default==="function"){
+      return window.Holidays.default;
+    }
+
+    if(window.Holidays && typeof window.Holidays.Holidays==="function"){
+      return window.Holidays.Holidays;
+    }
+
+    return null;
+  }
+
+  function buildDateHolidaysFallback(year){
+    const HolidayConstructor=getDateHolidaysConstructor();
+    const map={};
+    const notices=[];
+
+    if(!HolidayConstructor){
+      return {
+        map,
+        notices:["date-holidays fallback library could not be loaded."]
+      };
+    }
+
+    const mergedByDate={};
+
+    selectedHolidayCountries.forEach(code=>{
+      try{
+        const hd=new HolidayConstructor(code);
+        try{ hd.setLanguages("en"); }catch(e){}
+
+        const records=hd.getHolidays(year) || [];
+
+        records.forEach(holiday=>{
+          const type=String(holiday.type||"").toLowerCase();
+
+          let enabled=false;
+          if(type==="public" && holidayPublic.checked) enabled=true;
+          if((type==="observance" || type==="optional") && holidayObservance.checked) enabled=true;
+          if(!enabled) return;
+
+          const rawDate=String(holiday.date||"").slice(0,10);
+          const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(rawDate);
+          if(!match) return;
+
+          const y=Number(match[1]);
+          const month=Number(match[2]);
+          const day=Number(match[3]);
+          if(y!==year) return;
+
+          const dayKey=dateKey(y,month,day);
+          const normalized=normalizeHolidayName(holiday.name);
+          if(!normalized) return;
+
+          if(!mergedByDate[dayKey]) mergedByDate[dayKey]={};
+
+          let item=mergedByDate[dayKey][normalized];
+
+          if(!item){
+            item=mergedByDate[dayKey][normalized]={
+              label:cleanHolidayDisplayName(holiday.name),
+              countries:new Set(),
+              types:new Set()
+            };
+          }
+
+          item.countries.add(code);
+          if(type) item.types.add(type);
+        });
+      }catch(err){
+        notices.push(
+          (holidayCountryNames[code]||code)+": "+(err.message||String(err))
+        );
+      }
+    });
+
+    Object.keys(mergedByDate).forEach(dayKey=>{
+      map[dayKey]=Object.values(mergedByDate[dayKey])
+        .sort((a,b)=>a.label.localeCompare(b.label,undefined,{sensitivity:"base"}))
+        .map(item=>{
+          const codes=Array.from(item.countries).sort((a,b)=>
+            (holidayCountryNames[a]||a).localeCompare(
+              holidayCountryNames[b]||b,
+              undefined,
+              {sensitivity:"base"}
+            )
+          );
+
+          const countryText=codes.map(code=>holidayCountryNames[code]||code).join(", ");
+          const typeText=Array.from(item.types).sort().join(", ");
+
+          return {
+            label:item.label,
+            title:item.label+" — "+countryText+(typeText ? " ["+typeText+"]" : ""),
+            countries:codes,
+            source:"date-holidays"
+          };
+        });
+    });
+
+    return {map,notices};
+  }
+
   function buildHolidayEvents(year){
     const datasetStamp=holidayDataset?.meta?.generated_at || "";
 
@@ -2137,15 +2256,21 @@
     const maxYear=range.maxYear;
 
     if(!holidayYearIsGenerated(year)){
+      const fallback=buildDateHolidaysFallback(year);
+      const problemText=fallback.notices.length
+        ? " Some selected countries could not be calculated: "+fallback.notices.join(" | ")
+        : "";
+
       setHolidayStatus(
-        "Holiday data has not been generated for "+year+
-        ". holidays.json currently covers "+minYear+"–"+maxYear+
-        ". Regenerate holidays.json with a current Vacanza release when you need later years.",
+        year+" is outside the generated Vacanza range ("+minYear+"–"+maxYear+
+        "). Using date-holidays fallback; cultural-holiday coverage may be incomplete."+
+        problemText,
         "warning"
       );
+
       holidayCacheKey=key;
-      holidayCache=map;
-      return map;
+      holidayCache=fallback.map;
+      return fallback.map;
     }
 
     /*
@@ -2209,7 +2334,8 @@
           return {
             label:item.label,
             title:item.label+" — "+countryText+(typeText ? " ["+typeText+"]" : ""),
-            countries:codes
+            countries:codes,
+            source:"vacanza"
           };
         });
     });
@@ -2402,7 +2528,8 @@
   }
 
   function holidayInfoLinks(item){
-    const slug=slugifyInfoName(item.label);
+    const baseName=holidayBaseName(item.label);
+    const slug=slugifyInfoName(baseName);
 
     return [
       {
@@ -2411,24 +2538,13 @@
       },
       {
         name:"Wikipedia",
-        url:"https://en.wikipedia.org/wiki/Special:Search?search="+encodeURIComponent(item.label)
+        url:"https://en.wikipedia.org/wiki/Special:Search?search="+encodeURIComponent(baseName)
       }
     ];
   }
 
   function renderHolidayDetails(year,month,holidayByDate){
     holidayDetailsList.innerHTML="";
-
-    if(holidayDataset && !holidayYearIsGenerated(year)){
-      const range=holidayGeneratedRange();
-      const empty=document.createElement("div");
-      empty.className="astro-details-empty holiday-status-warning";
-      empty.textContent=
-        "Holiday data not generated for "+year+
-        ". Available range: "+range.minYear+"–"+range.maxYear+".";
-      holidayDetailsList.appendChild(empty);
-      return;
-    }
 
     if(!holidayDataset && !holidayDatasetLoading){
       const empty=document.createElement("div");

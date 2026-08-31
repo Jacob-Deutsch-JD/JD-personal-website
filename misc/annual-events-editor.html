@@ -192,16 +192,6 @@
     color:#555;
   }
 
-  .holiday-status-warning {
-    color:#7a4b00;
-    font-weight:bold;
-  }
-
-  .holiday-status-error {
-    color:#900;
-    font-weight:bold;
-  }
-
   .astro-tag {
     display:block;
     margin-top:1px;
@@ -220,14 +210,6 @@
   body.dark .astro-status,
   body.dark .astro-tag {
     color:#bbb;
-  }
-
-  body.dark .holiday-status-warning {
-    color:#f0c36a;
-  }
-
-  body.dark .holiday-status-error {
-    color:#ff8a8a;
   }
 
   @media (max-width:760px) {
@@ -752,7 +734,7 @@
 
   .holiday-search-block {
     display:grid;
-    grid-template-columns:auto minmax(180px, 330px) auto;
+    grid-template-columns:auto minmax(180px,330px) auto;
     gap:4px 6px;
     align-items:start;
     padding:5px 0 4px;
@@ -802,22 +784,20 @@
   }
 
 
-  .holiday-status-row {
-    display:flex;
-    flex-wrap:wrap;
+  .month-nav {
+    display:inline-flex;
     align-items:center;
-    gap:4px 7px;
-    min-height:18px;
+    gap:2px;
+    vertical-align:middle;
   }
 
-  .holiday-status-row .astro-status {
+  .month-step {
+    min-height:21px;
+    height:21px;
+    line-height:16px;
+    padding:0 5px;
     margin:0;
-  }
-
-  #selectHolidayJsonBtn {
-    min-height:20px;
-    padding:0 6px;
-    font-size:11px;
+    font-size:10px;
   }
 
 </style>
@@ -885,7 +865,11 @@
       </label>
 
       <label for="calendarMonth">Month:
-        <select id="calendarMonth"></select>
+        <span class="month-nav">
+          <button id="prevMonthBtn" class="month-step" type="button" title="Previous month" aria-label="Previous month">&#9664;</button>
+          <select id="calendarMonth"></select>
+          <button id="nextMonthBtn" class="month-step" type="button" title="Next month" aria-label="Next month">&#9654;</button>
+        </span>
       </label>
 
       <label for="locationRegion">Location:
@@ -925,28 +909,21 @@
 
       <div class="holiday-type-options">
         <label><input id="holidayPublic" type="checkbox" checked> Public holidays</label>
-        <label><input id="holidayObservance" type="checkbox" checked> Cultural / optional holidays</label>
+        <label><input id="holidayObservance" type="checkbox" checked> Observances / cultural holidays</label>
       </div>
 
       <div class="holiday-selected-heading">Selected countries:</div>
       <div id="holidaySelectedCountries" class="holiday-selected-countries"></div>
 
       <div class="section-note">
-        Holiday data is loaded automatically from <code>holidays.json</code>, generated with the
-        Vacanza <code>holidays</code> Python library. The generator defaults to a rolling 10-year window
-        beginning with the year it is run; regenerate it periodically with an updated Vacanza release
-        to extend finite holiday tables such as Hindu holidays. Public holidays and cultural/optional
-        categories can be shown separately. If the same normalized holiday name occurs in several
-        selected countries on the same date, it is displayed once; duplicates are never merged across dates.
-        For years outside the generated Vacanza range, the page falls back to <code>date-holidays</code>;
-        that fallback is useful for many public holidays but has less complete cultural-holiday coverage.
+        The country list is limited to countries with usable <code>date-holidays</code> rules.
+        For India, the cultural layer is supplemented with major astronomically calculated
+        Indian festivals using a New Delhi reference calendar. These calculations are intended
+        as practical festival dates, not legal closure dates or ritual/muhurta timings.
+        Same-name holidays are merged only when they occur on the same date.
       </div>
 
-      <div class="holiday-status-row">
-        <div id="holidayStatus" class="astro-status"></div>
-        <button id="selectHolidayJsonBtn" type="button" class="hidden">Select holidays.json...</button>
-        <input id="holidayJsonFileInput" type="file" accept=".json,application/json" class="hidden">
-      </div>
+      <div id="holidayStatus" class="astro-status"></div>
     </details>
 
     <div id="astroStatus" class="astro-status"></div>
@@ -986,17 +963,11 @@
           Copyright &copy; Don Cross, distributed under the MIT License.
         </p>
         <p>
-          Holiday data in <code>holidays.json</code> is generated with
-          <a href="https://github.com/vacanza/holidays" target="_blank" rel="noopener noreferrer">Vacanza holidays</a>
-          (Open World Holidays Framework), distributed under the MIT License. Future dates are calculations
-          according to the holiday rules/data available when <code>holidays.json</code> was generated and are
-          not guarantees of future government declarations.
-        </p>
-        <p>
-          For years outside the generated Vacanza range, holiday calculations fall back to
+          Worldwide holiday calculations use
           <a href="https://github.com/commenthol/date-holidays" target="_blank" rel="noopener noreferrer">date-holidays</a>,
-          distributed under the ISC License. Its holiday data is provided under CC BY-SA 3.0; cultural-holiday
-          coverage can be less complete than the generated Vacanza data.
+          distributed under the ISC License. Its holiday data is provided under CC BY-SA 3.0; country-specific
+          attribution is maintained by the date-holidays project. Major Indian religious/cultural festival dates
+          are supplemented by calculations in this page using Astronomy Engine and a New Delhi reference calendar.
         </p>
         <p>
           Meteor-shower parameters are derived from the
@@ -1181,10 +1152,8 @@
     }
   }
 
-  const eventList=document.getElementById("eventList"), editor=document.getElementById("editor"), noSelection=document.getElementById("noSelection"), nameField=document.getElementById("nameField"), categoryField=document.getElementById("categoryField"), kindField=document.getElementById("kindField"), monthField=document.getElementById("monthField"), dayField=document.getElementById("dayField"), occurrenceField=document.getElementById("occurrenceField"), weekdayField=document.getElementById("weekdayField"), fixedRow=document.getElementById("fixedRow"), occurrenceRow=document.getElementById("occurrenceRow"), weekdayRow=document.getElementById("weekdayRow"), jsonPreview=document.getElementById("jsonPreview"), calendarYear=document.getElementById("calendarYear"), calendarMonth=document.getElementById("calendarMonth"), fileName=document.getElementById("fileName"), status=document.getElementById("status"), locationRegion=document.getElementById("locationRegion"), astroStatus=document.getElementById("astroStatus"),
+  const eventList=document.getElementById("eventList"), editor=document.getElementById("editor"), noSelection=document.getElementById("noSelection"), nameField=document.getElementById("nameField"), categoryField=document.getElementById("categoryField"), kindField=document.getElementById("kindField"), monthField=document.getElementById("monthField"), dayField=document.getElementById("dayField"), occurrenceField=document.getElementById("occurrenceField"), weekdayField=document.getElementById("weekdayField"), fixedRow=document.getElementById("fixedRow"), occurrenceRow=document.getElementById("occurrenceRow"), weekdayRow=document.getElementById("weekdayRow"), jsonPreview=document.getElementById("jsonPreview"), calendarYear=document.getElementById("calendarYear"), calendarMonth=document.getElementById("calendarMonth"), prevMonthBtn=document.getElementById("prevMonthBtn"), nextMonthBtn=document.getElementById("nextMonthBtn"), fileName=document.getElementById("fileName"), status=document.getElementById("status"), locationRegion=document.getElementById("locationRegion"), astroStatus=document.getElementById("astroStatus"),
   holidayStatus=document.getElementById("holidayStatus"),
-  selectHolidayJsonBtn=document.getElementById("selectHolidayJsonBtn"),
-  holidayJsonFileInput=document.getElementById("holidayJsonFileInput"),
   holidayCountrySearch=document.getElementById("holidayCountrySearch"),
   holidayCountryAdd=document.getElementById("holidayCountryAdd"),
   holidaySelectedCountries=document.getElementById("holidaySelectedCountries"),
@@ -1270,9 +1239,22 @@
   let holidayCountryNames={};
   let holidayCacheKey="";
   let holidayCache={};
-  let holidayDataset=null;
-  let holidayDatasetError="";
-  let holidayDatasetLoading=true;
+  let holidayBaseStatus="";
+
+
+  function getHolidayConstructor(){
+    if(typeof window.Holidays==="function") return window.Holidays;
+
+    if(window.Holidays && typeof window.Holidays.default==="function"){
+      return window.Holidays.default;
+    }
+
+    if(window.Holidays && typeof window.Holidays.Holidays==="function"){
+      return window.Holidays.Holidays;
+    }
+
+    return null;
+  }
 
   function holidayCountryDisplayName(code,fallback){
     try{
@@ -1284,19 +1266,76 @@
     return fallback || code;
   }
 
-  function restoreHolidaySettings(){
+  function holidayRuleCount(calendar){
     try{
-      const saved=JSON.parse(localStorage.getItem("annual-events-holiday-countries") || "null");
-      if(Array.isArray(saved)){
-        const valid=saved.filter(code=>holidayCountryNames[code]);
-        if(valid.length || saved.length===0) selectedHolidayCountries=valid;
+      const rules=calendar.getRules ? calendar.getRules() : null;
+      if(Array.isArray(rules)) return rules.length;
+      if(rules && typeof rules==="object") return Object.keys(rules).length;
+    }catch(e){}
+    return 0;
+  }
+
+  function initializeHolidayCountries(){
+    const HolidayConstructor=getHolidayConstructor();
+
+    if(!HolidayConstructor){
+      holidayStatus.textContent="date-holidays could not be loaded; holiday overlays are unavailable.";
+      holidayCountrySearch.disabled=true;
+      holidayCountryAdd.disabled=true;
+      document.getElementById("holidayAddCountryBtn").disabled=true;
+      return;
+    }
+
+    try{
+      const catalog=new HolidayConstructor();
+      const countries=catalog.getCountries("en") || catalog.getCountries() || {};
+
+      holidayCountryNames={};
+
+      /*
+        getCountries() is already date-holidays' supported-country catalog.
+        Filter it one step further so raw entries with no usable holiday rules
+        never appear in the selector.
+      */
+      Object.keys(countries).forEach(code=>{
+        try{
+          const calendar=new HolidayConstructor(code);
+          if(holidayRuleCount(calendar)<=0) return;
+          holidayCountryNames[code]=holidayCountryDisplayName(code,countries[code]);
+        }catch(e){}
+      });
+
+      /*
+        India has a built-in calculated cultural layer below, so keep it
+        available if the library recognizes the country even if a future
+        date-holidays version changes its rule representation.
+      */
+      if(countries.IN && !holidayCountryNames.IN){
+        holidayCountryNames.IN=holidayCountryDisplayName("IN",countries.IN);
       }
 
-      const savedPublic=localStorage.getItem("annual-events-holiday-public");
-      const savedObservance=localStorage.getItem("annual-events-holiday-observance");
-      if(savedPublic!==null) holidayPublic.checked=(savedPublic==="true");
-      if(savedObservance!==null) holidayObservance.checked=(savedObservance==="true");
-    }catch(e){}
+      try{
+        const saved=JSON.parse(localStorage.getItem("annual-events-holiday-countries") || "null");
+        if(Array.isArray(saved)){
+          const valid=saved.filter(code=>holidayCountryNames[code]);
+          if(valid.length || saved.length===0) selectedHolidayCountries=valid;
+        }
+
+        const savedPublic=localStorage.getItem("annual-events-holiday-public");
+        const savedObservance=localStorage.getItem("annual-events-holiday-observance");
+        if(savedPublic!==null) holidayPublic.checked=(savedPublic==="true");
+        if(savedObservance!==null) holidayObservance.checked=(savedObservance==="true");
+      }catch(e){}
+
+      holidayBaseStatus=
+        "date-holidays country rules available: "+Object.keys(holidayCountryNames).length+
+        ". India also includes major calculated Indian religious/cultural festivals (New Delhi reference).";
+
+      holidayStatus.textContent=holidayBaseStatus;
+      renderHolidayCountryControls();
+    }catch(err){
+      holidayStatus.textContent="Could not initialize holiday countries: "+(err.message||String(err));
+    }
   }
 
   function saveHolidaySettings(){
@@ -1389,96 +1428,7 @@
       });
   }
 
-  function acceptHolidayDataset(data){
-    if(!data || data.schema!==1 || !data.countries || !data.meta){
-      throw new Error("holidays.json has an unsupported or invalid format.");
-    }
-
-    holidayDataset=data;
-    holidayDatasetError="";
-    holidayDatasetLoading=false;
-    holidayCountryNames={};
-
-    Object.keys(data.countries).forEach(code=>{
-      holidayCountryNames[code]=holidayCountryDisplayName(code,code);
-    });
-
-    restoreHolidaySettings();
-
-    if(!selectedHolidayCountries.length && holidayCountryNames.US){
-      selectedHolidayCountries=["US"];
-    }
-
-    holidayCountrySearch.disabled=false;
-    selectHolidayJsonBtn.classList.add("hidden");
-    renderHolidayCountryControls();
-    invalidateHolidayCache();
-    renderCalendar();
-  }
-
-  async function loadHolidayDataset(){
-    holidayDatasetLoading=true;
-    holidayDatasetError="";
-    setHolidayStatus("Loading holidays.json...");
-    selectHolidayJsonBtn.classList.add("hidden");
-    holidayCountrySearch.disabled=true;
-    holidayCountryAdd.disabled=true;
-    document.getElementById("holidayAddCountryBtn").disabled=true;
-
-    try{
-      const response=await fetch("./holidays.json",{cache:"no-cache"});
-      if(!response.ok){
-        throw new Error("HTTP "+response.status+" while loading holidays.json");
-      }
-
-      const data=await response.json();
-      acceptHolidayDataset(data);
-    }catch(err){
-      holidayDataset=null;
-      holidayDatasetLoading=false;
-      holidayDatasetError=err.message||String(err);
-      setHolidayStatus(
-        "Could not load holidays.json: "+holidayDatasetError+
-        ". Put holidays.json beside this HTML and serve the page over HTTP/HTTPS (GitHub Pages works).",
-        "error"
-      );
-      selectHolidayJsonBtn.classList.remove("hidden");
-      renderHolidayCountryControls();
-      renderCalendar();
-    }
-  }
-
-  selectHolidayJsonBtn.addEventListener("click",()=>{
-    holidayJsonFileInput.value="";
-    holidayJsonFileInput.click();
-  });
-
-  holidayJsonFileInput.addEventListener("change",async()=>{
-    const file=holidayJsonFileInput.files && holidayJsonFileInput.files[0];
-    if(!file) return;
-
-    setHolidayStatus("Loading selected holidays.json...");
-    selectHolidayJsonBtn.classList.add("hidden");
-
-    try{
-      const raw=await file.text();
-      const data=JSON.parse(raw);
-      acceptHolidayDataset(data);
-    }catch(err){
-      holidayDataset=null;
-      holidayDatasetLoading=false;
-      holidayDatasetError=err.message||String(err);
-      setHolidayStatus(
-        "Could not use selected holidays.json: "+holidayDatasetError,
-        "error"
-      );
-      selectHolidayJsonBtn.classList.remove("hidden");
-      renderHolidayCountryControls();
-      renderCalendar();
-    }
-  });
-
-  loadHolidayDataset();
+  initializeHolidayCountries();
 
   const darkModeToggle=document.getElementById("darkModeToggle");
 
@@ -2043,7 +1993,7 @@
   }
 
   function normalizeHolidayName(name){
-    return String(name||"")
+    let value=String(name||"")
       .normalize("NFKD")
       .replace(/[\u0300-\u036f]/g,"")
       .toLowerCase()
@@ -2053,138 +2003,531 @@
       .replace(/[’'`]/g,"")
       .replace(/[^a-z0-9]+/g," ")
       .trim();
+
+    const aliases={
+      "deepavali":"diwali",
+      "dipavali":"diwali",
+      "vijaya dashami":"dussehra",
+      "vijayadashami":"dussehra",
+      "dasara":"dussehra",
+      "dussera":"dussehra",
+      "krishna janmashtami":"janmashtami",
+      "sri krishna janmashtami":"janmashtami",
+      "maha shivratri":"maha shivaratri",
+      "mahashivratri":"maha shivaratri",
+      "shivratri":"maha shivaratri",
+      "rakhi":"raksha bandhan",
+      "guru nanak jayanti":"guru nanak gurpurab",
+      "guru nanak birthday":"guru nanak gurpurab",
+      "guru nanak gurpurab":"guru nanak gurpurab",
+      "makara sankranti":"makar sankranti",
+      "thai pongal":"pongal",
+      "rama navami":"ram navami"
+    };
+
+    return aliases[value] || value;
   }
 
   function cleanHolidayDisplayName(name){
+    /* Preserve '(observed)' / '(substitute day)' so shifted holidays are clear. */
     return String(name||"").trim();
   }
 
-  function holidayBaseName(name){
-    return String(name||"")
-      .replace(/\s*\((?:substitute day|observed)\)\s*$/i,"")
-      .replace(/\s+(?:substitute day|observed)\s*$/i,"")
-      .trim();
-  }
+  const INDIA_REFERENCE={
+    name:"New Delhi",
+    lat:28.6139,
+    lon:77.2090,
+    tz:"Asia/Kolkata",
+    offsetMinutes:330
+  };
 
-  const HOLIDAY_INSTITUTIONAL_CATEGORIES=new Set([
-    "bank","school","government","half_day","workday"
+  const INDIA_CALCULATED_KEYS=new Set([
+    "makar sankranti",
+    "pongal",
+    "vasant panchami",
+    "maha shivaratri",
+    "holika dahan",
+    "holi",
+    "ugadi gudi padwa",
+    "ram navami",
+    "mahavir jayanti",
+    "vaisakhi",
+    "akshaya tritiya",
+    "buddha purnima",
+    "raksha bandhan",
+    "janmashtami",
+    "ganesh chaturthi",
+    "navratri begins",
+    "dussehra",
+    "diwali",
+    "govardhan puja",
+    "chhath puja",
+    "guru nanak gurpurab"
   ]);
 
-  function holidayEntryEnabled(categories){
-    const cats=Array.isArray(categories) ? categories.map(c=>String(c).toLowerCase()) : [];
+  function indiaLocalToUtc(year,month,day,hour,minute){
+    return new Date(
+      Date.UTC(year,month-1,day,hour||0,minute||0,0) -
+      INDIA_REFERENCE.offsetMinutes*60000
+    );
+  }
 
-    if(holidayPublic.checked && cats.includes("public")) return true;
+  function civilDateAdd(year,month,day,delta){
+    const date=new Date(Date.UTC(year,month-1,day));
+    date.setUTCDate(date.getUTCDate()+delta);
+    return {
+      year:date.getUTCFullYear(),
+      month:date.getUTCMonth()+1,
+      day:date.getUTCDate()
+    };
+  }
 
-    if(holidayObservance.checked){
-      if(cats.some(category=>
-        category!=="public" && !HOLIDAY_INSTITUTIONAL_CATEGORIES.has(category)
-      )){
-        return true;
+  function civilDateDistance(year,month,day,anchorMonth,anchorDay){
+    const a=Date.UTC(year,month-1,day);
+    const b=Date.UTC(year,anchorMonth-1,anchorDay);
+    return Math.abs((a-b)/86400000);
+  }
+
+  function indiaDaypartMoment(year,month,day,daypart){
+    const fallbackHour={
+      sunrise:6,
+      midday:12,
+      afternoon:14,
+      sunset:18,
+      midnight:24
+    }[daypart] || 6;
+
+    if(typeof Astronomy==="undefined"){
+      return indiaLocalToUtc(year,month,day,fallbackHour===24?23:fallbackHour,fallbackHour===24?59:0);
+    }
+
+    try{
+      const observer=new Astronomy.Observer(
+        INDIA_REFERENCE.lat,
+        INDIA_REFERENCE.lon,
+        216
+      );
+
+      if(daypart==="sunrise"){
+        const result=Astronomy.SearchRiseSet(
+          Astronomy.Body.Sun,
+          observer,
+          +1,
+          indiaLocalToUtc(year,month,day,0,0),
+          1
+        );
+        if(result) return result.date;
       }
+
+      if(daypart==="sunset"){
+        const result=Astronomy.SearchRiseSet(
+          Astronomy.Body.Sun,
+          observer,
+          -1,
+          indiaLocalToUtc(year,month,day,12,0),
+          1
+        );
+        if(result) return result.date;
+      }
+    }catch(e){}
+
+    if(daypart==="midnight"){
+      return indiaLocalToUtc(year,month,day,23,59);
     }
 
-    return false;
+    return indiaLocalToUtc(year,month,day,fallbackHour,0);
   }
 
-  function holidayGeneratedRange(){
-    if(!holidayDataset || !holidayDataset.meta) return null;
-
-    const minYear=Number(holidayDataset.meta.start_year);
-    const maxYear=Number(holidayDataset.meta.end_year);
-
-    if(!Number.isFinite(minYear) || !Number.isFinite(maxYear)) return null;
-    return {minYear,maxYear};
+  function hinduTithiAt(date){
+    const phase=((Astronomy.MoonPhase(date)%360)+360)%360;
+    return Math.floor(phase/12)+1;
   }
 
-  function holidayYearIsGenerated(year){
-    const range=holidayGeneratedRange();
-    return !!range && year>=range.minYear && year<=range.maxYear;
+  function angularDistance(a,b){
+    const d=Math.abs((((a-b)+540)%360)-180);
+    return d;
   }
 
-  function setHolidayStatus(text,kind=""){
-    holidayStatus.textContent=text||"";
-    holidayStatus.className="astro-status";
-    if(kind==="warning") holidayStatus.classList.add("holiday-status-warning");
-    if(kind==="error") holidayStatus.classList.add("holiday-status-error");
+  function tithiCenterDegrees(tithi){
+    return (((tithi-1)*12)+6)%360;
   }
 
-  function getDateHolidaysConstructor(){
-    if(typeof window.Holidays==="function") return window.Holidays;
-
-    if(window.Holidays && typeof window.Holidays.default==="function"){
-      return window.Holidays.default;
+  function findTithiDate(year,anchorMonth,anchorDay,tithi,daypart,radius){
+    if(typeof Astronomy==="undefined" || typeof Astronomy.MoonPhase!=="function"){
+      return null;
     }
 
-    if(window.Holidays && typeof window.Holidays.Holidays==="function"){
-      return window.Holidays.Holidays;
+    const searchRadius=radius||20;
+    let bestExact=null;
+    let bestApprox=null;
+
+    for(let delta=-searchRadius;delta<=searchRadius;delta++){
+      const parts=civilDateAdd(year,anchorMonth,anchorDay,delta);
+      if(parts.year!==year) continue;
+
+      try{
+        const moment=indiaDaypartMoment(parts.year,parts.month,parts.day,daypart);
+        const phase=((Astronomy.MoonPhase(moment)%360)+360)%360;
+        const foundTithi=Math.floor(phase/12)+1;
+        const anchorDistance=civilDateDistance(
+          year,parts.month,parts.day,anchorMonth,anchorDay
+        );
+        const phaseDistance=angularDistance(phase,tithiCenterDegrees(tithi));
+
+        const candidate={
+          year:parts.year,
+          month:parts.month,
+          day:parts.day,
+          phase,
+          tithi:foundTithi,
+          score:anchorDistance+(phaseDistance/360)
+        };
+
+        if(foundTithi===tithi){
+          if(!bestExact || candidate.score<bestExact.score) bestExact=candidate;
+        }
+
+        const approximateScore=phaseDistance+(anchorDistance*0.15);
+        if(!bestApprox || approximateScore<bestApprox.approximateScore){
+          candidate.approximateScore=approximateScore;
+          bestApprox=candidate;
+        }
+      }catch(e){}
     }
+
+    return bestExact || bestApprox;
+  }
+
+  function findMoonPhaseLocalDate(year,targetPhase,anchorMonth,anchorDay){
+    if(typeof Astronomy==="undefined" || typeof Astronomy.SearchMoonPhase!=="function"){
+      return null;
+    }
+
+    try{
+      /*
+        A 28-day search window is intentionally shorter than one synodic month,
+        so it cannot accidentally select the neighboring lunation.
+      */
+      const startParts=civilDateAdd(year,anchorMonth,anchorDay,-14);
+      const start=indiaLocalToUtc(
+        startParts.year,startParts.month,startParts.day,0,0
+      );
+      const time=Astronomy.SearchMoonPhase(targetPhase,start,28);
+      if(time){
+        return localDateParts(time.date,INDIA_REFERENCE);
+      }
+    }catch(e){}
 
     return null;
   }
 
-  function buildDateHolidaysFallback(year){
-    const HolidayConstructor=getDateHolidaysConstructor();
+  function approximateLahiriAyanamsha(date){
+    /*
+      Date-level approximation sufficient for deciding the Gregorian day of
+      sidereal solar ingress. Lahiri is ~23.85675° at J2000 and advances with
+      general precession at about 50.29 arcseconds/year.
+    */
+    const year=date.getUTCFullYear()+
+      ((date.getUTCMonth()+0.5)/12);
+    return 23.85675 + (year-2000)*(50.29/3600);
+  }
+
+  function findSiderealSolarIngressDate(year,siderealLongitude,anchorMonth,anchorDay){
+    if(typeof Astronomy==="undefined" || typeof Astronomy.SearchSunLongitude!=="function"){
+      return {year,month:anchorMonth,day:anchorDay};
+    }
+
+    try{
+      const anchor=new Date(Date.UTC(year,anchorMonth-1,anchorDay,6,0,0));
+      const ayanamsha=approximateLahiriAyanamsha(anchor);
+      const tropicalTarget=(siderealLongitude+ayanamsha)%360;
+      const start=new Date(anchor.getTime()-5*86400000);
+      const time=Astronomy.SearchSunLongitude(tropicalTarget,start,10);
+
+      if(time){
+        return localDateParts(time.date,INDIA_REFERENCE);
+      }
+    }catch(e){}
+
+    return {year,month:anchorMonth,day:anchorDay};
+  }
+
+  function addIndiaCalculatedHoliday(list,parts,label,rule){
+    if(!parts || parts.year===undefined) return;
+    list.push({
+      year:parts.year,
+      month:parts.month,
+      day:parts.day,
+      name:label,
+      type:"calculated",
+      source:"calculated-india",
+      rule:rule||"Astronomically calculated Indian festival date"
+    });
+  }
+
+  function calculateIndianFestivals(year){
+    const festivals=[];
+
+    if(typeof Astronomy==="undefined"){
+      return {festivals,notice:"Astronomy Engine unavailable; calculated Indian festivals could not be added."};
+    }
+
+    try{
+      const makar=findSiderealSolarIngressDate(year,270,1,14);
+      addIndiaCalculatedHoliday(
+        festivals,makar,"Makar Sankranti",
+        "Sidereal solar ingress into Makara; approximate Lahiri ayanamsha"
+      );
+      addIndiaCalculatedHoliday(
+        festivals,makar,"Pongal",
+        "Shown on the Makar Sankranti solar-ingress date"
+      );
+
+      const vasant=findTithiDate(year,1,27,5,"sunrise",18);
+      addIndiaCalculatedHoliday(festivals,vasant,"Vasant Panchami","Shukla Panchami at New Delhi sunrise");
+
+      const shiva=findTithiDate(year,2,22,29,"midnight",20);
+      addIndiaCalculatedHoliday(festivals,shiva,"Maha Shivaratri","Krishna Chaturdashi near New Delhi midnight");
+
+      const holika=findMoonPhaseLocalDate(year,180,3,10) ||
+        findTithiDate(year,3,10,15,"sunset",22);
+      addIndiaCalculatedHoliday(
+        festivals,holika,"Holika Dahan",
+        "Phalguna-season full-moon civil date using New Delhi reference; ritual Bhadra/muhurta details are not modeled"
+      );
+      if(holika){
+        addIndiaCalculatedHoliday(
+          festivals,
+          civilDateAdd(holika.year,holika.month,holika.day,1),
+          "Holi",
+          "Day following the calculated Phalguna full-moon / Holika Dahan date"
+        );
+      }
+
+      /*
+        Pratipada can begin after sunrise and finish before the following
+        sunrise (a sunrise-skipped tithi). Midday catches those civil-day
+        cases better than requiring Pratipada to exist exactly at sunrise.
+      */
+      const ugadi=findTithiDate(year,3,25,1,"midday",22);
+      addIndiaCalculatedHoliday(festivals,ugadi,"Ugadi / Gudi Padwa","Chaitra-season Shukla Pratipada at New Delhi sunrise");
+
+      const ram=findTithiDate(year,4,2,9,"midday",22);
+      addIndiaCalculatedHoliday(festivals,ram,"Ram Navami","Chaitra-season Shukla Navami prevailing near New Delhi midday");
+
+      const mahavir=findTithiDate(year,4,6,13,"sunrise",22);
+      addIndiaCalculatedHoliday(festivals,mahavir,"Mahavir Jayanti","Chaitra-season Shukla Trayodashi at New Delhi sunrise");
+
+      const vaisakhi=findSiderealSolarIngressDate(year,0,4,14);
+      addIndiaCalculatedHoliday(
+        festivals,vaisakhi,"Vaisakhi",
+        "Sidereal solar ingress into Mesha; approximate Lahiri ayanamsha"
+      );
+
+      const akshaya=findTithiDate(year,4,28,3,"sunrise",22);
+      addIndiaCalculatedHoliday(festivals,akshaya,"Akshaya Tritiya","Vaishakha-season Shukla Tritiya at New Delhi sunrise");
+
+      const buddha=findTithiDate(year,5,8,15,"sunrise",22);
+      addIndiaCalculatedHoliday(festivals,buddha,"Buddha Purnima","Vaishakha-season Purnima at New Delhi sunrise");
+
+      const rakhi=findTithiDate(year,8,20,15,"sunrise",22);
+      addIndiaCalculatedHoliday(festivals,rakhi,"Raksha Bandhan","Shravana-season Purnima at New Delhi sunrise");
+
+      const janmashtami=findTithiDate(year,8,30,23,"midnight",22);
+      addIndiaCalculatedHoliday(festivals,janmashtami,"Krishna Janmashtami","Krishna Ashtami prevailing near New Delhi midnight");
+
+      const ganesh=findTithiDate(year,9,5,4,"midday",22);
+      addIndiaCalculatedHoliday(festivals,ganesh,"Ganesh Chaturthi","Bhadrapada-season Shukla Chaturthi near New Delhi midday");
+
+      const navratri=findTithiDate(year,10,1,1,"midday",22);
+      addIndiaCalculatedHoliday(festivals,navratri,"Navratri begins","Ashvina-season Shukla Pratipada at New Delhi sunrise");
+
+      let dussehra=null;
+      if(navratri){
+        for(let delta=7;delta<=12;delta++){
+          const p=civilDateAdd(navratri.year,navratri.month,navratri.day,delta);
+          const moment=indiaDaypartMoment(p.year,p.month,p.day,"afternoon");
+          if(hinduTithiAt(moment)===10){
+            dussehra=p;
+            break;
+          }
+        }
+      }
+      if(!dussehra) dussehra=findTithiDate(year,10,10,10,"afternoon",22);
+      addIndiaCalculatedHoliday(festivals,dussehra,"Dussehra (Vijayadashami)","Shukla Dashami prevailing near New Delhi afternoon (Aparahna-style reference)");
+
+      const diwali=findTithiDate(year,10,30,30,"sunset",24);
+      addIndiaCalculatedHoliday(festivals,diwali,"Diwali","Kartika-season Amavasya prevailing near New Delhi sunset");
+
+      let govardhan=null;
+      if(diwali){
+        for(let delta=1;delta<=3;delta++){
+          const p=civilDateAdd(diwali.year,diwali.month,diwali.day,delta);
+          if(hinduTithiAt(indiaDaypartMoment(p.year,p.month,p.day,"sunrise"))===1){
+            govardhan=p;
+            break;
+          }
+        }
+      }
+      if(govardhan){
+        addIndiaCalculatedHoliday(festivals,govardhan,"Govardhan Puja","First Shukla Pratipada sunrise following Diwali");
+      }
+
+      let chhath=null;
+      if(diwali){
+        for(let delta=4;delta<=9;delta++){
+          const p=civilDateAdd(diwali.year,diwali.month,diwali.day,delta);
+          if(hinduTithiAt(indiaDaypartMoment(p.year,p.month,p.day,"sunrise"))===6){
+            chhath=p;
+            break;
+          }
+        }
+      }
+      if(chhath){
+        addIndiaCalculatedHoliday(festivals,chhath,"Chhath Puja","Shukla Shashthi following Diwali");
+      }
+
+      const guru=findTithiDate(year,11,15,15,"sunrise",22);
+      addIndiaCalculatedHoliday(festivals,guru,"Guru Nanak Gurpurab","Kartika-season Purnima at New Delhi sunrise");
+
+      return {festivals,notice:""};
+    }catch(err){
+      return {
+        festivals,
+        notice:"Some calculated Indian festivals could not be determined: "+(err.message||String(err))
+      };
+    }
+  }
+
+  function buildHolidayEvents(year){
+    const key=JSON.stringify([
+      year,
+      selectedHolidayCountries.slice().sort(),
+      holidayPublic.checked,
+      holidayObservance.checked
+    ]);
+
+    if(key===holidayCacheKey) return holidayCache;
+
     const map={};
     const notices=[];
+    const HolidayConstructor=getHolidayConstructor();
 
     if(!HolidayConstructor){
-      return {
-        map,
-        notices:["date-holidays fallback library could not be loaded."]
-      };
+      holidayStatus.textContent="date-holidays could not be loaded; holiday overlays are unavailable.";
+      holidayCacheKey=key;
+      holidayCache=map;
+      return map;
+    }
+
+    if(!holidayPublic.checked && !holidayObservance.checked){
+      holidayStatus.textContent=holidayBaseStatus;
+      holidayCacheKey=key;
+      holidayCache=map;
+      return map;
     }
 
     const mergedByDate={};
+
+    function mergeHoliday(yearValue,monthValue,dayValue,name,country,type,source,rule){
+      const dayKey=dateKey(yearValue,monthValue,dayValue);
+      const normalized=normalizeHolidayName(name);
+      if(!normalized) return;
+
+      if(!mergedByDate[dayKey]) mergedByDate[dayKey]={};
+
+      let item=mergedByDate[dayKey][normalized];
+
+      if(!item){
+        item=mergedByDate[dayKey][normalized]={
+          label:cleanHolidayDisplayName(name),
+          countries:new Set(),
+          types:new Set(),
+          sources:new Set(),
+          rules:new Set()
+        };
+      }else if(
+        source==="calculated-india" &&
+        !item.sources.has("calculated-india")
+      ){
+        /*
+          Prefer the calculated Indian label when it merges with a generic
+          date-holidays spelling of the same festival.
+        */
+        item.label=cleanHolidayDisplayName(name);
+      }
+
+      item.countries.add(country);
+      if(type) item.types.add(type);
+      if(source) item.sources.add(source);
+      if(rule) item.rules.add(rule);
+    }
 
     selectedHolidayCountries.forEach(code=>{
       try{
         const hd=new HolidayConstructor(code);
         try{ hd.setLanguages("en"); }catch(e){}
 
-        const records=hd.getHolidays(year) || [];
+        const holidays=hd.getHolidays(year) || [];
 
-        records.forEach(holiday=>{
+        holidays.forEach(holiday=>{
           const type=String(holiday.type||"").toLowerCase();
 
-          let enabled=false;
-          if(type==="public" && holidayPublic.checked) enabled=true;
-          if((type==="observance" || type==="optional") && holidayObservance.checked) enabled=true;
+          const enabled=
+            (type==="public" && holidayPublic.checked) ||
+            ((type==="observance" || type==="optional") && holidayObservance.checked);
+
           if(!enabled) return;
+
+          /*
+            When India is selected, our calculated layer owns the major
+            astronomy/lunisolar festival names. Suppress matching library
+            entries so a statutory or hand-entered date cannot conflict with
+            the calculated festival date.
+          */
+          if(code==="IN" && INDIA_CALCULATED_KEYS.has(normalizeHolidayName(holiday.name))){
+            return;
+          }
 
           const rawDate=String(holiday.date||"").slice(0,10);
           const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(rawDate);
           if(!match) return;
 
-          const y=Number(match[1]);
-          const month=Number(match[2]);
-          const day=Number(match[3]);
+          const y=Number(match[1]),m=Number(match[2]),d=Number(match[3]);
           if(y!==year) return;
 
-          const dayKey=dateKey(y,month,day);
-          const normalized=normalizeHolidayName(holiday.name);
-          if(!normalized) return;
-
-          if(!mergedByDate[dayKey]) mergedByDate[dayKey]={};
-
-          let item=mergedByDate[dayKey][normalized];
-
-          if(!item){
-            item=mergedByDate[dayKey][normalized]={
-              label:cleanHolidayDisplayName(holiday.name),
-              countries:new Set(),
-              types:new Set()
-            };
-          }
-
-          item.countries.add(code);
-          if(type) item.types.add(type);
+          mergeHoliday(
+            y,m,d,
+            holiday.name,
+            code,
+            type,
+            "date-holidays",
+            holiday.rule||""
+          );
         });
       }catch(err){
-        notices.push(
-          (holidayCountryNames[code]||code)+": "+(err.message||String(err))
-        );
+        notices.push((holidayCountryNames[code]||code)+": "+(err.message||String(err)));
       }
     });
+
+    if(selectedHolidayCountries.includes("IN") && holidayObservance.checked){
+      const calculated=calculateIndianFestivals(year);
+
+      calculated.festivals.forEach(holiday=>{
+        mergeHoliday(
+          holiday.year,
+          holiday.month,
+          holiday.day,
+          holiday.name,
+          "IN",
+          holiday.type,
+          holiday.source,
+          holiday.rule
+        );
+      });
+
+      if(calculated.notice) notices.push(calculated.notice);
+    }
 
     Object.keys(mergedByDate).forEach(dayKey=>{
       map[dayKey]=Object.values(mergedByDate[dayKey])
@@ -2200,155 +2543,25 @@
 
           const countryText=codes.map(code=>holidayCountryNames[code]||code).join(", ");
           const typeText=Array.from(item.types).sort().join(", ");
+          const sources=Array.from(item.sources);
+          const rules=Array.from(item.rules);
 
           return {
             label:item.label,
-            title:item.label+" — "+countryText+(typeText ? " ["+typeText+"]" : ""),
+            title:
+              item.label+" — "+countryText+
+              (typeText ? " ["+typeText+"]" : "")+
+              (sources.includes("calculated-india") ? " — calculated using New Delhi reference" : ""),
             countries:codes,
-            source:"date-holidays"
+            sources,
+            rules
           };
         });
     });
 
-    return {map,notices};
-  }
-
-  function buildHolidayEvents(year){
-    const datasetStamp=holidayDataset?.meta?.generated_at || "";
-
-    const key=JSON.stringify([
-      year,
-      selectedHolidayCountries.slice().sort(),
-      holidayPublic.checked,
-      holidayObservance.checked,
-      datasetStamp
-    ]);
-
-    if(key===holidayCacheKey) return holidayCache;
-
-    const map={};
-
-    if(holidayDatasetLoading){
-      setHolidayStatus("Loading holidays.json...");
-      holidayCacheKey=key;
-      holidayCache=map;
-      return map;
-    }
-
-    if(!holidayDataset){
-      if(!holidayDatasetError){
-        setHolidayStatus("Holiday data is unavailable.","error");
-      }
-      holidayCacheKey=key;
-      holidayCache=map;
-      return map;
-    }
-
-    if(!holidayPublic.checked && !holidayObservance.checked){
-      setHolidayStatus("");
-      holidayCacheKey=key;
-      holidayCache=map;
-      return map;
-    }
-
-    const range=holidayGeneratedRange();
-    const minYear=range.minYear;
-    const maxYear=range.maxYear;
-
-    if(!holidayYearIsGenerated(year)){
-      const fallback=buildDateHolidaysFallback(year);
-      const problemText=fallback.notices.length
-        ? " Some selected countries could not be calculated: "+fallback.notices.join(" | ")
-        : "";
-
-      setHolidayStatus(
-        year+" is outside the generated Vacanza range ("+minYear+"–"+maxYear+
-        "). Using date-holidays fallback; cultural-holiday coverage may be incomplete."+
-        problemText,
-        "warning"
-      );
-
-      holidayCacheKey=key;
-      holidayCache=fallback.map;
-      return fallback.map;
-    }
-
-    /*
-      Intermediate structure:
-        by date -> normalized name -> one merged holiday.
-      Duplicate removal is deliberately date-local: identical names on
-      different dates are never combined.
-    */
-    const mergedByDate={};
-
-    selectedHolidayCountries.forEach(code=>{
-      const country=holidayDataset.countries[code];
-      if(!country) return;
-
-      const records=country.years?.[String(year)] || [];
-
-      records.forEach(record=>{
-        const monthDay=String(record[0]||"");
-        const name=String(record[1]||"");
-        const categories=Array.isArray(record[2]) ? record[2] : [];
-
-        if(!holidayEntryEnabled(categories)) return;
-
-        const match=/^(\d{2})-(\d{2})$/.exec(monthDay);
-        if(!match) return;
-
-        const month=Number(match[1]);
-        const day=Number(match[2]);
-        const dayKey=dateKey(year,month,day);
-        const normalized=normalizeHolidayName(name);
-        if(!normalized) return;
-
-        if(!mergedByDate[dayKey]) mergedByDate[dayKey]={};
-
-        let item=mergedByDate[dayKey][normalized];
-
-        if(!item){
-          item=mergedByDate[dayKey][normalized]={
-            label:cleanHolidayDisplayName(name),
-            countries:new Set(),
-            types:new Set()
-          };
-        }
-
-        item.countries.add(code);
-        categories.forEach(category=>item.types.add(String(category)));
-      });
-    });
-
-    Object.keys(mergedByDate).forEach(dayKey=>{
-      map[dayKey]=Object.values(mergedByDate[dayKey])
-        .sort((a,b)=>a.label.localeCompare(b.label,undefined,{sensitivity:"base"}))
-        .map(item=>{
-          const codes=Array.from(item.countries).sort((a,b)=>
-            (holidayCountryNames[a]||a).localeCompare(holidayCountryNames[b]||b,undefined,{sensitivity:"base"})
-          );
-
-          const countryText=codes.map(code=>holidayCountryNames[code]||code).join(", ");
-          const typeText=Array.from(item.types).sort().join(", ");
-
-          return {
-            label:item.label,
-            title:item.label+" — "+countryText+(typeText ? " ["+typeText+"]" : ""),
-            countries:codes,
-            source:"vacanza"
-          };
-        });
-    });
-
-    const version=holidayDataset.meta.library_version
-      ? "Vacanza holidays "+holidayDataset.meta.library_version
-      : "Vacanza holidays";
-
-    setHolidayStatus(
-      "Holiday data: "+version+
-      ", generated "+String(holidayDataset.meta.generated_at||"").slice(0,10)+
-      " for "+minYear+"–"+maxYear+"."
-    );
+    holidayStatus.textContent=notices.length
+      ? holidayBaseStatus+" Some holiday calculations reported: "+notices.join(" | ")
+      : holidayBaseStatus;
 
     holidayCacheKey=key;
     holidayCache=map;
@@ -2528,7 +2741,24 @@
   }
 
   function holidayInfoLinks(item){
-    const baseName=holidayBaseName(item.label);
+    const sources=Array.isArray(item.sources) ? item.sources : [];
+
+    if(sources.includes("calculated-india")){
+      return [
+        {
+          name:"Drik Panchang",
+          url:"https://www.drikpanchang.com/calendars/hindu/hinducalendar.html"
+        },
+        {
+          name:"Wikipedia",
+          url:"https://en.wikipedia.org/wiki/Special:Search?search="+encodeURIComponent(item.label)
+        }
+      ];
+    }
+
+    const baseName=String(item.label||"")
+      .replace(/\s*\((?:substitute day|observed)\)\s*$/i,"")
+      .trim();
     const slug=slugifyInfoName(baseName);
 
     return [
@@ -2545,15 +2775,6 @@
 
   function renderHolidayDetails(year,month,holidayByDate){
     holidayDetailsList.innerHTML="";
-
-    if(!holidayDataset && !holidayDatasetLoading){
-      const empty=document.createElement("div");
-      empty.className="astro-details-empty holiday-status-error";
-      empty.textContent="Holiday data unavailable because holidays.json could not be loaded.";
-      holidayDetailsList.appendChild(empty);
-      return;
-    }
-
     const items=[];
 
     Object.keys(holidayByDate).forEach(key=>{
@@ -2951,6 +3172,48 @@
     }catch(e){}
     renderCalendar();
   });
+
+  function stepCalendarMonth(delta){
+    let month=Number(calendarMonth.value);
+    let year=Number(calendarYear.value);
+
+    if(!Number.isFinite(month) || month<0 || month>11) month=new Date().getMonth();
+    if(!Number.isFinite(year) || year<1 || year>9999) year=new Date().getFullYear();
+
+    month+=delta;
+
+    if(month<0){
+      if(year<=1) return;
+      month=11;
+      year-=1;
+    }else if(month>11){
+      if(year>=9999) return;
+      month=0;
+      year+=1;
+    }
+
+    const yearChanged=String(year)!==String(calendarYear.value);
+
+    calendarMonth.value=String(month);
+    calendarYear.value=String(year);
+
+    try{
+      localStorage.setItem("annual-events-calendar-month",calendarMonth.value);
+    }catch(e){}
+
+    if(yearChanged){
+      /*
+        Reuse the existing year-change behavior so chronological event sorting,
+        astronomy/holiday caches, JSON preview, etc. all stay in sync.
+      */
+      calendarYear.dispatchEvent(new Event("input",{bubbles:true}));
+    }else{
+      renderCalendar();
+    }
+  }
+
+  prevMonthBtn.addEventListener("click",()=>stepCalendarMonth(-1));
+  nextMonthBtn.addEventListener("click",()=>stepCalendarMonth(1));
 
   locationRegion.addEventListener("change",()=>{
     saveAstroDisplaySettings();

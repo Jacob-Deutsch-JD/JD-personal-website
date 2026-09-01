@@ -1448,6 +1448,8 @@
 
   darkModeToggle.addEventListener("change",function(){
     applyDarkMode(darkModeToggle.checked);
+    invalidateAstronomyCache();
+    renderCalendar();
   });
 
   function updateFileLabel(){ fileName.textContent=(currentFileName||"No file open")+(dirty?" *":""); }
@@ -1792,7 +1794,8 @@
   function buildAstronomyEvents(year){
     const region=selectedAstroRegion();
     const options=astronomyOptionState();
-    const key=JSON.stringify([year,region.id,options]);
+    const darkMode=document.body.classList.contains("dark");
+    const key=JSON.stringify([year,region.id,options,darkMode]);
     if(key===astroCacheKey) return astroCache;
 
     const map={};
@@ -1842,7 +1845,17 @@
           if(p.year>year) break;
           if(p.year===year){
             const names=["New Moon","First Quarter Moon","Full Moon","Third Quarter Moon"];
-            const symbols=["○","◐","●","◑"];
+
+            /*
+              These Unicode moon symbols use the current text color for their
+              filled portion. In dark mode the text color is light, so the
+              filled portion visually represents the illuminated Moon. In
+              light mode the text color is dark, so the hollow portion does.
+            */
+            const symbols=darkMode
+              ? ["○","◐","●","◑"]
+              : ["●","◑","○","◐"];
+
             addAstroEvent(map,p.year,p.month,p.day,symbols[mq.quarter]+" "+names[mq.quarter],names[mq.quarter]+" — Astronomy Engine","moon");
           }
           mq=Astronomy.NextMoonQuarter(mq);

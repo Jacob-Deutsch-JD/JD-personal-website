@@ -300,7 +300,8 @@
     #calendar.single-month .month td { height:68px; padding:2px; }
     #calendar.single-month .event-tag,
     #calendar.single-month .astro-tag,
-    #calendar.single-month .day-heading-holidays .holiday-tag { font-size:10px; }
+    #calendar.single-month .day-heading-holidays .holiday-tag,
+    #calendar.single-month .day-heading-holidays .event-tag-inline { font-size:10px; }
   }
 
   .event-list-wrap {
@@ -1087,6 +1088,11 @@
       display:inline;
       margin:0;
     }
+    .print-holiday-inline .print-item,
+    .print-json-stack .print-item {
+      font-size:6.3pt;
+      line-height:1.03;
+    }
 
     .print-cell-inner {
       height:100%;
@@ -1123,12 +1129,16 @@
       display:block;
       margin:0 0 0.5pt;
       padding:0;
-      font-size:7.5pt;
-      line-height:1.08;
+      font-size:6.3pt;
+      line-height:1.03;
       overflow-wrap:anywhere;
       word-break:normal;
     }
 
+    /*
+      Keep normal weekday print typography consistent. The renderer may still
+      add print-item-tight, but it no longer changes the weekday font size.
+    */
     .print-item-tight {
       font-size:6.3pt;
       line-height:1.03;
@@ -1158,6 +1168,7 @@
       letter-spacing:-0.08pt;
     }
 
+    /* Pocket Calendar weekend cells intentionally use their own sizing. */
     .print-month.print-compact-weekends .print-weekend-cell .print-item {
       font-size:6.2pt;
       line-height:1.03;

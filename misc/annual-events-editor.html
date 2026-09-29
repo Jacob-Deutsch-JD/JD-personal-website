@@ -54,6 +54,12 @@
     font-size:9px;
     line-height:1.05;
   }
+  .day-heading-holidays .event-tag-inline {
+    display:inline;
+    margin:0;
+    font-size:9px;
+    line-height:1.05;
+  }
   .event-tag { display:block; margin-top:1px; line-height:1.05; font-size:9px; word-break:break-word; }
   .empty-day,
   .adjacent-day { background:#f1f1f1; }
@@ -284,7 +290,8 @@
   #calendar.single-month .day-number { font-size:11px; }
   #calendar.single-month .event-tag,
   #calendar.single-month .astro-tag,
-  #calendar.single-month .day-heading-holidays .holiday-tag {
+  #calendar.single-month .day-heading-holidays .holiday-tag,
+  #calendar.single-month .day-heading-holidays .event-tag-inline {
     font-size:11px;
     line-height:1.15;
     margin-top:3px;
@@ -927,10 +934,10 @@
       height:0.54in;
       box-sizing:border-box;
       display:flex;
-      align-items:center;
+      align-items:flex-start;
       justify-content:space-between;
-      gap:0.14in;
-      padding:0.04in 0.04in 0;
+      gap:0.30in;
+      padding:0.055in 0.08in 0;
       overflow:hidden;
       border:0.7pt solid #555;
       border-top:0.6pt solid #777;
@@ -944,8 +951,8 @@
 
     .print-year-meta {
       margin:0;
-      font-size:6.4pt;
-      line-height:1.12;
+      font-size:7pt;
+      line-height:1.18;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
@@ -954,8 +961,9 @@
     .print-year-legend {
       flex:0 0 auto;
       padding:0;
-      font-size:7pt;
-      line-height:1.15;
+      margin:0;
+      font-size:7.2pt;
+      line-height:1.18;
       white-space:nowrap;
     }
 
@@ -979,10 +987,24 @@
       border-bottom:0.6pt solid #666;
       background:#e7e7e7 !important;
       text-align:center;
+      padding:0 0.055in;
       font-family:"Times New Roman",Times,serif;
       font-size:15pt;
       line-height:0.31in;
       font-weight:bold;
+      white-space:nowrap;
+    }
+
+    .print-month.print-compact-weekends .print-month-title {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      text-align:left;
+    }
+
+    .print-month-title-copy {
+      display:block;
+      flex:0 0 auto;
     }
 
     .print-month table {
@@ -1157,6 +1179,149 @@
     .print-month.print-compact-weekends .print-weekend-cell .print-day-heading {
       gap:1.2pt;
     }
+
+    /*
+      Compact folding mode keeps the old print proportions:
+      0.54in blank header + 0.54in blank footer.
+      Weekday labels are still embedded in the first row of date cells.
+    */
+    .print-month-page.print-page-compact .print-month {
+      height:calc(100% - 0.54in);
+      border-bottom:0;
+    }
+
+    .print-month-page.print-page-compact .print-compact-blank-header {
+      display:block;
+      height:0.54in;
+      box-sizing:border-box;
+      border-bottom:0.6pt solid #666;
+      background:#fff !important;
+    }
+
+    .print-month-page.print-page-compact .print-month table {
+      height:calc(100% - 0.54in);
+      border-collapse:collapse !important;
+      table-layout:fixed !important;
+    }
+
+    .print-month-page.print-page-compact .print-month-title,
+    .print-month-page.print-page-compact .print-month thead {
+      display:none !important;
+    }
+
+    .print-month-page.print-page-compact .print-year-footer {
+      display:block !important;
+      height:0.54in;
+      padding:0;
+      border:0.7pt solid #555;
+      border-top:0.6pt solid #777;
+      background:#fff !important;
+    }
+
+    /*
+      Explicitly preserve every day-cell divider in compact print mode.
+      This avoids Chromium/PDF border-collapse quirks when the normal THEAD
+      is omitted and the weekend columns use half widths.
+    */
+    .print-month-page.print-page-compact .print-month td {
+      position:relative;
+      border-top:0.45pt solid #bbb !important;
+      border-right:0.45pt solid #bbb !important;
+      border-bottom:0.45pt solid #bbb !important;
+      border-left:0.45pt solid #bbb !important;
+    }
+
+    .print-month-page.print-page-compact tbody tr:first-child .print-day-heading {
+      padding-right:17pt;
+    }
+
+    .print-inline-weekday {
+      position:absolute;
+      top:2.1pt;
+      right:2.2pt;
+      z-index:2;
+      font-size:6.2pt;
+      line-height:1;
+      font-weight:normal;
+      font-style:normal;
+      color:#555;
+      white-space:nowrap;
+      pointer-events:none;
+    }
+
+    .print-compact-info-cell .print-astro-stack {
+      max-height:25%;
+    }
+
+    .print-compact-info-cell-full {
+      background:#fff !important;
+      color:#222 !important;
+    }
+
+    .print-compact-info-inner {
+      height:100%;
+      width:100%;
+      display:block;
+      overflow:hidden;
+    }
+
+    .print-compact-corner {
+      flex:0 0 auto;
+      margin-top:1.5pt;
+      padding-top:1.5pt;
+      border-top:0.45pt solid #999;
+      font-size:5.1pt;
+      line-height:1.12;
+      font-style:normal;
+      color:#222;
+      overflow:hidden;
+    }
+
+    .print-compact-corner-full {
+      height:100%;
+      box-sizing:border-box;
+      margin:0;
+      padding:3pt 2.2pt;
+      border-top:0 !important;
+      font-size:5.15pt;
+      line-height:1.18;
+    }
+
+    .print-compact-corner-title {
+      display:block;
+      margin:0 0 2pt;
+      font-family:"Times New Roman",Times,serif;
+      font-weight:bold;
+      white-space:nowrap;
+    }
+
+    .print-compact-corner-month {
+      display:block;
+      font-size:12pt;
+      line-height:1.00;
+    }
+
+    .print-compact-corner-year {
+      display:block;
+      margin-top:0.8pt;
+      font-size:10.5pt;
+      line-height:1.00;
+    }
+
+    .print-compact-corner-line {
+      display:block;
+      margin:0 0 1.1pt;
+    }
+
+    .print-compact-key {
+      display:block;
+      margin-top:1.5pt;
+      line-height:1.18;
+    }
+
+    .print-compact-key-json { font-weight:normal; }
+    .print-compact-key-holiday { font-weight:bold; }
+    .print-compact-key-astro { font-style:italic; color:#444; }
   }
 
 
@@ -1263,7 +1428,7 @@
     <div class="event-list-wrap">
       <table class="event-list-table" id="eventTable">
         <thead>
-          <tr><th>Event</th><th>Month</th></tr>
+          <tr><th>Event</th><th>Schedule</th></tr>
         </thead>
         <tbody id="eventList"></tbody>
       </table>
@@ -1282,8 +1447,8 @@
           <td><label for="descriptionField">Description:</label></td>
           <td class="value"><textarea id="descriptionField" rows="3" class="event-description-field" placeholder="Optional"></textarea></td>
         </tr>
-        <tr><td><label for="kindField">Date rule:</label></td><td class="value"><select id="kindField"><option value="fixed">Fixed date each year</option><option value="weekday">Nth weekday of month</option></select></td></tr>
-        <tr><td><label for="monthField">Month:</label></td><td class="value"><select id="monthField"></select></td></tr>
+        <tr><td><label for="kindField">Date rule:</label></td><td class="value"><select id="kindField"><option value="fixed">Fixed date each year</option><option value="weekday">Nth weekday of month</option><option value="weekly">Every week</option><option value="monthly">Every month</option></select></td></tr>
+        <tr id="monthRow"><td><label for="monthField">Month:</label></td><td class="value"><select id="monthField"></select></td></tr>
         <tr id="fixedRow"><td><label for="dayField">Day:</label></td><td class="value"><input id="dayField" type="number" min="1" max="31" style="width:70px"></td></tr>
         <tr id="occurrenceRow" class="hidden"><td><label for="occurrenceField">Occurrence:</label></td><td class="value"><select id="occurrenceField"><option value="1">First</option><option value="2">Second</option><option value="3">Third</option><option value="4">Fourth</option><option value="-1">Last</option></select></td></tr>
         <tr id="weekdayRow" class="hidden"><td><label for="weekdayField">Weekday:</label></td><td class="value"><select id="weekdayField"><option value="MO">Monday</option><option value="TU">Tuesday</option><option value="WE">Wednesday</option><option value="TH">Thursday</option><option value="FR">Friday</option><option value="SA">Saturday</option><option value="SU">Sunday</option></select></td></tr>
@@ -1315,7 +1480,7 @@
       <button id="printYearBtn" type="button" title="Print 12 monthly pages on US Letter landscape using the selected year, display settings, and print layout option">Print Year / Save PDF (12 pages)</button>
 
       <label class="print-layout-option" for="printCompactWeekends">
-        <input id="printCompactWeekends" type="checkbox"> Mon-first, half-width weekends, 4/6 rows
+        <input id="printCompactWeekends" type="checkbox"> Pocket Calendar Print
       </label>
     </div>
 
@@ -1341,7 +1506,7 @@
         printed calendar means the average time from sunset until the Sun reaches 18° below the horizon
         (the end of astronomical twilight / start of full night).
         Symbols: ◇ equinox, ◆ solstice, ↓ perigee, ↑ apogee, ⊘ solar eclipse,
-        ⊖ lunar eclipse, ★ meteor shower, ✶ comet perihelion, ∠ elongation,
+        ⊖ lunar eclipse, ★^ meteor-shower peak, ✶ comet perihelion, ∠ elongation,
         ☍︎ opposition, ✦ peak brightness, ⊙ transit. Comet perihelia are loaded from
         NASA/JPL SBDB for comets with perihelion distance ≤ 1.5 AU; results are cached locally.
       </div>
@@ -1626,7 +1791,7 @@
     }
   }
 
-  const eventList=document.getElementById("eventList"), editor=document.getElementById("editor"), noSelection=document.getElementById("noSelection"), nameField=document.getElementById("nameField"), categoryField=document.getElementById("categoryField"), kindField=document.getElementById("kindField"), monthField=document.getElementById("monthField"), dayField=document.getElementById("dayField"), occurrenceField=document.getElementById("occurrenceField"), weekdayField=document.getElementById("weekdayField"), fixedRow=document.getElementById("fixedRow"), occurrenceRow=document.getElementById("occurrenceRow"), weekdayRow=document.getElementById("weekdayRow"), jsonPreview=document.getElementById("jsonPreview"), calendarYear=document.getElementById("calendarYear"), calendarMonth=document.getElementById("calendarMonth"), prevMonthBtn=document.getElementById("prevMonthBtn"), nextMonthBtn=document.getElementById("nextMonthBtn"), fileName=document.getElementById("fileName"), status=document.getElementById("status"), locationRegion=document.getElementById("locationRegion"), astroStatus=document.getElementById("astroStatus"),
+  const eventList=document.getElementById("eventList"), editor=document.getElementById("editor"), noSelection=document.getElementById("noSelection"), nameField=document.getElementById("nameField"), categoryField=document.getElementById("categoryField"), kindField=document.getElementById("kindField"), monthField=document.getElementById("monthField"), dayField=document.getElementById("dayField"), occurrenceField=document.getElementById("occurrenceField"), weekdayField=document.getElementById("weekdayField"), monthRow=document.getElementById("monthRow"), fixedRow=document.getElementById("fixedRow"), occurrenceRow=document.getElementById("occurrenceRow"), weekdayRow=document.getElementById("weekdayRow"), jsonPreview=document.getElementById("jsonPreview"), calendarYear=document.getElementById("calendarYear"), calendarMonth=document.getElementById("calendarMonth"), prevMonthBtn=document.getElementById("prevMonthBtn"), nextMonthBtn=document.getElementById("nextMonthBtn"), fileName=document.getElementById("fileName"), status=document.getElementById("status"), locationRegion=document.getElementById("locationRegion"), astroStatus=document.getElementById("astroStatus"),
   holidayStatus=document.getElementById("holidayStatus"),
   holidayCountrySearch=document.getElementById("holidayCountrySearch"),
   holidayCountryAdd=document.getElementById("holidayCountryAdd"),
@@ -1932,6 +2097,12 @@
     return null;
   }
 
+  const HOLIDAY_COUNTRY_ALPHA3={"AW":"ABW","AF":"AFG","AO":"AGO","AI":"AIA","AX":"ALA","AL":"ALB","AD":"AND","AE":"ARE","AR":"ARG","AM":"ARM","AS":"ASM","AQ":"ATA","TF":"ATF","AG":"ATG","AU":"AUS","AT":"AUT","AZ":"AZE","BI":"BDI","BE":"BEL","BJ":"BEN","BQ":"BES","BF":"BFA","BD":"BGD","BG":"BGR","BH":"BHR","BS":"BHS","BA":"BIH","BL":"BLM","BY":"BLR","BZ":"BLZ","BM":"BMU","BO":"BOL","BR":"BRA","BB":"BRB","BN":"BRN","BT":"BTN","BV":"BVT","BW":"BWA","CF":"CAF","CA":"CAN","CC":"CCK","CH":"CHE","CL":"CHL","CN":"CHN","CI":"CIV","CM":"CMR","CD":"COD","CG":"COG","CK":"COK","CO":"COL","KM":"COM","CV":"CPV","CR":"CRI","CU":"CUB","CW":"CUW","CX":"CXR","KY":"CYM","CY":"CYP","CZ":"CZE","DE":"DEU","DJ":"DJI","DM":"DMA","DK":"DNK","DO":"DOM","DZ":"DZA","EC":"ECU","EG":"EGY","ER":"ERI","EH":"ESH","ES":"ESP","EE":"EST","ET":"ETH","FI":"FIN","FJ":"FJI","FK":"FLK","FR":"FRA","FO":"FRO","FM":"FSM","GA":"GAB","GB":"GBR","GE":"GEO","GG":"GGY","GH":"GHA","GI":"GIB","GN":"GIN","GP":"GLP","GM":"GMB","GW":"GNB","GQ":"GNQ","GR":"GRC","GD":"GRD","GL":"GRL","GT":"GTM","GF":"GUF","GU":"GUM","GY":"GUY","HK":"HKG","HM":"HMD","HN":"HND","HR":"HRV","HT":"HTI","HU":"HUN","ID":"IDN","IM":"IMN","IN":"IND","IO":"IOT","IE":"IRL","IR":"IRN","IQ":"IRQ","IS":"ISL","IL":"ISR","IT":"ITA","JM":"JAM","JE":"JEY","JO":"JOR","JP":"JPN","KZ":"KAZ","KE":"KEN","KG":"KGZ","KH":"KHM","KI":"KIR","KN":"KNA","KR":"KOR","KW":"KWT","LA":"LAO","LB":"LBN","LR":"LBR","LY":"LBY","LC":"LCA","LI":"LIE","LK":"LKA","LS":"LSO","LT":"LTU","LU":"LUX","LV":"LVA","MO":"MAC","MF":"MAF","MA":"MAR","MC":"MCO","MD":"MDA","MG":"MDG","MV":"MDV","MX":"MEX","MH":"MHL","MK":"MKD","ML":"MLI","MT":"MLT","MM":"MMR","ME":"MNE","MN":"MNG","MP":"MNP","MZ":"MOZ","MR":"MRT","MS":"MSR","MQ":"MTQ","MU":"MUS","MW":"MWI","MY":"MYS","YT":"MYT","NA":"NAM","NC":"NCL","NE":"NER","NF":"NFK","NG":"NGA","NI":"NIC","NU":"NIU","NL":"NLD","NO":"NOR","NP":"NPL","NR":"NRU","NZ":"NZL","OM":"OMN","PK":"PAK","PA":"PAN","PN":"PCN","PE":"PER","PH":"PHL","PW":"PLW","PG":"PNG","PL":"POL","PR":"PRI","KP":"PRK","PT":"PRT","PY":"PRY","PS":"PSE","PF":"PYF","QA":"QAT","RE":"REU","RO":"ROU","RU":"RUS","RW":"RWA","SA":"SAU","SD":"SDN","SN":"SEN","SG":"SGP","GS":"SGS","SH":"SHN","SJ":"SJM","SB":"SLB","SL":"SLE","SV":"SLV","SM":"SMR","SO":"SOM","PM":"SPM","RS":"SRB","SS":"SSD","ST":"STP","SR":"SUR","SK":"SVK","SI":"SVN","SE":"SWE","SZ":"SWZ","SX":"SXM","SC":"SYC","SY":"SYR","TC":"TCA","TD":"TCD","TG":"TGO","TH":"THA","TJ":"TJK","TK":"TKL","TM":"TKM","TL":"TLS","TO":"TON","TT":"TTO","TN":"TUN","TR":"TUR","TV":"TUV","TW":"TWN","TZ":"TZA","UG":"UGA","UA":"UKR","UM":"UMI","UY":"URY","US":"USA","UZ":"UZB","VA":"VAT","VC":"VCT","VE":"VEN","VG":"VGB","VI":"VIR","VN":"VNM","VU":"VUT","WF":"WLF","WS":"WSM","YE":"YEM","ZA":"ZAF","ZM":"ZMB","ZW":"ZWE","XK":"XKX"};
+
+  function holidayCountryAlpha3(code){
+    return HOLIDAY_COUNTRY_ALPHA3[code] || code;
+  }
+
   function holidayCountryDisplayName(code,fallback){
     try{
       if(typeof Intl!=="undefined" && Intl.DisplayNames){
@@ -2158,6 +2329,26 @@
         };
       }
 
+      if(raw.rule.kind==="weekly"){
+        return {
+          ...base,
+          rule:{
+            kind:"weekly",
+            weekday:normalizeWeekday(raw.rule.weekday)
+          }
+        };
+      }
+
+      if(raw.rule.kind==="monthly"){
+        return {
+          ...base,
+          rule:{
+            kind:"monthly",
+            day:clampInt(raw.rule.day,1,31,1)
+          }
+        };
+      }
+
       return {
         ...base,
         rule:{
@@ -2215,7 +2406,13 @@
       nameCell.textContent=event.name;
 
       const monthCell=document.createElement("td");
-      monthCell.textContent=months[(event.rule?.month||1)-1] || "";
+      if(event.rule?.kind==="weekly"){
+        monthCell.textContent="Every "+(event.rule.weekday||"MO");
+      }else if(event.rule?.kind==="monthly"){
+        monthCell.textContent="Monthly · "+event.rule.day;
+      }else{
+        monthCell.textContent=months[(event.rule?.month||1)-1] || "";
+      }
 
       row.appendChild(nameCell);
       row.appendChild(monthCell);
@@ -2233,12 +2430,23 @@
     categoryField.value=event.category;
     descriptionField.value=event.description||"";
     kindField.value=event.rule.kind;
-    monthField.value=event.rule.month;
-    if(event.rule.kind==="fixed"){
-      dayField.value=event.rule.day; fixedRow.classList.remove("hidden"); occurrenceRow.classList.add("hidden"); weekdayRow.classList.add("hidden");
-    }else{
-      occurrenceField.value=event.rule.occurrence; weekdayField.value=event.rule.weekday; fixedRow.classList.add("hidden"); occurrenceRow.classList.remove("hidden"); weekdayRow.classList.remove("hidden");
-    }
+    monthField.value=event.rule.month||1;
+    dayField.value=event.rule.day||1;
+    occurrenceField.value=event.rule.occurrence||1;
+    weekdayField.value=event.rule.weekday||"MO";
+    updateRuleEditorVisibility(event.rule.kind);
+  }
+
+  function updateRuleEditorVisibility(kind){
+    const fixed=kind==="fixed";
+    const nthWeekday=kind==="weekday";
+    const weekly=kind==="weekly";
+    const monthly=kind==="monthly";
+
+    monthRow.classList.toggle("hidden",weekly||monthly);
+    fixedRow.classList.toggle("hidden",!(fixed||monthly));
+    occurrenceRow.classList.toggle("hidden",!nthWeekday);
+    weekdayRow.classList.toggle("hidden",!(nthWeekday||weekly));
   }
 
   let calendarRenderFrame=0;
@@ -2265,12 +2473,22 @@
         month:clampInt(monthField.value,1,12,1),
         day:clampInt(dayField.value,1,31,1)
       };
-    }else{
+    }else if(kindField.value==="weekday"){
       event.rule={
         kind:"weekday",
         month:clampInt(monthField.value,1,12,1),
         occurrence:normalizeOccurrence(occurrenceField.value),
         weekday:normalizeWeekday(weekdayField.value)
+      };
+    }else if(kindField.value==="weekly"){
+      event.rule={
+        kind:"weekly",
+        weekday:normalizeWeekday(weekdayField.value)
+      };
+    }else{
+      event.rule={
+        kind:"monthly",
+        day:clampInt(dayField.value,1,31,1)
       };
     }
 
@@ -2280,37 +2498,129 @@
     updateJsonPreview();
     markDirty();
 
-    if(kindField.value==="fixed"){
-      fixedRow.classList.remove("hidden");
-      occurrenceRow.classList.add("hidden");
-      weekdayRow.classList.add("hidden");
-    }else{
-      fixedRow.classList.add("hidden");
-      occurrenceRow.classList.remove("hidden");
-      weekdayRow.classList.remove("hidden");
-    }
+    updateRuleEditorVisibility(kindField.value);
   }
 
   function updateJsonPreview(){ jsonPreview.value=JSON.stringify(events,null,2); }
 
-  function getEventDate(event,year){
-    const r=event.rule, monthIndex=r.month-1;
-    if(r.kind==="fixed"){
-      const d=new Date(year,monthIndex,r.day);
-      if(d.getFullYear()!==year||d.getMonth()!==monthIndex||d.getDate()!==r.day) return null;
+  function validEventDate(year,monthIndex,day){
+    const d=new Date(year,monthIndex,day);
+    if(
+      d.getFullYear()!==year ||
+      d.getMonth()!==monthIndex ||
+      d.getDate()!==day
+    ){
+      return null;
+    }
+    return d;
+  }
+
+  function nthWeekdayEventDate(year,monthIndex,occurrence,weekday){
+    const target=weekdayNumbers[weekday];
+
+    if(occurrence===-1){
+      const d=new Date(year,monthIndex+1,0);
+      while(d.getDay()!==target) d.setDate(d.getDate()-1);
       return d;
     }
-    const target=weekdayNumbers[r.weekday];
-    if(r.occurrence===-1){ const d=new Date(year,monthIndex+1,0); while(d.getDay()!==target)d.setDate(d.getDate()-1); return d; }
-    const d=new Date(year,monthIndex,1); while(d.getDay()!==target)d.setDate(d.getDate()+1); d.setDate(d.getDate()+(r.occurrence-1)*7); return d.getMonth()===monthIndex?d:null;
+
+    const d=new Date(year,monthIndex,1);
+    while(d.getDay()!==target) d.setDate(d.getDate()+1);
+    d.setDate(d.getDate()+(occurrence-1)*7);
+    return d.getMonth()===monthIndex ? d : null;
+  }
+
+  function getEventDates(event,year){
+    const r=event.rule||{};
+    const dates=[];
+
+    if(r.kind==="fixed"){
+      const d=validEventDate(year,(r.month||1)-1,r.day||1);
+      if(d) dates.push(d);
+      return dates;
+    }
+
+    if(r.kind==="weekday"){
+      const d=nthWeekdayEventDate(
+        year,
+        (r.month||1)-1,
+        normalizeOccurrence(r.occurrence),
+        normalizeWeekday(r.weekday)
+      );
+      if(d) dates.push(d);
+      return dates;
+    }
+
+    if(r.kind==="weekly"){
+      const target=weekdayNumbers[normalizeWeekday(r.weekday)];
+      const d=new Date(year,0,1);
+      d.setDate(d.getDate()+((target-d.getDay()+7)%7));
+
+      while(d.getFullYear()===year){
+        dates.push(new Date(d));
+        d.setDate(d.getDate()+7);
+      }
+      return dates;
+    }
+
+    if(r.kind==="monthly"){
+      const day=clampInt(r.day,1,31,1);
+
+      for(let monthIndex=0;monthIndex<12;monthIndex++){
+        const d=validEventDate(year,monthIndex,day);
+        if(d) dates.push(d);
+      }
+      return dates;
+    }
+
+    return dates;
+  }
+
+  function getEventDate(event,year){
+    return getEventDates(event,year)[0]||null;
   }
 
   function sortEventsChronologically(preferredEvent){
     const year=clampInt(calendarYear.value,1,9999,new Date().getFullYear());
     const selectedEvent=preferredEvent || (selectedIndex>=0 ? events[selectedIndex] : null);
     const before=events.slice();
+    const weeklyOrder={MO:0,TU:1,WE:2,TH:3,FR:4,SA:5,SU:6};
+
+    function kindRank(event){
+      const kind=event.rule?.kind;
+      if(kind==="weekly") return 0;
+      if(kind==="monthly") return 1;
+      return 2;
+    }
+
+    function byName(a,b){
+      return String(a.name).localeCompare(
+        String(b.name),
+        undefined,
+        {sensitivity:"base"}
+      );
+    }
 
     events.sort((a,b)=>{
+      const aRank=kindRank(a);
+      const bRank=kindRank(b);
+
+      if(aRank!==bRank) return aRank-bRank;
+
+      if(aRank===0){
+        const aw=weeklyOrder[normalizeWeekday(a.rule?.weekday)] ?? 0;
+        const bw=weeklyOrder[normalizeWeekday(b.rule?.weekday)] ?? 0;
+        if(aw!==bw) return aw-bw;
+        return byName(a,b);
+      }
+
+      if(aRank===1){
+        const ad=clampInt(a.rule?.day,1,31,1);
+        const bd=clampInt(b.rule?.day,1,31,1);
+        if(ad!==bd) return ad-bd;
+        return byName(a,b);
+      }
+
       const da=getEventDate(a,year);
       const db=getEventDate(b,year);
 
@@ -2324,7 +2634,7 @@
         return 1;
       }
 
-      return String(a.name).localeCompare(String(b.name),undefined,{sensitivity:"base"});
+      return byName(a,b);
     });
 
     if(selectedEvent){
@@ -3020,7 +3330,7 @@
 
           addAstroEvent(
             map,p.year,p.month,p.day,
-            "★ "+shower.name+" peak",
+            "★^ "+shower.name,
             shower.name+" normal meteor-shower maximum — IMO Working List (June 2025), λ☉="+
               shower.lambdaSun.toFixed(2)+"° J2000, listed ZHR "+shower.zhr+
               "; peak date calculated for "+year+" using Astronomy Engine",
@@ -3748,14 +4058,17 @@
           );
 
           const countryText=codes.map(code=>holidayCountryNames[code]||code).join(", ");
+          const countryCodeText=codes.map(holidayCountryAlpha3).join(", ");
           const typeText=Array.from(item.types).sort().join(", ");
           const sources=Array.from(item.sources);
           const rules=Array.from(item.rules);
+          const displayLabel=
+            item.label+(countryCodeText ? " ("+countryCodeText+")" : "");
 
           return {
-            label:item.label,
+            label:displayLabel,
             title:
-              item.label+" — "+countryText+
+              displayLabel+" — "+countryText+
               (typeText ? " ["+typeText+"]" : "")+
               (sources.includes("calculated-india") ? " — calculated using New Delhi reference" : ""),
             countries:codes,
@@ -4058,13 +4371,14 @@
     const items=[];
 
     events.forEach((event,index)=>{
-      const d=getEventDate(event,year);
-      if(!d || d.getMonth()!==month) return;
+      getEventDates(event,year).forEach(d=>{
+        if(d.getMonth()!==month) return;
 
-      items.push({
-        day:d.getDate(),
-        event,
-        index
+        items.push({
+          day:d.getDate(),
+          event,
+          index
+        });
       });
     });
 
@@ -4136,13 +4450,29 @@
     if(!value) return value;
 
     /*
-      The print page is always white. If the normal page is currently in dark
-      mode, Astronomy Engine's calendar labels contain the dark-background
-      Unicode moon symbols, so swap only the leading phase symbol for paper.
+      Print is always on a light/white background. Normalize Moon phase
+      symbols directly from the phase name instead of blindly swapping the
+      current symbol, because the source label may already be in light-mode
+      form.
     */
-    const swap={"○":"●","●":"○","◐":"◑","◑":"◐"};
-    const first=value.charAt(0);
-    return swap[first] ? swap[first]+value.slice(1) : value;
+    const phaseSymbols={
+      "New Moon":"●",
+      "First Quarter Moon":"◑",
+      "Full Moon":"○",
+      "Third Quarter Moon":"◐"
+    };
+
+    for(const [phaseName,symbol] of Object.entries(phaseSymbols)){
+      if(value.endsWith(phaseName)){
+        const first=value.charAt(0);
+        if("○●◐◑".includes(first)){
+          return symbol+value.slice(1);
+        }
+        return symbol+" "+value;
+      }
+    }
+
+    return value;
   }
 
   function printCountrySummary(){
@@ -4179,16 +4509,44 @@
     return labels.length ? labels.join(" + ") : "none enabled";
   }
 
+  function jsonEventDisplayPriority(event){
+    const kind=event?.rule?.kind;
+
+    if(kind==="weekly") return 2;
+    if(kind==="monthly") return 1;
+
+    /* fixed and nth-weekday rules are yearly/annual */
+    return 0;
+  }
+
+  function sortJsonEventsForDay(items){
+    return items
+      .map((item,index)=>({item,index}))
+      .sort((a,b)=>{
+        const aEvent=a.item.event||a.item;
+        const bEvent=b.item.event||b.item;
+        const priorityDiff=
+          jsonEventDisplayPriority(aEvent)-
+          jsonEventDisplayPriority(bEvent);
+
+        if(priorityDiff!==0) return priorityDiff;
+
+        /* Preserve existing order inside the same recurrence class. */
+        return a.index-b.index;
+      })
+      .map(entry=>entry.item);
+  }
+
   function buildJsonEventsByDateForYear(targetYear,includeIndexes){
     const map={};
 
     events.forEach((event,index)=>{
-      const d=getEventDate(event,targetYear);
-      if(!d) return;
-
-      const key=dateKey(d.getFullYear(),d.getMonth()+1,d.getDate());
       const value=includeIndexes ? {event,index} : event;
-      (map[key]||(map[key]=[])).push(value);
+
+      getEventDates(event,targetYear).forEach(d=>{
+        const key=dateKey(d.getFullYear(),d.getMonth()+1,d.getDate());
+        (map[key]||(map[key]=[])).push(value);
+      });
     });
 
     return map;
@@ -4230,7 +4588,7 @@
 
     for(let month=0;month<12;month++){
       const page=document.createElement("section");
-      page.className="print-month-page";
+      page.className="print-month-page"+(compactWeekends?" print-page-compact":"");
 
       const footer=document.createElement("div");
       footer.className="print-year-footer";
@@ -4242,18 +4600,17 @@
       meta.className="print-year-meta";
       meta.textContent=
         "Location: "+region.name+
-        "  •  Average Twilight: "+averageTwilightText(year,month,region)+
-        "  •  Holidays: "+printCountrySummary()+
-        " ("+printHolidayTypeSummary()+")"+
-        "  •  Astronomy: "+printAstronomySummary();
+        "   •   Average Twilight: "+averageTwilightText(year,month,region)+
+        "   •   Holidays: "+printCountrySummary()+
+        " ("+printHolidayTypeSummary()+")";
 
       footerMain.appendChild(meta);
 
       const legend=document.createElement("div");
       legend.className="print-year-legend";
       legend.innerHTML=
-        '<span class="print-legend-json">JSON event</span>  •  '+
-        '<span class="print-legend-holiday">Holiday</span>  •  '+
+        '<span class="print-legend-json">JSON event</span>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;'+
+        '<span class="print-legend-holiday">Holiday</span>&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;'+
         '<span class="print-legend-astro">Astronomy</span>';
 
       footer.appendChild(footerMain);
@@ -4264,8 +4621,31 @@
 
       const monthTitle=document.createElement("div");
       monthTitle.className="print-month-title";
-      monthTitle.textContent=months[month]+" "+year;
-      monthBox.appendChild(monthTitle);
+
+      const monthTitleText=months[month]+" "+year;
+
+      if(compactWeekends){
+        const monthTitleLeft=document.createElement("span");
+        monthTitleLeft.className="print-month-title-copy";
+        monthTitleLeft.textContent=monthTitleText;
+
+        const monthTitleRight=document.createElement("span");
+        monthTitleRight.className="print-month-title-copy";
+        monthTitleRight.textContent=monthTitleText;
+
+        monthTitle.appendChild(monthTitleLeft);
+        monthTitle.appendChild(monthTitleRight);
+      }else{
+        monthTitle.textContent=monthTitleText;
+      }
+
+      if(compactWeekends){
+        const blankHeader=document.createElement("div");
+        blankHeader.className="print-compact-blank-header";
+        monthBox.appendChild(blankHeader);
+      }else{
+        monthBox.appendChild(monthTitle);
+      }
 
       const table=document.createElement("table");
 
@@ -4301,7 +4681,9 @@
       });
 
       thead.appendChild(headRow);
-      table.appendChild(thead);
+      if(!compactWeekends){
+        table.appendChild(thead);
+      }
 
       const tbody=document.createElement("tbody");
       const rawFirstDay=new Date(year,month,1).getDay();
@@ -4339,6 +4721,61 @@
             td.classList.add("print-adjacent-day");
           }
 
+          const isPocketInfoCell=
+            compactWeekends &&
+            row===weekRows-1 &&
+            col===6;
+
+          if(isPocketInfoCell){
+            td.classList.remove("print-adjacent-day");
+            td.classList.add("print-compact-info-cell","print-compact-info-cell-full");
+
+            const inner=document.createElement("div");
+            inner.className="print-cell-inner print-compact-info-inner";
+
+            const corner=document.createElement("div");
+            corner.className="print-compact-corner print-compact-corner-full";
+
+            const title=document.createElement("span");
+            title.className="print-compact-corner-title";
+
+            const monthLine=document.createElement("span");
+            monthLine.className="print-compact-corner-month";
+            monthLine.textContent=months[month];
+
+            const yearLine=document.createElement("span");
+            yearLine.className="print-compact-corner-year";
+            yearLine.textContent=String(year);
+
+            title.appendChild(monthLine);
+            title.appendChild(yearLine);
+            corner.appendChild(title);
+
+            const twilightLine=document.createElement("span");
+            twilightLine.className="print-compact-corner-line";
+            twilightLine.textContent=
+              "Avg Twilight: "+averageTwilightText(year,month,region);
+            corner.appendChild(twilightLine);
+
+            const holidayLine=document.createElement("span");
+            holidayLine.className="print-compact-corner-line";
+            holidayLine.textContent="Holidays: "+printCountrySummary();
+            corner.appendChild(holidayLine);
+
+            const pocketKey=document.createElement("span");
+            pocketKey.className="print-compact-key";
+            pocketKey.innerHTML=
+              '<span class="print-compact-key-json">JSON</span> • '+
+              '<span class="print-compact-key-holiday">Holiday</span> • '+
+              '<span class="print-compact-key-astro">Astro</span>';
+            corner.appendChild(pocketKey);
+
+            inner.appendChild(corner);
+            td.appendChild(inner);
+            tr.appendChild(td);
+            continue;
+          }
+
             const number=document.createElement("span");
             number.className="print-day-number";
             number.textContent=cellDate.getDate();
@@ -4360,7 +4797,9 @@
               label:item.label
             }));
 
-            const jsonItems=((nearby.json[cellYear]||{})[key]||[]).map(event=>({
+            const jsonItems=sortJsonEventsForDay(
+              ((nearby.json[cellYear]||{})[key]||[])
+            ).map(event=>({
               type:"json",
               label:event.name,
               category:event.category||""
@@ -4398,6 +4837,13 @@
             dayHeading.className="print-day-heading";
             dayHeading.appendChild(number);
 
+            if(compactWeekends && row===0){
+              const weekday=document.createElement("span");
+              weekday.className="print-inline-weekday";
+              weekday.textContent=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][col];
+              td.appendChild(weekday);
+            }
+
             const holidayInline=document.createElement("div");
             holidayInline.className="print-holiday-inline";
 
@@ -4410,6 +4856,20 @@
               holidayInline.appendChild(tag);
             });
 
+            let stackedJsonItems=jsonItems;
+
+            if(!holidays.length && jsonItems.length){
+              const item=jsonItems[0];
+              const tag=document.createElement("span");
+              tag.className=
+                "print-item print-item-json"+
+                (tight ? " print-item-tight" : "");
+              tag.textContent=item.label;
+              applyCategoryHighlight(tag,item.category);
+              holidayInline.appendChild(tag);
+              stackedJsonItems=jsonItems.slice(1);
+            }
+
             dayHeading.appendChild(holidayInline);
             inner.appendChild(dayHeading);
 
@@ -4419,7 +4879,7 @@
             const jsonStack=document.createElement("div");
             jsonStack.className="print-json-stack";
 
-            jsonItems.forEach(item=>{
+            stackedJsonItems.forEach(item=>{
               const tag=document.createElement("span");
               tag.className=
                 "print-item print-item-json"+
@@ -4453,6 +4913,7 @@
 
             inner.appendChild(top);
             inner.appendChild(astroStack);
+
             td.appendChild(inner);
 
 
@@ -4466,6 +4927,11 @@
       table.appendChild(tbody);
       monthBox.appendChild(table);
       page.appendChild(monthBox);
+
+      if(compactWeekends){
+        footer.replaceChildren();
+      }
+
       page.appendChild(footer);
       printYearSheet.appendChild(page);
     }
@@ -4487,7 +4953,7 @@
       immediately built the entire printout a second time in beforeprint.
     */
     const oldTitle=document.title;
-    document.title=year+" Annual Events Calendar";
+    document.title=year+"_Annual_Events_Calendar";
 
     try{
       window.print();
@@ -4572,7 +5038,12 @@
           const headingHolidays=document.createElement("span");
           headingHolidays.className="day-heading-holidays";
 
-          ((nearby.holidays[cellYear]||{})[key]||[]).forEach(item=>{
+          const dayHolidays=((nearby.holidays[cellYear]||{})[key]||[]);
+          const dayJson=sortJsonEventsForDay(
+            ((nearby.json[cellYear]||{})[key]||[])
+          );
+
+          dayHolidays.forEach(item=>{
             const tag=document.createElement("span");
             tag.className="holiday-tag";
             tag.textContent=item.label;
@@ -4580,10 +5051,30 @@
             headingHolidays.appendChild(tag);
           });
 
+          let stackedJson=dayJson;
+
+          if(!dayHolidays.length && dayJson.length){
+            const item=dayJson[0];
+            const tag=document.createElement("span");
+            tag.className="event-tag event-tag-inline";
+            tag.textContent=item.event.name;
+            tag.title=item.event.description ? item.event.name+" — "+item.event.description : item.event.name;
+            applyCategoryHighlight(tag,item.event.category);
+            tag.style.cursor="pointer";
+            tag.addEventListener("click",()=>{
+              selectedIndex=item.index;
+              renderEventList();
+              renderEditor();
+              document.getElementById("editor").scrollIntoView({block:"center"});
+            });
+            headingHolidays.appendChild(tag);
+            stackedJson=dayJson.slice(1);
+          }
+
           heading.appendChild(headingHolidays);
           td.appendChild(heading);
 
-          ((nearby.json[cellYear]||{})[key]||[]).forEach(item=>{
+          stackedJson.forEach(item=>{
             const tag=document.createElement("span");
             tag.className="event-tag";
             tag.textContent=item.event.name;

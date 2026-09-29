@@ -55,16 +55,7 @@
     line-height:1.05;
   }
   .event-tag { display:block; margin-top:1px; line-height:1.05; font-size:9px; word-break:break-word; }
-  .empty-day,
-  .adjacent-day { background:#f1f1f1; }
-
-  .adjacent-day {
-    color:#555;
-  }
-
-  .adjacent-day .astro-tag {
-    color:#666;
-  }
+  .empty-day { background:#f1f1f1; }
   #jsonPreview { width:100%; min-height:240px; box-sizing:border-box; font-family:"Courier New",Courier,monospace; font-size:11px; white-space:pre; }
   .filename { font-family:"Courier New",Courier,monospace; font-weight:bold; }
   .section-note { margin:3px 0 0; font-size:11px; color:#333; }
@@ -108,17 +99,8 @@
     border-color:#444;
   }
 
-  body.dark .empty-day,
-  body.dark .adjacent-day {
+  body.dark .empty-day {
     background:#202020;
-  }
-
-  body.dark .adjacent-day {
-    color:#999;
-  }
-
-  body.dark .adjacent-day .astro-tag {
-    color:#999;
   }
 
   body.dark button {
@@ -849,17 +831,6 @@
     font-size:10px;
   }
 
-  .print-layout-option {
-    white-space:nowrap;
-    font-size:11px;
-  }
-
-  .print-layout-option input {
-    vertical-align:middle;
-    margin:0 3px 0 0;
-    padding:0;
-  }
-
 
   #printYearSheet {
     display:none;
@@ -868,16 +839,14 @@
   @media print {
     @page {
       size: letter landscape;
-      margin:0;
+      margin:0.25in;
     }
 
     html,
     body {
       margin:0 !important;
       padding:0 !important;
-      width:11in !important;
-      min-width:11in !important;
-      max-width:11in !important;
+      width:auto !important;
       height:auto !important;
       background:#fff !important;
       color:#000 !important;
@@ -898,18 +867,10 @@
       print-color-adjust:exact;
     }
 
-    /*
-      Full-page print geometry:
-      Use the complete 11 x 8.5in US Letter landscape page with no CSS page
-      margins. Any physical printer clearance/scaling is left to the browser's
-      print dialog. This avoids a fixed unused strip at the bottom of saved PDFs.
-    */
     .print-month-page {
       box-sizing:border-box;
-      width:11in;
-      max-width:11in;
-      height:8.5in;
-      max-height:8.5in;
+      width:100%;
+      height:8.00in;
       margin:0;
       padding:0;
       overflow:hidden;
@@ -923,27 +884,24 @@
       page-break-after:auto;
     }
 
-    .print-year-footer {
-      height:0.54in;
+    .print-year-header {
+      height:0.32in;
       box-sizing:border-box;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:0.14in;
-      padding:0.04in 0.04in 0;
+      padding:0 0 0.035in;
       overflow:hidden;
-      border:0.7pt solid #555;
-      border-top:0.6pt solid #777;
-      background:#fff !important;
     }
 
-    .print-year-footer-main {
+    .print-year-header-main {
       min-width:0;
       flex:1 1 auto;
     }
 
     .print-year-meta {
-      margin:0;
+      margin-top:0;
       font-size:6.4pt;
       line-height:1.12;
       white-space:nowrap;
@@ -953,7 +911,7 @@
 
     .print-year-legend {
       flex:0 0 auto;
-      padding:0;
+      padding-top:2pt;
       font-size:7pt;
       line-height:1.15;
       white-space:nowrap;
@@ -966,9 +924,8 @@
     .print-month {
       box-sizing:border-box;
       width:100%;
-      height:calc(100% - 0.54in);
+      height:calc(100% - 0.32in);
       border:0.7pt solid #555;
-      border-bottom:0;
       overflow:hidden;
       background:#fff;
     }
@@ -1014,24 +971,13 @@
     .print-month td {
       box-sizing:border-box;
       border:0.45pt solid #bbb;
-      padding:2.2pt 0.9pt 0.6pt;
+      padding:2.2pt 0.9pt 1.2pt;
       vertical-align:top;
       overflow:hidden;
       background:#fff !important;
     }
 
-    .print-month td.print-empty,
-    .print-month td.print-adjacent-day {
-      background:#f5f5f5 !important;
-    }
-
-    .print-month td.print-adjacent-day {
-      color:#666 !important;
-    }
-
-    .print-month td.print-adjacent-day .print-item-astro {
-      color:#666 !important;
-    }
+    .print-month td.print-empty { background:#f5f5f5 !important; }
 
     .print-day-number {
       display:inline-block;
@@ -1134,28 +1080,6 @@
       word-break:normal !important;
       text-overflow:clip;
       letter-spacing:-0.08pt;
-    }
-
-    .print-month.print-compact-weekends .print-weekend-cell .print-item {
-      font-size:6.2pt;
-      line-height:1.03;
-    }
-
-    .print-month.print-compact-weekends .print-weekend-cell .print-item-tight {
-      font-size:5.5pt;
-    }
-
-    .print-month.print-compact-weekends .print-weekend-cell .print-item-daily {
-      font-size:5.15pt;
-      letter-spacing:-0.16pt;
-    }
-
-    .print-month.print-compact-weekends .print-weekend-cell .print-day-number {
-      font-size:7.2pt;
-    }
-
-    .print-month.print-compact-weekends .print-weekend-cell .print-day-heading {
-      gap:1.2pt;
     }
   }
 
@@ -1312,11 +1236,7 @@
         <select id="locationRegion"></select>
       </label>
 
-      <button id="printYearBtn" type="button" title="Print 12 monthly pages on US Letter landscape using the selected year, display settings, and print layout option">Print Year / Save PDF (12 pages)</button>
-
-      <label class="print-layout-option" for="printCompactWeekends">
-        <input id="printCompactWeekends" type="checkbox"> Mon-first, half-width weekends, 4/6 rows
-      </label>
+      <button id="printYearBtn" type="button" title="Print 12 monthly pages on US Letter landscape using the selected year and current display settings">Print Year / Save PDF (12 pages)</button>
     </div>
 
     <details class="astro-options" id="astroOptions">
@@ -1639,7 +1559,6 @@
   descriptionField=document.getElementById("descriptionField"),
   printYearBtn=document.getElementById("printYearBtn"),
   printYearSheet=document.getElementById("printYearSheet"),
-  printCompactWeekends=document.getElementById("printCompactWeekends"),
   categoryHighlightRows=document.getElementById("categoryHighlightRows"),
   addCategoryHighlightBtn=document.getElementById("addCategoryHighlightBtn");
 
@@ -1664,15 +1583,6 @@
       : String(new Date().getMonth());
   }catch(e){
     calendarMonth.value=String(new Date().getMonth());
-  }
-
-  const PRINT_COMPACT_WEEKENDS_KEY="annual-events-print-compact-weekends";
-
-  try{
-    printCompactWeekends.checked=
-      localStorage.getItem(PRINT_COMPACT_WEEKENDS_KEY)==="true";
-  }catch(e){
-    printCompactWeekends.checked=false;
   }
 
   const astroCheckboxes = [
@@ -1914,7 +1824,8 @@
 
   let selectedHolidayCountries=["US"];
   let holidayCountryNames={};
-  const holidayCacheByKey=new Map();
+  let holidayCacheKey="";
+  let holidayCache={};
   let holidayBaseStatus="";
 
 
@@ -2241,17 +2152,6 @@
     }
   }
 
-  let calendarRenderFrame=0;
-
-  function scheduleCalendarRender(){
-    if(calendarRenderFrame) return;
-
-    calendarRenderFrame=requestAnimationFrame(()=>{
-      calendarRenderFrame=0;
-      renderCalendar();
-    });
-  }
-
   function updateSelectedEvent(){
     if(selectedIndex<0||!events[selectedIndex]) return;
     const event=events[selectedIndex];
@@ -2276,7 +2176,7 @@
 
     sortEventsChronologically(event);
     renderEventList();
-    scheduleCalendarRender();
+    renderCalendar();
     updateJsonPreview();
     markDirty();
 
@@ -2336,7 +2236,8 @@
     return before.some((event,i)=>event!==events[i]);
   }
 
-  const astroCacheByKey=new Map();
+  let astroCacheKey="";
+  let astroCache={};
 
   const COMET_CACHE_PREFIX="annual-events-jpl-comets-v1-";
   const COMET_CACHE_MAX_AGE_MS=7*24*60*60*1000;
@@ -2580,44 +2481,14 @@
     };
   }
 
-  const localDateFormatterByZone=new Map();
-  const localClockFormatterByZone=new Map();
-
-  function localDateFormatter(region){
-    let formatter=localDateFormatterByZone.get(region.tz);
-
-    if(!formatter){
-      formatter=new Intl.DateTimeFormat("en-US",{
+  function localDateParts(date,region){
+    try{
+      const parts=new Intl.DateTimeFormat("en-US",{
         timeZone:region.tz,
         year:"numeric",
         month:"2-digit",
         day:"2-digit"
-      });
-      localDateFormatterByZone.set(region.tz,formatter);
-    }
-
-    return formatter;
-  }
-
-  function localClockFormatter(region){
-    let formatter=localClockFormatterByZone.get(region.tz);
-
-    if(!formatter){
-      formatter=new Intl.DateTimeFormat("en-US",{
-        timeZone:region.tz,
-        hour:"numeric",
-        minute:"2-digit",
-        hour12:true
-      });
-      localClockFormatterByZone.set(region.tz,formatter);
-    }
-
-    return formatter;
-  }
-
-  function localDateParts(date,region){
-    try{
-      const parts=localDateFormatter(region).formatToParts(date);
+      }).formatToParts(date);
       const result={};
       parts.forEach(p=>{ if(p.type==="year"||p.type==="month"||p.type==="day") result[p.type]=Number(p.value); });
       return {year:result.year,month:result.month,day:result.day};
@@ -2627,11 +2498,17 @@
   }
 
 
-  const dailySkyCacheByKey=new Map();
+  let dailySkyCacheKey="";
+  let dailySkyCache=null;
 
   function formatLocalClock(date,region){
     try{
-      return localClockFormatter(region)
+      return new Intl.DateTimeFormat("en-US",{
+        timeZone:region.tz,
+        hour:"numeric",
+        minute:"2-digit",
+        hour12:true
+      })
         .format(date)
         .replace(/\s+/g,"")
         .toLowerCase();
@@ -2716,8 +2593,8 @@
   function getDailySkyData(year,region){
     const key=year+"|"+region.id;
 
-    if(dailySkyCacheByKey.has(key)){
-      return dailySkyCacheByKey.get(key);
+    if(key===dailySkyCacheKey && dailySkyCache){
+      return dailySkyCache;
     }
 
     const data={
@@ -2733,7 +2610,8 @@
       typeof Astronomy==="undefined" ||
       typeof Astronomy.SearchRiseSet!=="function"
     ){
-      dailySkyCacheByKey.set(key,data);
+      dailySkyCacheKey=key;
+      dailySkyCache=data;
       return data;
     }
 
@@ -2822,7 +2700,8 @@
       }
     }
 
-    dailySkyCacheByKey.set(key,data);
+    dailySkyCacheKey=key;
+    dailySkyCache=data;
     return data;
   }
 
@@ -2960,7 +2839,7 @@
     const options=astronomyOptionState();
     const darkMode=document.body.classList.contains("dark");
     const key=JSON.stringify([year,region.id,options,darkMode]);
-    if(astroCacheByKey.has(key)) return astroCacheByKey.get(key);
+    if(key===astroCacheKey) return astroCache;
 
     const map={};
     const notices=[];
@@ -2970,7 +2849,8 @@
         notices.push("Astronomy Engine could not be loaded; calculated astronomy overlays are unavailable.");
       }
       astroStatus.textContent=notices.join(" ");
-      astroCacheByKey.set(key,map);
+      astroCacheKey=key;
+      astroCache=map;
       return map;
     }
 
@@ -3187,17 +3067,18 @@
     }
 
     astroStatus.textContent=notices.join(" ");
-    astroCacheByKey.set(key,map);
+    astroCacheKey=key;
+    astroCache=map;
     return map;
   }
 
   function invalidateAstronomyCache(){
-    astroCacheByKey.clear();
+    astroCacheKey="";
   }
 
 
   function invalidateHolidayCache(){
-    holidayCacheByKey.clear();
+    holidayCacheKey="";
   }
 
   function normalizeHolidayName(name){
@@ -3615,7 +3496,7 @@
       holidayObservance.checked
     ]);
 
-    if(holidayCacheByKey.has(key)) return holidayCacheByKey.get(key);
+    if(key===holidayCacheKey) return holidayCache;
 
     const map={};
     const notices=[];
@@ -3623,13 +3504,15 @@
 
     if(!HolidayConstructor){
       holidayStatus.textContent="date-holidays could not be loaded; holiday overlays are unavailable.";
-      holidayCacheByKey.set(key,map);
+      holidayCacheKey=key;
+      holidayCache=map;
       return map;
     }
 
     if(!holidayPublic.checked && !holidayObservance.checked){
       holidayStatus.textContent=holidayBaseStatus;
-      holidayCacheByKey.set(key,map);
+      holidayCacheKey=key;
+      holidayCache=map;
       return map;
     }
 
@@ -3769,7 +3652,8 @@
       ? holidayBaseStatus+" Some holiday calculations reported: "+notices.join(" | ")
       : holidayBaseStatus;
 
-    holidayCacheByKey.set(key,map);
+    holidayCacheKey=key;
+    holidayCache=map;
     return map;
   }
 
@@ -4124,13 +4008,6 @@
     });
   }
 
-  function compactWeekendMoonRiseSetLabel(label){
-    return String(label||"")
-      .replace(/^Moon\s+/,"Mn ")
-      .replace(/\s+\((\d{1,2})\)/g,"($1)")
-      .replace(/\)\s*-\s*/g,")-");
-  }
-
   function printLightMoonLabel(label){
     const value=String(label||"");
     if(!value) return value;
@@ -4179,52 +4056,19 @@
     return labels.length ? labels.join(" + ") : "none enabled";
   }
 
-  function buildJsonEventsByDateForYear(targetYear,includeIndexes){
-    const map={};
-
-    events.forEach((event,index)=>{
-      const d=getEventDate(event,targetYear);
-      if(!d) return;
-
-      const key=dateKey(d.getFullYear(),d.getMonth()+1,d.getDate());
-      const value=includeIndexes ? {event,index} : event;
-      (map[key]||(map[key]=[])).push(value);
-    });
-
-    return map;
-  }
-
-  function nearbyYearData(centerYear,includeJsonIndexes,requestedYears){
-    let years;
-
-    if(Array.isArray(requestedYears) && requestedYears.length){
-      years=Array.from(new Set(
-        requestedYears.filter(y=>Number.isInteger(y) && y>=1 && y<=9999)
-      ));
-    }else{
-      years=[centerYear];
-      if(centerYear>1) years.unshift(centerYear-1);
-      if(centerYear<9999) years.push(centerYear+1);
-    }
-
-    const astronomy={};
-    const holidays={};
-    const json={};
-
-    years.forEach(y=>{
-      astronomy[y]=buildAstronomyEvents(y);
-      holidays[y]=buildHolidayEvents(y);
-      json[y]=buildJsonEventsByDateForYear(y,includeJsonIndexes);
-    });
-
-    return {astronomy,holidays,json};
-  }
-
   function buildPrintYearSheet(){
     const year=clampInt(calendarYear.value,1,9999,new Date().getFullYear());
     const region=selectedAstroRegion();
-    const compactWeekends=!!printCompactWeekends.checked;
-    const nearby=nearbyYearData(year,false);
+    const astroByDate=buildAstronomyEvents(year);
+    const holidayByDate=buildHolidayEvents(year);
+    const jsonByDate={};
+
+    events.forEach(event=>{
+      const d=getEventDate(event,year);
+      if(!d) return;
+      const key=dateKey(d.getFullYear(),d.getMonth()+1,d.getDate());
+      (jsonByDate[key]||(jsonByDate[key]=[])).push(event);
+    });
 
     printYearSheet.innerHTML="";
 
@@ -4232,11 +4076,11 @@
       const page=document.createElement("section");
       page.className="print-month-page";
 
-      const footer=document.createElement("div");
-      footer.className="print-year-footer";
+      const header=document.createElement("div");
+      header.className="print-year-header";
 
-      const footerMain=document.createElement("div");
-      footerMain.className="print-year-footer-main";
+      const headerMain=document.createElement("div");
+      headerMain.className="print-year-header-main";
 
       const meta=document.createElement("div");
       meta.className="print-year-meta";
@@ -4247,7 +4091,7 @@
         " ("+printHolidayTypeSummary()+")"+
         "  •  Astronomy: "+printAstronomySummary();
 
-      footerMain.appendChild(meta);
+      headerMain.appendChild(meta);
 
       const legend=document.createElement("div");
       legend.className="print-year-legend";
@@ -4256,11 +4100,12 @@
         '<span class="print-legend-holiday">Holiday</span>  •  '+
         '<span class="print-legend-astro">Astronomy</span>';
 
-      footer.appendChild(footerMain);
-      footer.appendChild(legend);
+      header.appendChild(headerMain);
+      header.appendChild(legend);
+      page.appendChild(header);
 
       const monthBox=document.createElement("div");
-      monthBox.className="print-month"+(compactWeekends?" print-compact-weekends":"");
+      monthBox.className="print-month";
 
       const monthTitle=document.createElement("div");
       monthTitle.className="print-month-title";
@@ -4268,35 +4113,12 @@
       monthBox.appendChild(monthTitle);
 
       const table=document.createElement("table");
-
-      const weekdayLabels=compactWeekends
-        ? ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
-        : ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-
-      /*
-        Compact mode uses six total width-units:
-        Monday-Friday = 1 unit each, Saturday/Sunday = 0.5 each.
-        That makes weekdays 16.6667% and weekend columns 8.3333%.
-      */
-      const columnWidths=compactWeekends
-        ? [16.6667,16.6667,16.6667,16.6667,16.6667,8.3333,8.3333]
-        : [14.2857,14.2857,14.2857,14.2857,14.2857,14.2857,14.2857];
-
-      const colgroup=document.createElement("colgroup");
-      columnWidths.forEach(width=>{
-        const col=document.createElement("col");
-        col.style.width=width+"%";
-        colgroup.appendChild(col);
-      });
-      table.appendChild(colgroup);
-
       const thead=document.createElement("thead");
       const headRow=document.createElement("tr");
 
-      weekdayLabels.forEach((label,index)=>{
+      ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].forEach(label=>{
         const th=document.createElement("th");
         th.textContent=label;
-        if(compactWeekends && index>=5) th.classList.add("print-weekend-cell");
         headRow.appendChild(th);
       });
 
@@ -4304,21 +4126,11 @@
       table.appendChild(thead);
 
       const tbody=document.createElement("tbody");
-      const rawFirstDay=new Date(year,month,1).getDay();
-      const firstDay=compactWeekends ? (rawFirstDay+6)%7 : rawFirstDay;
+      const firstDay=new Date(year,month,1).getDay();
       const daysInMonth=new Date(year,month+1,0).getDate();
+      let day=1;
 
-      const naturalWeekRows=Math.ceil((firstDay+daysInMonth)/7);
-
-      /*
-        Compact/folding mode deliberately uses an even number of day rows.
-        The footer is exactly as tall as Month/Year + weekday headings
-        (0.54in), so the center row boundary is also the physical horizontal
-        midpoint of the printed sheet.
-      */
-      const weekRows=compactWeekends
-        ? (naturalWeekRows<=4 ? 4 : 6)
-        : naturalWeekRows;
+      const weekRows=Math.ceil((firstDay+daysInMonth)/7);
 
       for(let row=0;row<weekRows;row++){
         const tr=document.createElement("tr");
@@ -4326,25 +4138,16 @@
 
         for(let col=0;col<7;col++){
           const td=document.createElement("td");
-          if(compactWeekends && col>=5) td.classList.add("print-weekend-cell");
 
-          const cellIndex=(row*7)+col;
-          const cellDate=new Date(year,month,1-firstDay+cellIndex);
-          const cellYear=cellDate.getFullYear();
-          const isCurrentMonth=
-            cellYear===year &&
-            cellDate.getMonth()===month;
-
-          if(!isCurrentMonth){
-            td.classList.add("print-adjacent-day");
-          }
-
+          if((row===0 && col<firstDay) || day>daysInMonth){
+            td.className="print-empty";
+          }else{
             const number=document.createElement("span");
             number.className="print-day-number";
-            number.textContent=cellDate.getDate();
+            number.textContent=day;
             td.appendChild(number);
 
-            const key=dateKey(cellYear,cellDate.getMonth()+1,cellDate.getDate());
+            const key=dateKey(year,month+1,day);
 
             /*
               Printed priority:
@@ -4355,32 +4158,22 @@
               Astronomy is intentionally allowed to clip within its bottom
               zone so it never pushes holiday/JSON information out of place.
             */
-            const holidays=((nearby.holidays[cellYear]||{})[key]||[]).map(item=>({
+            const holidays=(holidayByDate[key]||[]).map(item=>({
               type:"holiday",
               label:item.label
             }));
 
-            const jsonItems=((nearby.json[cellYear]||{})[key]||[]).map(event=>({
+            const jsonItems=(jsonByDate[key]||[]).map(event=>({
               type:"json",
               label:event.name,
               category:event.category||""
             }));
 
-            const isCompactWeekend=compactWeekends && col>=5;
-
-            const astroItems=((nearby.astronomy[cellYear]||{})[key]||[]).map(item=>{
-              let label=printLightMoonLabel(item.label);
-
-              if(isCompactWeekend && item.category==="daily-moon"){
-                label=compactWeekendMoonRiseSetLabel(label);
-              }
-
-              return {
-                type:"astro",
-                category:item.category,
-                label
-              };
-            });
+            const astroItems=(astroByDate[key]||[]).map(item=>({
+              type:"astro",
+              category:item.category,
+              label:printLightMoonLabel(item.label)
+            }));
 
             const allItems=[...holidays,...jsonItems,...astroItems];
             const totalChars=allItems.reduce(
@@ -4455,7 +4248,8 @@
             inner.appendChild(astroStack);
             td.appendChild(inner);
 
-
+            day++;
+          }
 
           tr.appendChild(td);
         }
@@ -4466,7 +4260,6 @@
       table.appendChild(tbody);
       monthBox.appendChild(table);
       page.appendChild(monthBox);
-      page.appendChild(footer);
       printYearSheet.appendChild(page);
     }
   }
@@ -4475,17 +4268,11 @@
     const year=clampInt(calendarYear.value,1,9999,new Date().getFullYear());
 
     if(document.getElementById("astroComets").checked){
-      const cometYears=[year];
-      if(year>1) cometYears.push(year-1);
-      if(year<9999) cometYears.push(year+1);
-      await Promise.all(cometYears.map(y=>ensureCometData(y,false)));
+      await ensureCometData(year,false);
     }
 
-    /*
-      Do not build the 12-page DOM here. window.print() triggers beforeprint,
-      which builds it once. Previously the button path built it here and then
-      immediately built the entire printout a second time in beforeprint.
-    */
+    buildPrintYearSheet();
+
     const oldTitle=document.title;
     document.title=year+" Annual Events Calendar";
 
@@ -4499,19 +4286,17 @@
   function renderCalendar(){
     const year=clampInt(calendarYear.value,1,9999,new Date().getFullYear());
     const month=clampInt(calendarMonth.value,0,11,new Date().getMonth());
+    const byDate={};
 
-    /*
-      Most months only spill into another month within the same year.
-      Only January can need year-1 and only December can need year+1.
-      Avoid calculating three full years of astronomy/holidays on every redraw.
-    */
-    const visibleYears=[year];
-    if(month===0 && year>1) visibleYears.push(year-1);
-    if(month===11 && year<9999) visibleYears.push(year+1);
+    events.forEach((event,index)=>{
+      const d=getEventDate(event,year);
+      if(!d || d.getMonth()!==month) return;
+      const key=dateKey(d.getFullYear(),d.getMonth()+1,d.getDate());
+      (byDate[key]||(byDate[key]=[])).push({event,index});
+    });
 
-    const nearby=nearbyYearData(year,true,visibleYears);
-    const astroByDate=nearby.astronomy[year]||{};
-    const holidayByDate=nearby.holidays[year]||{};
+    const astroByDate=buildAstronomyEvents(year);
+    const holidayByDate=buildHolidayEvents(year);
     const cal=document.getElementById("calendar");
     cal.innerHTML="";
     cal.classList.add("single-month");
@@ -4540,39 +4325,31 @@
     const tbody=document.createElement("tbody");
     const firstDay=new Date(year,month,1).getDay();
     const daysInMonth=new Date(year,month+1,0).getDate();
-    const weekRows=Math.ceil((firstDay+daysInMonth)/7);
+    let day=1;
 
-    for(let row=0;row<weekRows;row++){
+    for(let row=0;row<6;row++){
       const tr=document.createElement("tr");
 
       for(let col=0;col<7;col++){
         const td=document.createElement("td");
 
-        const cellIndex=(row*7)+col;
-        const cellDate=new Date(year,month,1-firstDay+cellIndex);
-        const cellYear=cellDate.getFullYear();
-        const isCurrentMonth=
-          cellYear===year &&
-          cellDate.getMonth()===month;
-
-        if(!isCurrentMonth){
-          td.classList.add("adjacent-day");
-        }
-
-          const key=dateKey(cellYear,cellDate.getMonth()+1,cellDate.getDate());
+        if((row===0&&col<firstDay)||day>daysInMonth){
+          td.className="empty-day";
+        }else{
+          const key=dateKey(year,month+1,day);
 
           const heading=document.createElement("div");
           heading.className="day-heading-line";
 
           const num=document.createElement("span");
           num.className="day-number";
-          num.textContent=cellDate.getDate();
+          num.textContent=day;
           heading.appendChild(num);
 
           const headingHolidays=document.createElement("span");
           headingHolidays.className="day-heading-holidays";
 
-          ((nearby.holidays[cellYear]||{})[key]||[]).forEach(item=>{
+          (holidayByDate[key]||[]).forEach(item=>{
             const tag=document.createElement("span");
             tag.className="holiday-tag";
             tag.textContent=item.label;
@@ -4583,7 +4360,7 @@
           heading.appendChild(headingHolidays);
           td.appendChild(heading);
 
-          ((nearby.json[cellYear]||{})[key]||[]).forEach(item=>{
+          (byDate[key]||[]).forEach(item=>{
             const tag=document.createElement("span");
             tag.className="event-tag";
             tag.textContent=item.event.name;
@@ -4599,7 +4376,7 @@
             td.appendChild(tag);
           });
 
-          const dayAstro=((nearby.astronomy[cellYear]||{})[key]||[]);
+          const dayAstro=astroByDate[key]||[];
           const notableAstro=dayAstro.filter(
             item=>item.category!=="daily-sun" && item.category!=="daily-moon"
           );
@@ -4614,12 +4391,14 @@
             td.appendChild(tag);
           });
 
-
+          day++;
+        }
 
         tr.appendChild(td);
       }
 
       tbody.appendChild(tr);
+      if(day>daysInMonth) break;
     }
 
     table.appendChild(tbody);
@@ -4841,15 +4620,6 @@
   prevMonthBtn.addEventListener("click",()=>stepCalendarMonth(-1));
   nextMonthBtn.addEventListener("click",()=>stepCalendarMonth(1));
   printYearBtn.addEventListener("click",printSelectedYear);
-
-  printCompactWeekends.addEventListener("change",()=>{
-    try{
-      localStorage.setItem(
-        PRINT_COMPACT_WEEKENDS_KEY,
-        String(printCompactWeekends.checked)
-      );
-    }catch(e){}
-  });
 
   window.addEventListener("beforeprint",()=>{
     buildPrintYearSheet();
